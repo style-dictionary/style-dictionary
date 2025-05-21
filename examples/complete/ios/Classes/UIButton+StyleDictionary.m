@@ -1,11 +1,3 @@
-//
-//  UIButton+StyleDictionary.m
-//  Pods
-//
-//  Created by Banks, Daniel on 1/28/17.
-//
-//
-
 #import "UIButton+StyleDictionary.h"
 
 @implementation UIButton (StyleDictionary)

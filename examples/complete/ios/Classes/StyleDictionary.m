@@ -1,11 +1,3 @@
-//
-//  StyleDictionary.m
-//  Pods
-//
-//  Created by Banks, Daniel on 1/20/17.
-//
-//
-
 #import "StyleDictionary.h"
 
 @implementation StyleDictionary

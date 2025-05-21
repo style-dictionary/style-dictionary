@@ -1,11 +1,3 @@
-//
-//  CardViewCell.m
-//  StyleDictionaryExample
-//
-//  Created by Banks, Daniel on 1/30/17.
-//  Copyright © 2017 Danny Banks. All rights reserved.
-//
-
 #import "CardViewCell.h"
 
 @interface CardViewCell ()

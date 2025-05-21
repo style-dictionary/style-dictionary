@@ -1,11 +1,3 @@
-//
-//  StyleDictionaryButton.m
-//  Pods
-//
-//  Created by Banks, Daniel on 1/29/17.
-//
-//
-
 #import "StyleDictionaryButton.h"
 
 @implementation StyleDictionaryButton

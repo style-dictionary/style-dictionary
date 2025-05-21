@@ -1,11 +1,3 @@
-//
-//  HeaderCollectionViewCell.m
-//  StyleDictionaryExample
-//
-//  Created by Banks, Daniel on 2/9/17.
-//  Copyright © 2017 Danny Banks. All rights reserved.
-//
-
 #import "HeaderCollectionViewCell.h"
 
 @implementation HeaderCollectionViewCell

@@ -1,11 +1,3 @@
-//
-//  StyleDictionaryViewController.m
-//  StyleDictionary
-//
-//  Created by Danny Banks on 02/09/2017.
-//  Copyright (c) 2017 Danny Banks. All rights reserved.
-//
-
 #import "StyleDictionaryViewController.h"
 
 @interface StyleDictionaryViewController ()
