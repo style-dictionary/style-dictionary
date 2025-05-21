@@ -99,7 +99,7 @@
     "type": "git",
     "url": "git://github.com/amzn/style-dictionary.git"
   },
-  "author": "Amazon",
+  "author": "Style Dictionary",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/amzn/style-dictionary/issues"
