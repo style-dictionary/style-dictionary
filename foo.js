@@ -1,7 +1,7 @@
 import { globSync } from 'glob';
 import fs from 'node:fs/promises';
 
-const files = globSync('examples/**/*', { ignore: 'node_modules/**/*', nodir: true });
+const files = globSync('types/**/*', { ignore: 'node_modules/**/*', nodir: true });
 
 const deleteCopyrights = async (filePath) => {
   const contents = await fs.readFile(filePath, 'utf-8');
