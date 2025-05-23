@@ -7,15 +7,8 @@ import type { Transform } from './Transform.js';
 import type { Format, OutputReferences } from './Format.js';
 import type { SortOption } from './Sort.js';
 import type { Action } from './Action.js';
-import {
-  logBrokenReferenceLevels,
-  logWarningLevels,
-  logVerbosityLevels,
-} from '../lib/enums/index.js';
-
-type logWarningLevels = typeof logWarningLevels;
-type logVerbosityLevels = typeof logVerbosityLevels;
-type logBrokenReferenceLevels = typeof logBrokenReferenceLevels;
+import type { Logger } from '../lib/utils/logging/logger.js';
+import type { LogConfig } from './Logger.js';
 
 export interface Hooks {
   parsers?: Record<string, Omit<Parser, 'name'>>;
@@ -66,14 +59,6 @@ export interface ResolveReferencesOptionsInternalOld extends ResolveReferencesOp
   firstIteration?: boolean;
 }
 
-export interface LogConfig {
-  warnings?: logWarningLevels[keyof logWarningLevels];
-  verbosity?: logVerbosityLevels[keyof logVerbosityLevels];
-  errors?: {
-    brokenReferences?: logBrokenReferenceLevels[keyof logBrokenReferenceLevels];
-  };
-}
-
 export type ExpandFilter = (
   token: DesignToken,
   options: Config,
@@ -114,4 +99,5 @@ export interface Config {
   parsers?: string[];
   preprocessors?: string[];
   usesDtcg?: boolean;
+  logger?: Logger;
 }

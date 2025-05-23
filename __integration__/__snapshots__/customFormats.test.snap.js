@@ -1015,6 +1015,28 @@ snapshots["integration custom formats inline custom with new args should match s
         "brokenReferences": "throw"
       }
     },
+    "logger": {
+      "throw": {
+        "references": {}
+      },
+      "error": {
+        "transforms": {}
+      },
+      "warn": {
+        "collisions": {},
+        "nameCollisions": {}
+      },
+      "success": {},
+      "info": {},
+      "debug": {},
+      "logConfig": {
+        "warnings": "warn",
+        "verbosity": "default",
+        "errors": {
+          "brokenReferences": "throw"
+        }
+      }
+    },
     "usesDtcg": false,
     "otherOption": "Test",
     "showFileHeader": true
@@ -2027,6 +2049,28 @@ snapshots["integration custom formats register custom format with new args shoul
       "verbosity": "default",
       "errors": {
         "brokenReferences": "throw"
+      }
+    },
+    "logger": {
+      "throw": {
+        "references": {}
+      },
+      "error": {
+        "transforms": {}
+      },
+      "warn": {
+        "collisions": {},
+        "nameCollisions": {}
+      },
+      "success": {},
+      "info": {},
+      "debug": {},
+      "logConfig": {
+        "warnings": "warn",
+        "verbosity": "default",
+        "errors": {
+          "brokenReferences": "throw"
+        }
       }
     },
     "usesDtcg": false,
