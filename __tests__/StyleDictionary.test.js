@@ -24,12 +24,12 @@ import { restore, stubMethod } from 'hanbi';
 import {
   logWarningLevels,
   logVerbosityLevels,
-  logBrokenReferenceLevels,
+  logErrorLevels,
   formats as fileFormats,
   transformGroups,
 } from '../lib/enums/index.js';
 
-const { console: logToConsole } = logBrokenReferenceLevels;
+const { console: logToConsole } = logErrorLevels;
 const { silent, verbose } = logVerbosityLevels;
 const { error: errorLog, warn } = logWarningLevels;
 

@@ -1009,6 +1009,13 @@ snapshots["integration custom formats inline custom with new args should match s
         "brokenReferences": "throw"
       }
     },
+    "logger": {
+      "_errors": {
+        "transforms": {},
+        "references": {}
+      },
+      "_warnings": {}
+    },
     "usesDtcg": false,
     "otherOption": "Test",
     "showFileHeader": true
@@ -2016,6 +2023,13 @@ snapshots["integration custom formats register custom format with new args shoul
       "errors": {
         "brokenReferences": "throw"
       }
+    },
+    "logger": {
+      "_errors": {
+        "transforms": {},
+        "references": {}
+      },
+      "_warnings": {}
     },
     "usesDtcg": false,
     "otherOption": "Test",

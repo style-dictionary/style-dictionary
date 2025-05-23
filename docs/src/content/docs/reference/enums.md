@@ -18,7 +18,7 @@ The following shows how to use some of the provided enum-like objects in an exma
 import StyleDictionary from 'style-dictionary';
 import {
   formats,
-  logBrokenReferenceLevels,
+  logErrorLevels,
   logWarningLevels,
   logVerbosityLevels,
   transformGroups,
@@ -44,7 +44,7 @@ const sd = new StyleDictionary({
     warnings: logWarningLevels.warn,
     verbosity: logVerbosityLevels.verbose,
     errors: {
-      brokenReferences: logBrokenReferenceLevels.throw,
+      brokenReferences: logErrorLevels.throw,
     },
   },
 });
@@ -157,8 +157,8 @@ export const formats = {
 ### Log Broken Reference Levels
 
 ```javascript
-// enums/logBrokenReferenceLevels.js
-export const logBrokenReferenceLevels = {
+// enums/logErrorLevels.js
+export const logErrorLevels = {
   throw: 'throw',
   console: 'console',
 };

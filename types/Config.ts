@@ -19,15 +19,12 @@ import type { Preprocessor } from './Preprocessor.js';
 import type { Transform } from './Transform.js';
 import type { Format, OutputReferences } from './Format.js';
 import type { Action } from './Action.js';
-import {
-  logBrokenReferenceLevels,
-  logWarningLevels,
-  logVerbosityLevels,
-} from '../lib/enums/index.js';
+import { logErrorLevels, logWarningLevels, logVerbosityLevels } from '../lib/enums/index.js';
+import type { Logger } from '../lib/utils/logging/logger.js';
 
 type logWarningLevels = typeof logWarningLevels;
 type logVerbosityLevels = typeof logVerbosityLevels;
-type logBrokenReferenceLevels = typeof logBrokenReferenceLevels;
+type logErrorLevels = typeof logErrorLevels;
 
 export interface Hooks {
   parsers?: Record<string, Omit<Parser, 'name'>>;
@@ -80,7 +77,8 @@ export interface LogConfig {
   warnings?: logWarningLevels[keyof logWarningLevels];
   verbosity?: logVerbosityLevels[keyof logVerbosityLevels];
   errors?: {
-    brokenReferences?: logBrokenReferenceLevels[keyof logBrokenReferenceLevels];
+    brokenReferences?: logErrorLevels[keyof logErrorLevels];
+    transforms?: logErrorLevels[keyof logErrorLevels];
   };
 }
 
@@ -124,4 +122,5 @@ export interface Config {
   parsers?: string[];
   preprocessors?: string[];
   usesDtcg?: boolean;
+  logger?: Logger;
 }

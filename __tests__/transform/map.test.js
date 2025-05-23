@@ -15,6 +15,7 @@ import StyleDictionary from '../../lib/StyleDictionary.js';
 import { transformMap } from '../../lib/transform/map.js';
 import { stripMeta } from '../../lib/utils/stripMeta.js';
 import groupMessages from '../../lib/utils/groupMessages.js';
+import { Logger } from '../../lib/utils/logging/logger.js';
 
 const TRANSFORM_ERRORS = groupMessages.GROUP.TransformErrors;
 
@@ -220,6 +221,7 @@ describe('transform', () => {
     });
 
     it('handles and collects errors from transformations', async () => {
+      const logger = new Logger();
       for (let transformType of ['attribute', 'value', 'name']) {
         const transformedPropRefs = new Set();
         const deferredPropValueTransforms = new Set();
@@ -230,7 +232,12 @@ describe('transform', () => {
         const m = new Map([
           [
             '{colors.red.500}',
-            { value: 123, filePath: '/foo.json', path: ['colors', 'red', '500'] },
+            {
+              key: '{colors.red.500}',
+              value: 123,
+              filePath: '/foo.json',
+              path: ['colors', 'red', '500'],
+            },
           ],
         ]);
         await transformMap(
@@ -249,6 +256,9 @@ describe('transform', () => {
               },
             ],
           },
+          {
+            logger,
+          },
           transformationContext,
         );
         const token = m.get('{colors.red.500}');
@@ -265,11 +275,13 @@ describe('transform', () => {
         }
       }
 
-      expect(groupMessages.count(TRANSFORM_ERRORS)).to.equal(3);
+      expect(logger.count('errors.transforms')).to.equal(3);
+      const flushed = logger.flush('errors.transforms').get('{colors.red.500}');
       await expect(
-        groupMessages
-          .fetchMessages(TRANSFORM_ERRORS)
-          .map((m) => m.split('Object.transform')[0])
+        flushed
+          .map((v) => {
+            return v.message.split('Object.transform')[0];
+          })
           .join('\n\n'),
       ).to.matchSnapshot();
     });
