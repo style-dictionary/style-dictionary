@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.1
+
+### Patch Changes
+
+- 463b456: Simplify internal `cleanFile(s)` utils, fix a bug that would still attempt to unlink non-existent files in verbosity `"silent"` mode.
+- 8f7c522: Fix `loadFile` to deep clone ES module exports to avoid unintended mutations
+
 ## 5.0.0
 
 ### Major Changes
