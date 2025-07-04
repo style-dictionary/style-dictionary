@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         # latest node & minimum node according to pkg.json engines
-        node-version: [22.0, 23.x]
+        node-version: [22.0, lts/*]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{matrix.os}}
     steps:

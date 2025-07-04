@@ -14,8 +14,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          # use lts, bump this if new major becomes lts
-          node-version: 20.x
+          # use lts version of node
+          node-version: lts/*
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
