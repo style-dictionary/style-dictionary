@@ -46,10 +46,18 @@ describe('cleanFile', () => {
   });
 
   describe('if a file does not exist', () => {
-    it('should not throw', () => {
-      expect(() =>
-        cleanFile({ destination: 'non-existent.txt', format: 'foo' }, { buildPath }, {}),
-      ).to.not.throw();
+    it('should not throw', async () => {
+      await expect(cleanFile({ destination: 'non-existent.txt', format: 'foo' }, { buildPath })).to
+        .not.be.rejected;
+    });
+
+    it('should not throw even in silent mode', async () => {
+      await expect(
+        cleanFile(
+          { destination: 'test.txt', format: 'foo' },
+          { buildPath, log: { verbosity: 'silent' } },
+        ),
+      ).to.not.be.rejected;
     });
   });
 });
