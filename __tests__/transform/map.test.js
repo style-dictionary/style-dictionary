@@ -275,8 +275,9 @@ describe('transform', () => {
         }
       }
 
-      expect(logger.count('errors.transforms')).to.equal(3);
-      const flushed = logger.flush('errors.transforms').get('{colors.red.500}');
+      expect(logger.count('error.transforms')).to.equal(3);
+      const flushed = logger.flush('error.transforms').get('{colors.red.500}');
+      expect(flushed).to.equal([]);
       await expect(
         flushed
           .map((v) => {

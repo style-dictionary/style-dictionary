@@ -19,12 +19,8 @@ import type { Preprocessor } from './Preprocessor.js';
 import type { Transform } from './Transform.js';
 import type { Format, OutputReferences } from './Format.js';
 import type { Action } from './Action.js';
-import { logErrorLevels, logWarningLevels, logVerbosityLevels } from '../lib/enums/index.js';
 import type { Logger } from '../lib/utils/logging/logger.js';
-
-type logWarningLevels = typeof logWarningLevels;
-type logVerbosityLevels = typeof logVerbosityLevels;
-type logErrorLevels = typeof logErrorLevels;
+import type { LogConfig } from './Logger.js';
 
 export interface Hooks {
   parsers?: Record<string, Omit<Parser, 'name'>>;
@@ -71,15 +67,6 @@ export interface ResolveReferencesOptionsInternalOld extends ResolveReferencesOp
   stack?: string[];
   foundCirc?: Record<string, boolean>;
   firstIteration?: boolean;
-}
-
-export interface LogConfig {
-  warnings?: logWarningLevels[keyof logWarningLevels];
-  verbosity?: logVerbosityLevels[keyof logVerbosityLevels];
-  errors?: {
-    brokenReferences?: logErrorLevels[keyof logErrorLevels];
-    transforms?: logErrorLevels[keyof logErrorLevels];
-  };
 }
 
 export type ExpandFilter = (

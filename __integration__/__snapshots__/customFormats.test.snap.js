@@ -1010,11 +1010,26 @@ snapshots["integration custom formats inline custom with new args should match s
       }
     },
     "logger": {
-      "_errors": {
-        "transforms": {},
+      "throw": {
         "references": {}
       },
-      "_warnings": {}
+      "error": {
+        "transforms": {}
+      },
+      "warn": {
+        "collisions": {},
+        "nameCollisions": {}
+      },
+      "success": {},
+      "info": {},
+      "debug": {},
+      "logConfig": {
+        "warnings": "warn",
+        "verbosity": "default",
+        "errors": {
+          "brokenReferences": "throw"
+        }
+      }
     },
     "usesDtcg": false,
     "otherOption": "Test",
@@ -2025,11 +2040,26 @@ snapshots["integration custom formats register custom format with new args shoul
       }
     },
     "logger": {
-      "_errors": {
-        "transforms": {},
+      "throw": {
         "references": {}
       },
-      "_warnings": {}
+      "error": {
+        "transforms": {}
+      },
+      "warn": {
+        "collisions": {},
+        "nameCollisions": {}
+      },
+      "success": {},
+      "info": {},
+      "debug": {},
+      "logConfig": {
+        "warnings": "warn",
+        "verbosity": "default",
+        "errors": {
+          "brokenReferences": "throw"
+        }
+      }
     },
     "usesDtcg": false,
     "otherOption": "Test",

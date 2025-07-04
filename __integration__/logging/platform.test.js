@@ -89,7 +89,7 @@ describe(`integration`, () => {
       });
 
       it(`should warn and notify users of transform errors`, async () => {
-        const stub = stubMethod(console, 'log');
+        const stub = stubMethod(console, 'error');
         const sd = new StyleDictionary({
           hooks: {
             transforms: {
@@ -125,7 +125,7 @@ describe(`integration`, () => {
         sd.log.verbosity = 'verbose';
         await sd.buildAllPlatforms({ cache: false });
         // we skip 1 and 2 because those are success logs from building the tokens in the previous run
-        const secondLog = [...stub.calls][3].args[0];
+        const secondLog = [...stub.calls][1].args[0];
         await expect(cleanConsoleOutput(secondLog).split('Object.transform')[0]).to.matchSnapshot(
           2,
         );
