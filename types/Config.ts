@@ -124,4 +124,6 @@ export interface Config {
   parsers?: string[];
   preprocessors?: string[];
   usesDtcg?: boolean;
+  transform?: Record<string, Transform>;
+  format?: Record<string, Format>;
 }
