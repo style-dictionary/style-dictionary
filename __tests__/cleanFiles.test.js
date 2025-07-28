@@ -16,7 +16,7 @@ import cleanFiles from '../lib/cleanFiles.js';
 import StyleDictionary from '../lib/StyleDictionary.js';
 
 const tokens = {
-  foo: 'bar',
+  foo: { $value: 'bar' },
 };
 
 const hooks = {
@@ -75,7 +75,7 @@ describe('cleanFiles', () => {
       },
     });
     await sd.buildPlatform('bar');
-    cleanFiles(platformWithBuildPath);
-    expect(fileExists('__tests__/t__/__output/test.json')).to.be.false;
+    await cleanFiles(platformWithBuildPath);
+    expect(fileExists('__tests__/__output/test.json')).to.be.false;
   });
 });

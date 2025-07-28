@@ -28,6 +28,7 @@ describe('cleanFile', () => {
   it('should delete a file properly', async () => {
     const file = { destination: 'test.txt', format: 'foo' };
     const sd = new StyleDictionary({
+      tokens: { foo: { $value: 'bar' } },
       hooks: {
         formats: {
           foo: () => 'hi',
@@ -41,7 +42,29 @@ describe('cleanFile', () => {
       },
     });
     await sd.buildPlatform('bar');
-    cleanFile(file, { buildPath });
+    await cleanFile(file, { buildPath });
+    expect(fileExists('__tests__/__output/test.txt')).to.be.false;
+  });
+
+  it('should not error when a buildPath is specified but the destination is empty', async () => {
+    const file = { destination: 'text.txt', format: 'foo' };
+    const noDestination = { destination: '', format: 'foo' };
+    const sd = new StyleDictionary({
+      tokens: { foo: { $value: 'bar' } },
+      hooks: {
+        formats: {
+          foo: () => 'hi',
+        },
+      },
+      platforms: {
+        bar: {
+          buildPath,
+          files: [file, noDestination],
+        },
+      },
+    });
+    await sd.buildPlatform('bar');
+    await cleanFile(noDestination, { buildPath });
     expect(fileExists('__tests__/__output/test.txt')).to.be.false;
   });
 
