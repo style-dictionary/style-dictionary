@@ -4,7 +4,7 @@
   "type": "module",
   "version": "1.0.0",
   "dependencies": {
-    "node-sass": "^7.0.0",
+    "dart-sass": "^1.25.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^5.0.1",
