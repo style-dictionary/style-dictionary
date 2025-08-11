@@ -12,7 +12,7 @@
  */
 
 var formats = require('../../lib/common/formats');
-var scss = require('node-sass');
+var scss = require('sass');
 const createDictionary = require('../../lib/utils/createDictionary');
 const createFormatArgs = require('../../lib/utils/createFormatArgs');
 var _ = require('../../lib/utils/es6_');
@@ -61,13 +61,13 @@ describe('formats', () => {
   describe('scss/variables', () => {
 
     it('should have a valid scss syntax', () => {
-      const result = scss.renderSync({
-        data: formatter(createFormatArgs({
+      const result = scss.compileString(
+        formatter(createFormatArgs({
           dictionary,
           file,
           platform: {}
-        }), {}, file),
-      });
+        }), {}, file)
+      );
       expect(result.css).toBeDefined();
     });
 

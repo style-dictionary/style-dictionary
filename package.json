@@ -146,7 +146,7 @@
     "json5-jest": "^1.0.1",
     "less": "^4.1.2",
     "lint-staged": "^12.3.1",
-    "node-sass": "^9.0.0",
+    "sass": "^1.90.0",
     "standard-version": "^9.3.2",
     "stylus": "^0.56.0",
     "tsd": "^0.19.1",

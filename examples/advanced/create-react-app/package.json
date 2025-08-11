@@ -3,10 +3,10 @@
   "description": "",
   "version": "1.0.0",
   "dependencies": {
-    "node-sass": "^7.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-scripts": "^5.0.1",
+    "sass": "^1.90.0",
     "styled-components": "^5.3.0"
   },
   "devDependencies": {

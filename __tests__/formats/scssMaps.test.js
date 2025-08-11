@@ -12,7 +12,7 @@
  */
 
 var formats = require('../../lib/common/formats');
-var scss = require('node-sass');
+var scss = require('sass');
 var _ = require('../../lib/utils/es6_');
 var createDictionary = require('../../lib/utils/createDictionary');
 var createFormatArgs = require('../../lib/utils/createFormatArgs');
@@ -140,9 +140,7 @@ describe('formats', () => {
       });
 
       it('should have a valid scss syntax', () => {
-        const result = scss.renderSync({
-          data: output,
-        });
+        const result = scss.compileString(output);
         expect(result.css).toBeDefined();
       });
 

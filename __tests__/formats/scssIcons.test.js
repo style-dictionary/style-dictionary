@@ -12,7 +12,7 @@
  */
 
 const formats = require('../../lib/common/formats');
-const scss = require('node-sass');
+const scss = require('sass');
 const createDictionary = require('../../lib/utils/createDictionary');
 const createFormatArgs = require('../../lib/utils/createFormatArgs');
 
@@ -24,7 +24,7 @@ const file = {
 
 const propertyName = "content-icon-email";
 const propertyValue = "'\\E001'";
-const itemClass = "3d_rotation";
+const itemClass = "three-d_rotation";
 
 const properties = {
   content: {
@@ -57,13 +57,13 @@ describe('formats', () => {
   describe('scss/icons', () => {
 
     it('should have a valid scss syntax', () => {
-      const result = scss.renderSync({
-        data: formatter(createFormatArgs({
+      const result = scss.compileString(
+        formatter(createFormatArgs({
           dictionary,
           file,
           platform
-        }), platform, file),
-      });
+        }), platform, file)
+      );
       expect(result.css).toBeDefined();
     });
 
