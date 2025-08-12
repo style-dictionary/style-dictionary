@@ -23,6 +23,23 @@ body {
   color: var(--text-color-base);
 }
 
+footer {
+  position: fixed;
+  bottom: 0;
+  background-color: var(--theme-color-secondary-light);
+  width: 100%;
+  text-align: center;
+  padding: 5px 20px;
+}
+
+footer a {
+  color: var(--theme-color-secondary-dark);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 0.1rem solid var(--theme-color-secondary-dark);
+  transition: all 0.3s ease;
+}
+
 * {
   text-decoration: none !important;
 }
