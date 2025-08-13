@@ -1,5 +1,7 @@
 # Version 4
 
+> Disclaimer: Version 4 was released a while back and version 5 is published with significant performance improvements. See [current docs for Style Dictionary](https://styledictionary.com)
+
 In May 2021, we started [an issue / RFC, "What would you like to see in Style-Dictionary 4.0?"](https://github.com/amzn/style-dictionary/issues/643) to gather feedback on what the community would like to see.
 Fortunately, in August 2023, the folks at [Tokens Studio](https://tokens.studio/) contacted us about co-maintaining this project, and leading the v4 release (and beyond)!
 

@@ -10,5 +10,6 @@
 [Get Started](README.md)
 
 [See what's new in 3.0!](version_3.md)
+[Check out latest version (v5)](https://styledictionary.com)
 
 ![color](#D9F8F5)
