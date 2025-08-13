@@ -50,10 +50,9 @@ describe('utils', () => {
 
     it('should throw error if it tries to import TS files with unsupported Node env', async () => {
       if (isNode) {
+        const semver = (await import('semver')).default;
         const version = process.version;
-        const major = parseFloat(/v(\d+)\..+/g.exec(version)[1]);
-
-        if (major < 23) {
+        if (semver.lt(version, '22.18.0')) {
           let err;
           try {
             await loadFile('__tests__/__json_files/tokens.ts');

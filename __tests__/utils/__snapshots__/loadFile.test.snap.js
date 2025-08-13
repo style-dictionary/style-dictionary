@@ -12,6 +12,7 @@ Could not import TypeScript file: __tests__/__json_files/tokens.ts
 
 Executing typescript files during runtime is only possible via
 - NodeJS >= 22.6.0 with '--experimental-strip-types' flag
+- NodeJS >= 22.18.0 where type stripping is enabled by default, no flag needed
 - Deno
 - Bun
 
