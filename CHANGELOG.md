@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.0.2
+
+### Patch Changes
+
+- 8e413a2: Fix vulnerable dependencies, patch-package and its transitive `tmp` dependency in particular.
+- 9f84a81: Remove node-sass from create-react-app example, dart-sass is used now usually.
+- da19c8f: Small patch to allow no-destination "files" to not cause errors when using clean methods.
+
 ## 5.0.1
 
 ### Patch Changes
