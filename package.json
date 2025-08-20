@@ -113,6 +113,9 @@
     "Joren Broekema <joren.broekema@gmail.com>"
   ],
   "homepage": "https://github.com/amzn/style-dictionary",
+  "overrides": {
+    "tmp": "0.2.5"
+  },
   "dependencies": {
     "@bundled-es-modules/deepmerge": "^4.3.1",
     "@bundled-es-modules/glob": "^10.4.2",
