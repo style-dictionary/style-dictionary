@@ -42,7 +42,27 @@ export default {
     },
     {
       label: 'Versions',
-      autogenerate: { directory: 'versions' },
+      items: [
+        {
+          label: 'v3',
+          items: [
+            { label: 'Documentation', link: 'https://v3.styledictionary.com' },
+          ]
+        },
+        {
+          label: 'v4',
+          items: [
+            { label: 'Migration Guidelines', link: '/versions/v4/migration' },
+            { label: 'Statement', link: '/versions/v4/statement' },
+          ]
+        },
+        {
+          label: 'v5',
+          items: [
+            { label: 'Migration Guidelines', link: '/versions/v5/migration' },
+          ]
+        },
+      ],
     },
     {
       label: 'Reference',
