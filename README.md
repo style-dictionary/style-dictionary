@@ -1,5 +1,5 @@
 <pre>
-<a href="https://styledictionary.com/version-4/migration/">What's new in Style Dictionary 4.0!</a>
+<a href="https://styledictionary.com/versions/v4/migration/">What's new in Style Dictionary 4.0!</a>
 </pre>
 
 <img src="docs/src/assets/logo.png" alt="Style Dictionary logo and mascot" title="&quot;Pascal&quot;" width="100" align="right" />
