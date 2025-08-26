@@ -48,6 +48,16 @@ describe('utils', () => {
       expect(await load()).not.have.property('bar');
     });
 
+    it('should now throw if structuredClone of the original module fails due to dynamic content', async () => {
+      let err;
+      try {
+        await loadFile('__tests__/__configs/test-dynamic.js');
+      } catch (e) {
+        err = e;
+      }
+      expect(err).to.be.undefined;
+    });
+
     it('should throw error if it tries to import TS files with unsupported Node env', async () => {
       if (isNode) {
         const semver = (await import('semver')).default;
