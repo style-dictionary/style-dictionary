@@ -378,6 +378,8 @@ const cssTokens = (await sd.formatPlatform('css')).output;
 To take advantage of outputting references in your custom formats there are 2 helper methods in the `dictionary` argument passed to your format function: `usesReference(value)` and `getReferences(value)`. Here is an example using those:
 
 ```javascript title="build-tokens.js"
+import { usesReferences, getReferences } from 'style-dictionary/utils';
+
 StyleDictionary.registerFormat({
   name: `es6WithReferences`,
   format: function ({ dictionary, options }) {
@@ -400,7 +402,7 @@ StyleDictionary.registerFormat({
         if (shouldOutputRef) {
           // Note: make sure to use `originalValue` because
           // `token.value` is already resolved at this point.
-          const refs = dictionary.getReferences(originalValue);
+          const refs = getReferences(originalValue, dictionary.tokens);
           let isEntirelyRef = refs.length === 1 && refs[0].value === value;
           refs.forEach((ref) => {
             // wrap in template literal ${} braces if the value is more than just entirely a reference
