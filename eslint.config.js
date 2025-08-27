@@ -24,7 +24,10 @@ export default [
       react: reactPlugin,
     },
     rules: {
-      'no-unused-vars': 'warn',
+      'no-unused-vars': [
+        'error',
+        { varsIgnorePattern: '^_', argsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
       'no-console': ['error', { allow: ['warn', 'error'] }],
       'mocha/no-exclusive-tests': 'error',
       'no-var': 'error',
