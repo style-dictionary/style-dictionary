@@ -117,7 +117,7 @@
   },
   "dependencies": {
     "@bundled-es-modules/deepmerge": "^4.3.1",
-    "@bundled-es-modules/glob": "^10.4.2",
+    "@bundled-es-modules/glob": "^11.0.3",
     "@bundled-es-modules/memfs": "^4.9.4",
     "@types/node": "^22.10.5",
     "@zip.js/zip.js": "^2.7.44",
@@ -148,7 +148,7 @@
     "@web/test-runner-commands": "^0.9.0",
     "@web/test-runner-playwright": "^0.11.0",
     "acorn": "^8.11.3",
-    "astro": "^5.2.3",
+    "astro": "^5.13.2",
     "chai": "^5.0.0-alpha.2",
     "eslint": "^9.19.0",
     "eslint-plugin-mocha": "^10.5.0",
