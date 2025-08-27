@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.0.3
+
+### Patch Changes
+
+- 3d070f5: Move patch-package to devDependencies and run in prepare instead of postinstall, so it only runs when npm installing locally and not for consumers.
+- 71614da: Wrap structuredClone in loadFile in a try catch, in case we have a JS/TS config file with dynamic content.
+
 ## 5.0.2
 
 ### Patch Changes
