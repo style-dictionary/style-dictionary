@@ -1,10 +1,10 @@
 {
   "size": {
     "padding": {
-      "small": { "value": 0.5, "type": "dimension" },
-      "medium": { "value": 1, "type": "dimension" },
-      "large": { "value": 1, "type": "dimension" },
-      "xl": { "value": 1, "type": "dimension" }
+      "small": { "value": 0.6, "type": "dimension" },
+      "medium": { "value": 1.1, "type": "dimension" },
+      "large": { "value": 1.1, "type": "dimension" },
+      "xl": { "value": 1.1, "type": "dimension" }
     }
   }
 }

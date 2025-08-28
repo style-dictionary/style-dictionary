@@ -106,6 +106,16 @@ describe('utils', () => {
         ).to.throw('danger danger. high voltage.');
       });
 
+      it('should not call the collision function if a collision is irrelevant because the values are identical', () => {
+        expect(() =>
+          deepExtend([{ foo: { bar: 'bar' } }, { foo: { bar: 'bar' } }], {
+            collision: function () {
+              throw new Error('danger danger. high voltage.');
+            },
+          }),
+        ).to.not.throw();
+      });
+
       it('the collision function should have the proper arguments', () => {
         const test = deepExtend([{ foo: { bar: 'bar' } }, { foo: { bar: 'baz' } }], {
           collision: function (opts) {
