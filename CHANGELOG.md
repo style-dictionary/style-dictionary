@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.4
+
+### Patch Changes
+
+- 7a238af: Fix an issue with token collisions being way to eager about complaining when values that are identical are "colliding". This cuts collision warnings by 75% or more.
+
 ## 5.0.3
 
 ### Patch Changes
