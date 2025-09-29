@@ -60,18 +60,20 @@ export default {
   // the .extend method copies everything in the config
   // to itself, allowing you to override things. It's also doing a deep merge
   // to protect from accidentally overriding nested attributes.
-  transform: {
-    // Now we can use the transform 'myTransform' below
-    myTransform: {
-      type: transformTypes.name,
-      transform: (token) => token.path.join('_').toUpperCase(),
+  hooks: {
+    transforms: {
+      // Now we can use the transform 'myTransform' below
+      myTransform: {
+        type: transformTypes.name,
+        transform: (token) => token.path.join('_').toUpperCase(),
+      },
     },
-  },
-  // Same with formats, you can now write them directly to this config
-  // object. The name of the format is the key.
-  format: {
-    myFormat: ({ dictionary, platform }) => {
-      return dictionary.allTokens.map((token) => `${token.name}: ${token.value};`).join('\n');
+    // Same with formats, you can now write them directly to this config
+    // object. The name of the format is the key.
+    formats: {
+      myFormat: ({ dictionary }) => {
+        return dictionary.allTokens.map((token) => `${token.name}: ${token.value};`).join('\n');
+      },
     },
   },
   platforms: {
@@ -142,20 +144,18 @@ You would then change your npm script or CLI command to run that file with Node:
 
 ## Properties
 
-| Property        | Type                        | Description                                                                                                                                                                                                                                                                                                                                                                                                     |
-| :-------------- | :-------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `log`           | `Log`                       | [Configure logging behavior](/reference/logging) to either reduce/silence logs or to make them more verbose for debugging purposes.                                                                                                                                                                                                                                                                             |
-| `source`        | `string[]`                  | An array of file path [globs](https://github.com/isaacs/node-glob) to design token files. Style Dictionary will do a deep merge of all of the token files, allowing you to organize your files however you want. Supports JSON, JSON5, JavaScript ESM (default export object) token files. TypeScript file is natively supported as well with Bun, Deno or NodeJS >= 22.6.0 + `--experimental-strip-types` flag |
-| `include`       | `string[]`                  | An array of file path [globs](https://github.com/isaacs/node-glob) to design token files that contain default styles. Style Dictionary uses this as a base collection of design tokens. The tokens found using the "source" attribute will overwrite tokens found using include.                                                                                                                                |
-| `tokens`        | `Object`                    | The tokens object is a way to include inline design tokens as opposed to using the `source` and `include` arrays.                                                                                                                                                                                                                                                                                               |
-| `expand`        | `ExpandConfig`              | Configures whether and how composite (object-value) tokens will be expanded into separate tokens. `false` by default. Supports either `boolean`, `ExpandFilter` function or an Object containing a `typesMap` property and optionally an `include` OR `exclude` property.                                                                                                                                       |
-| `platforms`     | `Record<string, Platform>`  | An object containing [platform](#platform) config objects that describe how the Style Dictionary should build for that platform. You can add any arbitrary attributes on this object that will get passed to formats and actions (more on these in a bit). This is useful for things like build paths, name prefixes, variable names, etc.                                                                      |
-| `hooks`         | `Hooks` object              | Object that contains all configured custom hooks: `preprocessors`. Note: `parsers`, `transforms`, `transformGroups`, `formats`, `fileHeaders`, `filters`, `actions` will be moved under property this later. Can be used to define hooks inline as an alternative to using `register<Hook>` methods.                                                                                                            |
-| `parsers`       | `string[]`                  | Names of custom [file parsers](/reference/hooks/parsers) to run on input files                                                                                                                                                                                                                                                                                                                                  |
-| `preprocessors` | `string[]`                  | Which [preprocessors](/reference/hooks/preprocessors) (by name) to run on the full token dictionary, before any transforms run, can be registered using `.registerPreprocessor`. You can also configure this on the platform config level if you need to run it on the dictionary only for specific platforms.                                                                                                  |
-| `transform`     | `Record<string, Transform>` | Custom [transforms](/reference/hooks/transforms) you can include inline rather than using `.registerTransform`. The keys in this object will be the transform's name, the value should be an object with `type`                                                                                                                                                                                                 |
-| `format`        | `Record<string, Format>`    | Custom [formats](/reference/hooks/formats) you can include inline in the configuration rather than using `.registerFormat`. The keys in this object will be for format's name and value should be the format function.                                                                                                                                                                                          |
-| `usesDtcg`      | `boolean`                   | Whether the tokens are using [DTCG Format](https://tr.designtokens.org/format/) or not. Usually you won't need to configure this, as style-dictionary will auto-detect this format.                                                                                                                                                                                                                             |
+| Property        | Type                       | Description                                                                                                                                                                                                                                                                                                                                                                                                     |
+| :-------------- | :------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `log`           | `Log`                      | [Configure logging behavior](/reference/logging) to either reduce/silence logs or to make them more verbose for debugging purposes.                                                                                                                                                                                                                                                                             |
+| `source`        | `string[]`                 | An array of file path [globs](https://github.com/isaacs/node-glob) to design token files. Style Dictionary will do a deep merge of all of the token files, allowing you to organize your files however you want. Supports JSON, JSON5, JavaScript ESM (default export object) token files. TypeScript file is natively supported as well with Bun, Deno or NodeJS >= 22.6.0 + `--experimental-strip-types` flag |
+| `include`       | `string[]`                 | An array of file path [globs](https://github.com/isaacs/node-glob) to design token files that contain default styles. Style Dictionary uses this as a base collection of design tokens. The tokens found using the "source" attribute will overwrite tokens found using include.                                                                                                                                |
+| `tokens`        | `Object`                   | The tokens object is a way to include inline design tokens as opposed to using the `source` and `include` arrays.                                                                                                                                                                                                                                                                                               |
+| `expand`        | `ExpandConfig`             | Configures whether and how composite (object-value) tokens will be expanded into separate tokens. `false` by default. Supports either `boolean`, `ExpandFilter` function or an Object containing a `typesMap` property and optionally an `include` OR `exclude` property.                                                                                                                                       |
+| `platforms`     | `Record<string, Platform>` | An object containing [platform](#platform) config objects that describe how the Style Dictionary should build for that platform. You can add any arbitrary attributes on this object that will get passed to formats and actions (more on these in a bit). This is useful for things like build paths, name prefixes, variable names, etc.                                                                      |
+| `hooks`         | `Hooks` object             | Object that contains all configured custom hooks: `preprocessors`. Note: `parsers`, `transforms`, `transformGroups`, `formats`, `fileHeaders`, `filters`, `actions` will be moved under property this later. Can be used to define hooks inline as an alternative to using `register<Hook>` methods.                                                                                                            |
+| `parsers`       | `string[]`                 | Names of custom [file parsers](/reference/hooks/parsers) to run on input files                                                                                                                                                                                                                                                                                                                                  |
+| `preprocessors` | `string[]`                 | Which [preprocessors](/reference/hooks/preprocessors) (by name) to run on the full token dictionary, before any transforms run, can be registered using `.registerPreprocessor`. You can also configure this on the platform config level if you need to run it on the dictionary only for specific platforms.                                                                                                  |
+| `usesDtcg`      | `boolean`                  | Whether the tokens are using [DTCG Format](https://tr.designtokens.org/format/) or not. Usually you won't need to configure this, as style-dictionary will auto-detect this format.                                                                                                                                                                                                                             |
 
 ### Log
 
@@ -183,7 +183,7 @@ A File configuration object represents a single output file. The `options` objec
 
 | Property                   | Type                                  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | :------------------------- | :------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `destination`              | `string`                              | Location to build the file, will be appended to the buildPath.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `destination`              | `[string]`                            | Location to build the file, will be appended to the buildPath. Can be ommitted if [`formatPlatform`](/reference/api#formatplatform) / [`formatAllPlatforms`](/reference/api#formatallplatforms) is used, and you're not outputting to the filesystem, but rather to memory.                                                                                                                                                                                                                                                                      |
 | `format`                   | `string`                              | [Format](/reference/hooks/formats) used to generate the file. Can be a built-in one or you can create your own via [registerFormat](/reference/api#registerformat).                                                                                                                                                                                                                                                                                                                                                                              |
 | `filter`                   | `string \| function \| Object`        | A function, string or object used to filter the tokens that will be included in the file. If a function is provided, each design token will be passed to the function and the result (true or false) will determine whether the design token is included. If an object is provided, each design token will be matched against the object using a partial deep comparison. If a match is found, the design token is included. If a string is passed, is considered a custom filter registered via [registerFilter](/reference/api#registerfilter) |
 | `options`                  | `Object`                              | A set of extra options associated with the file. Includes `showFileHeader` and [`outputReferences`](/reference/hooks/formats#references-in-output-files).                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -435,4 +435,22 @@ const DTCGTypesMap = {
     lineHeight: 'number',
   },
 };
+```
+
+This is useful in case you want to extend it:
+
+```js
+import StyleDictionary from 'style-dictionary';
+import { DTCGTypesMap } from 'style-dictionary/utils';
+
+const extensionMap = {
+  ...DTCGTypesMap,
+  sizing: 'dimension',
+};
+
+const sd = new StyleDictionary({
+  expand: {
+    typesMap: extensionMap,
+  },
+});
 ```
