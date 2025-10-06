@@ -563,6 +563,93 @@ describe('common', () => {
           await expect(cssRef).to.matchSnapshot();
         });
       });
+
+      describe('tokens with "value" in their name', () => {
+        const valueNameDictionary = {
+          object_type: {
+            value_chain: {
+              value: '10px',
+              original: {
+                value: '10px',
+                type: 'spacing',
+              },
+              name: 'object-type-value-chain',
+              path: ['object_type', 'value_chain'],
+              type: 'spacing',
+            },
+          },
+          reference: {
+            to_value_chain: {
+              value: '10px',
+              original: {
+                value: '{object_type.value_chain}',
+                type: 'spacing',
+              },
+              name: 'reference-to-value-chain',
+              path: ['reference', 'to_value_chain'],
+              type: 'spacing',
+            },
+          },
+        };
+
+        it('should support outputReferences for tokens with "value" in their name', () => {
+          const propFormatter = createPropertyFormatter({
+            outputReferences: true,
+            dictionary: { tokens: valueNameDictionary },
+            format: css,
+          });
+          expect(propFormatter(valueNameDictionary.object_type.value_chain)).to.equal(
+            '  --object-type-value-chain: 10px;',
+          );
+          expect(propFormatter(valueNameDictionary.reference.to_value_chain)).to.equal(
+            '  --reference-to-value-chain: var(--object-type-value-chain);',
+          );
+        });
+      });
+
+      describe('DTCG: tokens with "value" in their name', () => {
+        const dtcgValueNameDictionary = {
+          object_type: {
+            value_chain: {
+              $value: '10px',
+              original: {
+                $value: '10px',
+                $type: 'spacing',
+              },
+              name: 'object-type-value-chain',
+              path: ['object_type', 'value_chain'],
+              $type: 'spacing',
+            },
+          },
+          reference: {
+            to_value_chain: {
+              $value: '10px',
+              original: {
+                $value: '{object_type.value_chain}',
+                $type: 'spacing',
+              },
+              name: 'reference-to-value-chain',
+              path: ['reference', 'to_value_chain'],
+              $type: 'spacing',
+            },
+          },
+        };
+
+        it('should support DTCG outputReferences for tokens with "value" in their name', () => {
+          const propFormatter = createPropertyFormatter({
+            outputReferences: true,
+            dictionary: { tokens: dtcgValueNameDictionary },
+            format: css,
+            usesDtcg: true,
+          });
+          expect(propFormatter(dtcgValueNameDictionary.object_type.value_chain)).to.equal(
+            '  --object-type-value-chain: 10px;',
+          );
+          expect(propFormatter(dtcgValueNameDictionary.reference.to_value_chain)).to.equal(
+            '  --reference-to-value-chain: var(--object-type-value-chain);',
+          );
+        });
+      });
     });
   });
 });

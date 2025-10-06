@@ -112,6 +112,90 @@ describe('common', () => {
           tokensWithUndefinedValue.color.primary,
         ]);
       });
+
+      describe('tokens with "value" in their name', () => {
+        const tokensWithValueInName = {
+          object_type: {
+            value_chain: {
+              value: '10px',
+              type: 'spacing',
+              original: {
+                value: '10px',
+                type: 'spacing',
+              },
+              name: 'object-type-value-chain',
+            },
+          },
+          reference: {
+            to_value_chain: {
+              value: '10px',
+              type: 'spacing',
+              original: {
+                value: '{object_type.value_chain}',
+                type: 'spacing',
+              },
+              name: 'reference-to-value-chain',
+            },
+          },
+        };
+
+        it('should correctly sort tokens with "value" in their name', () => {
+          const allTokens = [
+            tokensWithValueInName.reference.to_value_chain,
+            tokensWithValueInName.object_type.value_chain,
+          ];
+
+          const sorted = [...allTokens].sort(sortByReference(tokensWithValueInName));
+
+          expect(sorted).to.eql([
+            tokensWithValueInName.object_type.value_chain,
+            tokensWithValueInName.reference.to_value_chain,
+          ]);
+        });
+      });
+
+      describe('DTCG: tokens with "value" in their name', () => {
+        const dtcgTokensWithValueInName = {
+          object_type: {
+            value_chain: {
+              $value: '10px',
+              $type: 'spacing',
+              original: {
+                $value: '10px',
+                $type: 'spacing',
+              },
+              name: 'object-type-value-chain',
+            },
+          },
+          reference: {
+            to_value_chain: {
+              $value: '10px',
+              $type: 'spacing',
+              original: {
+                $value: '{object_type.value_chain}',
+                $type: 'spacing',
+              },
+              name: 'reference-to-value-chain',
+            },
+          },
+        };
+
+        it('should correctly sort DTCG tokens with "value" in their name', () => {
+          const allTokens = [
+            dtcgTokensWithValueInName.reference.to_value_chain,
+            dtcgTokensWithValueInName.object_type.value_chain,
+          ];
+
+          const sorted = [...allTokens].sort(
+            sortByReference(dtcgTokensWithValueInName, { usesDtcg: true }),
+          );
+
+          expect(sorted).to.eql([
+            dtcgTokensWithValueInName.object_type.value_chain,
+            dtcgTokensWithValueInName.reference.to_value_chain,
+          ]);
+        });
+      });
     });
   });
 });

@@ -106,6 +106,70 @@ describe('utils', () => {
           { key: '{color.red}', ref: ['color', 'red'], value: '#f00' },
         ]);
       });
+
+      describe('tokens with "value" in their name', () => {
+        const tokensWithValueInName = {
+          object_type: {
+            value_chain: { value: '10px' },
+            another: { value: '20px' },
+          },
+          reference: {
+            to_value_chain: { value: '{object_type.value_chain}' },
+            to_value_chain_explicit: { value: '{object_type.value_chain.value}' },
+          },
+        };
+
+        it('should correctly resolve references to tokens with "value" in their name', () => {
+          expect(
+            getReferences(
+              tokensWithValueInName.reference.to_value_chain.value,
+              tokensWithValueInName,
+            ),
+          ).to.eql([{ ref: ['object_type', 'value_chain'], value: '10px' }]);
+        });
+
+        it('should correctly resolve explicit .value references to tokens with "value" in their name', () => {
+          expect(
+            getReferences(
+              tokensWithValueInName.reference.to_value_chain_explicit.value,
+              tokensWithValueInName,
+            ),
+          ).to.eql([{ ref: ['object_type', 'value_chain'], value: '10px' }]);
+        });
+      });
+
+      describe('DTCG: tokens with "value" in their name', () => {
+        const dtcgTokensWithValueInName = {
+          object_type: {
+            value_chain: { $value: '10px' },
+            another: { $value: '20px' },
+          },
+          reference: {
+            to_value_chain: { $value: '{object_type.value_chain}' },
+            to_value_chain_explicit: { $value: '{object_type.value_chain.$value}' },
+          },
+        };
+
+        it('should correctly resolve DTCG references to tokens with "value" in their name', () => {
+          expect(
+            getReferences(
+              dtcgTokensWithValueInName.reference.to_value_chain.$value,
+              dtcgTokensWithValueInName,
+              { usesDtcg: true },
+            ),
+          ).to.eql([{ ref: ['object_type', 'value_chain'], $value: '10px' }]);
+        });
+
+        it('should correctly resolve explicit .$value references to tokens with "value" in their name', () => {
+          expect(
+            getReferences(
+              dtcgTokensWithValueInName.reference.to_value_chain_explicit.$value,
+              dtcgTokensWithValueInName,
+              { usesDtcg: true },
+            ),
+          ).to.eql([{ ref: ['object_type', 'value_chain'], $value: '10px' }]);
+        });
+      });
     });
   });
 });
