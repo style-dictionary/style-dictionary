@@ -1,0 +1,16 @@
+{
+  "name": "style-dictionary-example-tokens-gui",
+  "version": "1.0.0",
+  "description": "Demonstrates how to use jsonparser-cli to load tokens from Style-Dictionary into a GUI.",
+  "type": "module",
+  "scripts": {
+    "start": "jsoneditor-cli load ./tokens/colors.json --engine svelte-jsoneditor --initialExpand true",
+    "build": "style-dictionary build"
+  },
+  "author": "Artur Sopelnik <artur.sopelnik93@gmail.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "style-dictionary": "^4.3.3",
+    "jsoneditor-cli": "^1.1.0"
+  }
+}
