@@ -1,8 +1,8 @@
-package com.amazon.styledictionaryexample.icon
+package com.styledictionaryexample.icon
 
 import android.os.Bundle
-import com.amazon.styledictionaryexample.BaseActivity
-import com.amazon.styledictionaryexample.R
+import com.styledictionaryexample.BaseActivity
+import com.styledictionaryexample.R
 
 /**
  * An activity representing a single Icon detail screen. This

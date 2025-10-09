@@ -1,13 +1,13 @@
 @file:Suppress("UNUSED_PARAMETER")
 
-package com.amazon.styledictionaryexample.color
+package com.styledictionaryexample.color
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import com.amazon.styledictionaryexample.BaseActivity
-import com.amazon.styledictionaryexample.R
+import com.styledictionaryexample.BaseActivity
+import com.styledictionaryexample.R
 
 class ColorsActivity : BaseActivity() {
   private var baseButton: Button? = null

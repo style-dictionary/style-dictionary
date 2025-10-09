@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample.icon
+package com.styledictionaryexample.icon
 
 import android.annotation.SuppressLint
 import android.graphics.Typeface
@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.amazon.styledictionaryexample.R
-import com.amazon.styledictionaryexample.models.Property
-import com.amazon.styledictionaryexample.util.StringHelper
-import com.amazon.styledictionaryexample.util.StyleDictionaryHelper
+import com.styledictionaryexample.R
+import com.styledictionaryexample.models.Property
+import com.styledictionaryexample.util.StringHelper
+import com.styledictionaryexample.util.StyleDictionaryHelper
 
 /**
  * A fragment representing a single Icon detail screen.

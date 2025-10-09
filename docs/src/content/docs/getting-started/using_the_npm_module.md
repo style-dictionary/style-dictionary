@@ -97,7 +97,7 @@ await Promise.all(
 );
 ```
 
-The [multi-brand-multi-platform example](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/multi-brand-multi-platform) uses this method.
+The [multi-brand-multi-platform example](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/multi-brand-multi-platform) uses this method.
 
 ---
 

@@ -2,11 +2,11 @@
 title: Built-in formats
 ---
 
-These are the formats included in Style Dictionary by default, pulled from [lib/common/formats.js](https://github.com/amzn/style-dictionary/blob/main/lib/common/formats.js)
+These are the formats included in Style Dictionary by default, pulled from [lib/common/formats.js](https://github.com/style-dictionary/style-dictionary/blob/main/lib/common/formats.js)
 
-Want a format? [You can request it here](https://github.com/amzn/style-dictionary/issues).
+Want a format? [You can request it here](https://github.com/style-dictionary/style-dictionary/issues).
 
-You created a format and think it should be included? [Send us a PR](https://github.com/amzn/style-dictionary/pulls).
+You created a format and think it should be included? [Send us a PR](https://github.com/style-dictionary/style-dictionary/pulls).
 
 ### css/variables
 

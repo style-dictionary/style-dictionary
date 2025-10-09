@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/icon_list"
-    android:name="com.amazon.styledictionaryexample.IconListFragment"
+    android:name="com.styledictionaryexample.IconListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.amazon.styledictionaryexample.icon.IconListActivity"
+    tools:context="com.styledictionaryexample.icon.IconListActivity"
     tools:listitem="@layout/icon_list_content" />

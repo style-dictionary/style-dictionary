@@ -11,5 +11,5 @@
     android:paddingTop="0dp"
     android:paddingBottom="@dimen/size_padding_medium"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.amazon.styledictionaryexample.color.BaseColorActivity"
+    tools:context="com.styledictionaryexample.color.BaseColorActivity"
     tools:listitem="@layout/base_color_list_content" />

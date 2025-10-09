@@ -3,5 +3,5 @@
     android:id="@+id/icon_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.amazon.styledictionaryexample.icon.IconDetailActivity"
+    tools:context="com.styledictionaryexample.icon.IconDetailActivity"
     tools:ignore="MergeRootFrame" />

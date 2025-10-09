@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample.models
+package com.styledictionaryexample.models
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 

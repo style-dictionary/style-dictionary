@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.amazon.styledictionaryexample.color.ColorsActivity">
+    tools:context="com.styledictionaryexample.color.ColorsActivity">
 
     <LinearLayout
         android:orientation="vertical"

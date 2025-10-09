@@ -69,7 +69,7 @@ For any design tokens you wish to output, the "value" attribute is required. Thi
 | name       | String (optional)  | Usually the name for a design token is generated with a [name transform](/reference/hooks/transforms#transform-types), but you can write your own if you choose. By default Style Dictionary will add a default name which is the key of the design token object. |
 | attributes | Object (optional)  | Extra information about the design token you want to include. [Attribute transforms](/reference/hooks/transforms#transform-types) will modify this object so be careful                                                                                           |
 
-You can add any attributes or data you want in a design token and Style Dictionary will pass it along to transforms and formats. For example, you could add a `deprecated` flag like in [this example](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/tokens-deprecation). Other things you can do is add documentation information about each design token or information about color contrast.
+You can add any attributes or data you want in a design token and Style Dictionary will pass it along to transforms and formats. For example, you could add a `deprecated` flag like in [this example](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/tokens-deprecation). Other things you can do is add documentation information about each design token or information about color contrast.
 
 ### Default design token metadata
 
@@ -146,7 +146,7 @@ You can reference (alias) existing values by using the dot-notation object path 
 }
 ```
 
-See more in the advanced [referencing-aliasing example](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/referencing_aliasing).
+See more in the advanced [referencing-aliasing example](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/referencing_aliasing).
 
 ---
 
@@ -309,7 +309,7 @@ export default Object.keys(baseColors).reduce((ret, color) => {
 }, {});
 ```
 
-Take a look at the [this example](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/node-modules-as-config-and-properties) if you want to see a more in-depth example of using JavaScript files as input.
+Take a look at the [this example](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/node-modules-as-config-and-properties) if you want to see a more in-depth example of using JavaScript files as input.
 
 ### Custom file parsers
 
@@ -328,9 +328,9 @@ StyleDictionary.registerParser({
 
 For more information, [read the parsers docs](/reference/hooks/parsers).
 
-[Here is a complete custom file parser example](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/custom-parser)
+[Here is a complete custom file parser example](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/custom-parser)
 
-[yaml-tokens example](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/yaml-tokens)
+[yaml-tokens example](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/yaml-tokens)
 
 ---
 

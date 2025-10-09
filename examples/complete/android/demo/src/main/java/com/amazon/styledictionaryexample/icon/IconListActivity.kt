@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample.icon
+package com.styledictionaryexample.icon
 
 import android.content.Intent
 import android.graphics.Typeface
@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.amazon.styledictionaryexample.BaseActivity
-import com.amazon.styledictionaryexample.R
-import com.amazon.styledictionaryexample.models.Property
-import com.amazon.styledictionaryexample.util.StringHelper
-import com.amazon.styledictionaryexample.util.StyleDictionaryHelper
+import com.styledictionaryexample.BaseActivity
+import com.styledictionaryexample.R
+import com.styledictionaryexample.models.Property
+import com.styledictionaryexample.util.StringHelper
+import com.styledictionaryexample.util.StyleDictionaryHelper
 import java.util.*
 
 /**

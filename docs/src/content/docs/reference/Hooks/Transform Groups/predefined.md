@@ -4,7 +4,7 @@ title: Built-in Transform Groups
 
 :::tip
 You can find the source code of the built-in transforms here:
-[lib/common/transformGroups.js](https://github.com/amzn/style-dictionary/blob/main/lib/common/transformGroups.js)
+[lib/common/transformGroups.js](https://github.com/style-dictionary/style-dictionary/blob/main/lib/common/transformGroups.js)
 :::
 
 ### web

@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample.color
+package com.styledictionaryexample.color
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.amazon.styledictionaryexample.BaseActivity
-import com.amazon.styledictionaryexample.R
-import com.amazon.styledictionaryexample.models.Property
-import com.amazon.styledictionaryexample.util.StyleDictionaryHelper
+import com.styledictionaryexample.BaseActivity
+import com.styledictionaryexample.R
+import com.styledictionaryexample.models.Property
+import com.styledictionaryexample.util.StyleDictionaryHelper
 import java.util.*
 
 class BackgroundColorActivity : BaseActivity() {

@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample.util
+package com.styledictionaryexample.util
 
 object StringHelper {
   fun nameToDisplay(str: String): String {

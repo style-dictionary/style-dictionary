@@ -1,8 +1,8 @@
-package com.amazon.styledictionaryexample.util
+package com.styledictionaryexample.util
 
 import android.content.Context
-import com.amazon.styledictionaryexample.models.Property
-import com.amazon.styledictionaryexample.models.StyleDictionaryNode
+import com.styledictionaryexample.models.Property
+import com.styledictionaryexample.models.StyleDictionaryNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule
 import org.json.JSONException

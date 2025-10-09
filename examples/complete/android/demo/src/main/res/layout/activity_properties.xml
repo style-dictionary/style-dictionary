@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_background_base"
-    tools:context="com.amazon.styledictionaryexample.property.PropertiesActivity">
+    tools:context="com.styledictionaryexample.property.PropertiesActivity">
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/activity_properties_list_fragment"
-        android:name="com.amazon.styledictionaryexample.property.PropertyFragment" />
+        android:name="com.styledictionaryexample.property.PropertyFragment" />
 </RelativeLayout>

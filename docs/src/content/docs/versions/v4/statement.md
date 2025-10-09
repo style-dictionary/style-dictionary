@@ -5,12 +5,12 @@ sidebar:
   label: Statement
 ---
 
-In May 2021, we started [an issue / RFC, "What would you like to see in Style Dictionary 4.0?"](https://github.com/amzn/style-dictionary/issues/643) to gather feedback on what the community would like to see.
+In May 2021, we started [an issue / RFC, "What would you like to see in Style Dictionary 4.0?"](https://github.com/style-dictionary/style-dictionary/issues/643) to gather feedback on what the community would like to see.
 Fortunately, in August 2023, the folks at [Tokens Studio](https://tokens.studio/) contacted us about co-maintaining this project, and leading the v4 release (and beyond)!
 
 We have started working on the biggest and most important changes, like migrating to ESM, making the library browser-compatible out of the box, and supporting asynchronicity in Style Dictionary's various APIs. There will be multiple prereleases to battle-test these changes before a final v4.0 is released.
 
-You can follow [this roadmap board](https://github.com/orgs/amzn/projects/4/views/1?layout=board) to keep an eye on the developments for v4.0, we will also keep adding to this board when we encounter changes we'd like to see in v4.0 that would entail a breaking change. Absence of something in this roadmap does not mean we don't see value in it, but rather that it could also be added in a (non-breaking) minor release within v4.x.x.
+You can follow [this roadmap board](https://github.com/orgs/style-dictionary/projects/4/views/1?layout=board) to keep an eye on the developments for v4.0, we will also keep adding to this board when we encounter changes we'd like to see in v4.0 that would entail a breaking change. Absence of something in this roadmap does not mean we don't see value in it, but rather that it could also be added in a (non-breaking) minor release within v4.x.x.
 
 ## From the folks at Tokens Studio
 
@@ -28,4 +28,4 @@ We are very open to feedback and collaboration, feel free to reach out to us in 
 
 The prereleases will contain breaking changes, so it's important to read the list of changes since v3 if you're looking to migrate.
 
-You can find the list of changes in [our changelog on the v4 branch](https://github.com/amzn/style-dictionary/blob/main/CHANGELOG.md)
+You can find the list of changes in [our changelog on the v4 branch](https://github.com/style-dictionary/style-dictionary/blob/main/CHANGELOG.md)

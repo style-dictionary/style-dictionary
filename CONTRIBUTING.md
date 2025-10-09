@@ -64,7 +64,7 @@ If you are adding a new transform, action, or format: please add new unit tests.
 
 We use [Astro](https://astro.build/) to transform the markdown files into a documentation website. To preview it locally, run `npm run docs:start`.
 
-[issues]: https://github.com/amzn/style-dictionary/issues
-[license]: https://github.com/amzn/style-dictionary/blob/main/LICENSE
+[issues]: https://github.com/style-dictionary/style-dictionary/issues
+[license]: https://github.com/style-dictionary/style-dictionary/blob/main/LICENSE
 [cla]: http://en.wikipedia.org/wiki/Contributor_License_Agreement
-[eslint]: https://github.com/amzn/style-dictionary/blob/main/eslint.config.js
+[eslint]: https://github.com/style-dictionary/style-dictionary/blob/main/eslint.config.js

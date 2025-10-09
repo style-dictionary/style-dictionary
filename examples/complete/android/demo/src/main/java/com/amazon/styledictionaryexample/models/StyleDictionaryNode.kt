@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample.models
+package com.styledictionaryexample.models
 
 data class StyleDictionaryNode(
   val name: String,

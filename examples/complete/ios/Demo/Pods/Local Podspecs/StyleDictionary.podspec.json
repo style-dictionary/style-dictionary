@@ -9,7 +9,7 @@
     "file": "LICENSE"
   },
   "authors": {
-    "Danny Banks": "djb@amazon.com"
+    "Danny Banks": "dbanks.design@gmail.com"
   },
   "source": {
     "git": "",
@@ -21,12 +21,7 @@
   "source_files": "ios/Classes/**/*.{h,m}",
   "public_header_files": "ios/Classes/**/*.h",
   "resource_bundles": {
-    "StyleDictionary": [
-      "assets/**/*"
-    ]
+    "StyleDictionary": ["assets/**/*"]
   },
-  "frameworks": [
-    "UIKit",
-    "QuartzCore"
-  ]
+  "frameworks": ["UIKit", "QuartzCore"]
 }

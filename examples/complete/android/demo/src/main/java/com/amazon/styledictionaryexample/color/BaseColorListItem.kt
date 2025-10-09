@@ -1,6 +1,6 @@
-package com.amazon.styledictionaryexample.color
+package com.styledictionaryexample.color
 
-import com.amazon.styledictionaryexample.models.Property
+import com.styledictionaryexample.models.Property
 
 interface BaseColorListItem {
   val isHeader: Boolean

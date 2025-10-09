@@ -6,7 +6,6 @@
     "style dictionary",
     "style",
     "dictionary",
-    "amazon",
     "css",
     "design",
     "tokens",
@@ -97,21 +96,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/amzn/style-dictionary.git"
+    "url": "git://github.com/style-dictionary/style-dictionary.git"
   },
   "author": "Style Dictionary",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/amzn/style-dictionary/issues"
+    "url": "https://github.com/style-dictionary/style-dictionary/issues"
   },
   "contributors": [
     "Yuliya Baran <baranyu@amazon.com>",
     "Charles Dorner <dornerc@amazon.com>",
     "Dustin Boudreau <boudrd@amazon.com>",
-    "Danny Banks <djb@amazon.com>",
+    "Danny Banks <dbanks.design@gmail.com>",
     "Joren Broekema <joren.broekema@gmail.com>"
   ],
-  "homepage": "https://github.com/amzn/style-dictionary",
+  "homepage": "https://github.com/style-dictionary/style-dictionary",
   "overrides": {
     "tmp": "0.2.5"
   },

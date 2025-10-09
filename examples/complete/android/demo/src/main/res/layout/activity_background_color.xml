@@ -7,5 +7,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.amazon.styledictionaryexample.color.BackgroundColorActivity"
+    tools:context="com.styledictionaryexample.color.BackgroundColorActivity"
     tools:listitem="@layout/icon_list_content" />

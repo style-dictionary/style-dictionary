@@ -20,13 +20,13 @@ export default {
     'Export your Design Tokens to any platform. iOS, Android, CSS, JS, HTML, sketch files, style documentation, or anything you can think of. Forward-compatible with Design Token Community Group spec.',
   logo: { src: './src/assets/logo.png', alt: 'Style-Dictionary logo, Pascal the chameleon.' },
   editLink: {
-    baseUrl: 'https://github.com/amzn/style-dictionary/edit/main/docs',
+    baseUrl: 'https://github.com/style-dictionary/style-dictionary/edit/main/docs',
   },
   favicon: '/favicon.png',
   social: [
     {
       icon: 'github',
-      href: 'https://github.com/amzn/style-dictionary',
+      href: 'https://github.com/style-dictionary/style-dictionary',
       label: 'Github',
     },
     {
@@ -52,22 +52,18 @@ export default {
       items: [
         {
           label: 'v3',
-          items: [
-            { label: 'Documentation', link: 'https://v3.styledictionary.com' },
-          ]
+          items: [{ label: 'Documentation', link: 'https://v3.styledictionary.com' }],
         },
         {
           label: 'v4',
           items: [
             { label: 'Migration Guidelines', link: '/versions/v4/migration' },
             { label: 'Statement', link: '/versions/v4/statement' },
-          ]
+          ],
         },
         {
           label: 'v5',
-          items: [
-            { label: 'Migration Guidelines', link: '/versions/v5/migration' },
-          ]
+          items: [{ label: 'Migration Guidelines', link: '/versions/v5/migration' }],
         },
       ],
     },

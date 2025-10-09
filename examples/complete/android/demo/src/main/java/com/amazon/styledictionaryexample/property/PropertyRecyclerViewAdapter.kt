@@ -1,13 +1,13 @@
-package com.amazon.styledictionaryexample.property
+package com.styledictionaryexample.property
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.amazon.styledictionaryexample.R
-import com.amazon.styledictionaryexample.models.StyleDictionaryNode
-import com.amazon.styledictionaryexample.property.PropertyFragment.OnListFragmentInteractionListener
+import com.styledictionaryexample.R
+import com.styledictionaryexample.models.StyleDictionaryNode
+import com.styledictionaryexample.property.PropertyFragment.OnListFragmentInteractionListener
 
 /**
  * [RecyclerView.Adapter] that can display a [StyleDictionaryNode] and makes a call to the

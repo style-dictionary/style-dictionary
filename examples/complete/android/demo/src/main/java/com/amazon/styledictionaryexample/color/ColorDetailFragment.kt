@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample.color
+package com.styledictionaryexample.color
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.amazon.styledictionaryexample.R
-import com.amazon.styledictionaryexample.models.Property
-import com.amazon.styledictionaryexample.property.PropertyDetailActivity
-import com.amazon.styledictionaryexample.util.StringHelper
-import com.amazon.styledictionaryexample.util.StyleDictionaryHelper
+import com.styledictionaryexample.R
+import com.styledictionaryexample.models.Property
+import com.styledictionaryexample.property.PropertyDetailActivity
+import com.styledictionaryexample.util.StringHelper
+import com.styledictionaryexample.util.StyleDictionaryHelper
 
 class ColorDetailFragment : Fragment() {
   private var property: Property? = null

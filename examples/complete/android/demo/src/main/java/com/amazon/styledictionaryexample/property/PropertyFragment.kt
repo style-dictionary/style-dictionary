@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample.property
+package com.styledictionaryexample.property
 
 import android.content.Context
 import android.os.Bundle
@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.amazon.styledictionaryexample.R
-import com.amazon.styledictionaryexample.models.StyleDictionaryNode
-import com.amazon.styledictionaryexample.property.PropertyFragment.OnListFragmentInteractionListener
-import com.amazon.styledictionaryexample.util.StyleDictionaryHelper
+import com.styledictionaryexample.R
+import com.styledictionaryexample.models.StyleDictionaryNode
+import com.styledictionaryexample.property.PropertyFragment.OnListFragmentInteractionListener
+import com.styledictionaryexample.util.StyleDictionaryHelper
 import java.util.*
 
 /**

@@ -5,7 +5,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.amazon.styledictionaryexample"
+        applicationId "com.styledictionaryexample"
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1

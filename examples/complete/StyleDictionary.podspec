@@ -8,7 +8,7 @@ An example StyleDictionary cocoapod and example app.
                        DESC
   s.homepage         = 'homepage'
   s.license          = { :type => 'Apache-2.0', :file => 'LICENSE' }
-  s.author           = { 'Danny Banks' => 'djb@amazon.com' }
+  s.author           = { 'Danny Banks' => 'dbanks.design@gmail.com' }
   s.source           = { :git => '', :tag => s.version.to_s }
   s.platform = :ios
   s.source_files = 'ios/Classes/**/*.{h,m}'

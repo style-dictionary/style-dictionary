@@ -83,5 +83,5 @@ export default {
 
 ## Parser examples
 
-- [More in-depth custom parser example](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/custom-parser)
-- [Using custom parsers to support YAML design token files](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/yaml-tokens)
+- [More in-depth custom parser example](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/custom-parser)
+- [Using custom parsers to support YAML design token files](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/yaml-tokens)

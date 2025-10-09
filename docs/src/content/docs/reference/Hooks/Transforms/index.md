@@ -136,4 +136,4 @@ Combined with the following tokens:
 Due to `token.darken` being a property that uses a reference, we need the ability to defer its transformation from within the transform,
 since the transform is the only place where we know which token properties the transformation is reliant upon.
 
-If you want to learn more about transitive transforms, take a look at the [transitive transforms example](https://github.com/amzn/style-dictionary/tree/main/examples/advanced/transitive-transforms).
+If you want to learn more about transitive transforms, take a look at the [transitive transforms example](https://github.com/style-dictionary/style-dictionary/tree/main/examples/advanced/transitive-transforms).

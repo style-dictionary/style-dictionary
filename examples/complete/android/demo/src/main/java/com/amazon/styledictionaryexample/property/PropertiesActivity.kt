@@ -1,15 +1,15 @@
-package com.amazon.styledictionaryexample.property
+package com.styledictionaryexample.property
 
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Slide
 import android.view.Gravity
 import androidx.fragment.app.Fragment
-import com.amazon.styledictionaryexample.BaseActivity
-import com.amazon.styledictionaryexample.R
-import com.amazon.styledictionaryexample.models.StyleDictionaryNode
-import com.amazon.styledictionaryexample.property.PropertyFragment.OnListFragmentInteractionListener
-import com.amazon.styledictionaryexample.util.StyleDictionaryHelper
+import com.styledictionaryexample.BaseActivity
+import com.styledictionaryexample.R
+import com.styledictionaryexample.models.StyleDictionaryNode
+import com.styledictionaryexample.property.PropertyFragment.OnListFragmentInteractionListener
+import com.styledictionaryexample.util.StyleDictionaryHelper
 import java.util.*
 
 class PropertiesActivity : BaseActivity(), OnListFragmentInteractionListener {

@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample
+package com.styledictionaryexample
 
 import android.content.Intent
 import android.view.MenuItem

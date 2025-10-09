@@ -1,4 +1,4 @@
-package com.amazon.styledictionaryexample;
+package com.styledictionaryexample;
 
 import org.junit.Test;
 

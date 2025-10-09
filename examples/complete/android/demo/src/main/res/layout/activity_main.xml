@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/size_padding_medium"
     android:paddingTop="@dimen/size_padding_medium"
     android:paddingBottom="@dimen/size_padding_medium"
-    tools:context="com.amazon.styledictionaryexample.MainActivity">
+    tools:context="com.styledictionaryexample.MainActivity">
 
     <LinearLayout
         android:orientation="vertical"

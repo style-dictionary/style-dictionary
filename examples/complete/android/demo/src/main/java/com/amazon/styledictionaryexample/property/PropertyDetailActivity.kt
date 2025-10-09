@@ -1,11 +1,11 @@
-package com.amazon.styledictionaryexample.property
+package com.styledictionaryexample.property
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.amazon.styledictionaryexample.BaseActivity
-import com.amazon.styledictionaryexample.R
-import com.amazon.styledictionaryexample.color.ColorDetailFragment
-import com.amazon.styledictionaryexample.icon.IconDetailFragment
+import com.styledictionaryexample.BaseActivity
+import com.styledictionaryexample.R
+import com.styledictionaryexample.color.ColorDetailFragment
+import com.styledictionaryexample.icon.IconDetailFragment
 
 class PropertyDetailActivity : BaseActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
