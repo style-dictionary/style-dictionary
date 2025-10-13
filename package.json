@@ -110,7 +110,7 @@
     "Danny Banks <dbanks.design@gmail.com>",
     "Joren Broekema <joren.broekema@gmail.com>"
   ],
-  "homepage": "https://github.com/style-dictionary/style-dictionary",
+  "homepage": "https://styledictionary.com",
   "overrides": {
     "tmp": "0.2.5"
   },
