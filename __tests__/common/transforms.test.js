@@ -1149,25 +1149,23 @@ describe('common', () => {
 
     describe(sizeComposeDp, () => {
       it('should work', () => {
-        const value = transforms[sizeComposeDp].transform(
-          {
-            value: '12px',
-          },
-          {},
-          {},
-        );
-        const value2 = transforms[sizeComposeDp].transform(
-          {
-            value: '12',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('12.00.dp');
-        expect(value2).to.equal('12.00.dp');
+        const unitlessValue = runTransform(sizeComposeDp, { value: '12' });
+        const pxValue = runTransform(sizeComposeDp, { value: '12px' });
+        const remValue = runTransform(sizeComposeDp, { value: '12rem' });
+
+        expect(unitlessValue).to.equal('12.00.dp');
+        expect(pxValue).to.equal('12.00.dp');
+        expect(remValue).to.equal('12.00.dp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeDp, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeComposeDp, { value: { value: 12, unit: 'rem' } });
+
+        expect(pxValue).to.equal('12.00.dp');
+        expect(remValue).to.equal('12.00.dp');
       });
       it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeDp].transform({ value: 'a' })).to.throw();
+        expect(() => runTransform(sizeComposeDp, { value: 'a' })).to.throw();
       });
     });
 
