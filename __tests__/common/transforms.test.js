@@ -1063,6 +1063,45 @@ describe('common', () => {
       });
     });
 
+    describe(sizeComposeRemToDp, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeComposeRemToDp, { value: '1' });
+        const pxValue = runTransform(sizeComposeRemToDp, { value: '1px' });
+        const remValue = runTransform(sizeComposeRemToDp, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16.00.dp');
+        expect(pxValue).to.equal('16.00.dp');
+        expect(remValue).to.equal('16.00.dp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeRemToDp, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeComposeRemToDp, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16.00.dp');
+        expect(remValue).to.equal('16.00.dp');
+      });
+      it('converts rem to dp using custom base font', () => {
+        const config = { basePxFontSize: 14 };
+        const value = runTransform(sizeComposeRemToDp, { value: 1 }, config);
+        const pxValue = runTransform(
+          sizeComposeRemToDp,
+          { value: { value: 1, unit: 'px' } },
+          config,
+        );
+        const remValue = runTransform(
+          sizeComposeRemToDp,
+          { value: { value: 1, unit: 'rem' } },
+          config,
+        );
+
+        expect(value).to.equal('14.00.dp');
+        expect(pxValue).to.deep.equal('14.00.dp'); // expect px value to not be scaled
+        expect(remValue).to.deep.equal('14.00.dp');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeComposeRemToDp, { value: 'a' })).to.throw();
+      });
+    });
     describe(sizeComposeSp, () => {
       it('should work', () => {
         const value = transforms[sizeComposeSp].transform(
@@ -1124,30 +1163,6 @@ describe('common', () => {
       });
       it('should throw an error if prop value is Nan', () => {
         expect(() => transforms[sizeComposeEm].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizeComposeRemToDp, () => {
-      it('should work', () => {
-        const value = transforms[sizeComposeRemToDp].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00.dp');
-      });
-      it('converts rem to dp using custom base font', () => {
-        const value = transforms[sizeComposeRemToDp].transform(
-          { value: '1' },
-          { basePxFontSize: 14 },
-          {},
-        );
-        expect(value).to.equal('14.00.dp');
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeRemToDp].transform({ value: 'a' }, {}, {})).to.throw();
       });
     });
 
