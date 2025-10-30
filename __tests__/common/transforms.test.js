@@ -1157,8 +1157,8 @@ describe('common', () => {
           ).to.equal(value);
         });
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => transforms[sizeRem].transform({ value: 'a' }, {}, {})).to.throw();
       });
 
       it('should not change the unit to rem if the value already has a unit', () => {
