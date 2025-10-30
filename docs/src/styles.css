@@ -39,10 +39,6 @@ table code {
   max-width: 900px;
 }
 
-a {
-  display: inline-block;
-}
-
 @media (min-width: 77rem) {
   [data-has-sidebar][data-has-toc] .main-pane {
     width: auto;
