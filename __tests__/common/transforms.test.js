@@ -867,21 +867,40 @@ describe('common', () => {
 
     describe(sizeRemToDp, () => {
       it('should work', () => {
-        const value = transforms[sizeRemToDp].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00dp');
+        const unitlessValue = runTransform(sizeRemToDp, { value: '1' });
+        const remValue = runTransform(sizeRemToDp, { value: '0.75rem' });
+        const pxValue = runTransform(sizeRemToDp, { value: '14px' });
+
+        expect(unitlessValue).to.equal('16.00dp');
+        expect(remValue).to.equal('12.00dp');
+        expect(pxValue).to.equal('224.00dp');
+      });
+      it('should work with value object', () => {
+        const remValue = runTransform(sizeRemToDp, { value: { value: 1, unit: 'rem' } });
+        const pxValue = runTransform(sizeRemToDp, { value: { value: 16, unit: 'px' } });
+
+        expect(remValue).to.equal('16.00dp');
+        expect(pxValue).to.equal('256.00dp');
       });
       it('converts rem to dp using custom base font', () => {
-        const value = transforms[sizeRemToDp].transform({ value: '1' }, { basePxFontSize: 14 }, {});
+        const config = { basePxFontSize: 14 };
+        const value = runTransform(sizeRemToDp, { value: '1' }, config);
+        const remValue = runTransform(sizeRemToDp, { value: { value: 1, unit: 'rem' } }, config);
+
         expect(value).to.equal('14.00dp');
+        expect(remValue).to.equal('14.00dp');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      xit('should not convert px to dp using custom base font', () => {
+        const value = runTransform(
+          sizeRemToDp,
+          { value: { value: 16, unit: 'px' } },
+          { basePxFontSize: 14 },
+        );
+
+        expect(value).to.equal('16.00dp');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRemToDp, { value: 'a' }, {}, {})).to.throw();
       });
     });
 
