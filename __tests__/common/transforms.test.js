@@ -844,7 +844,7 @@ describe('common', () => {
         expect(value).to.equal('14.00sp');
       });
       it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+        expect(() => transforms[sizeRemToSp].transform({ value: 'a' }, {}, {})).to.throw();
       });
     });
 
@@ -863,8 +863,8 @@ describe('common', () => {
         const value = transforms[sizeRemToDp].transform({ value: '1' }, { basePxFontSize: 14 }, {});
         expect(value).to.equal('14.00dp');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => transforms[sizeRemToDp].transform({ value: 'a' }, {}, {})).to.throw();
       });
     });
 
@@ -889,8 +889,8 @@ describe('common', () => {
         );
         expect(value).to.equal('-10px');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => transforms[sizePx].transform({ value: 'a' }, {}, {})).to.throw();
       });
     });
 
@@ -909,8 +909,8 @@ describe('common', () => {
         const value = transforms[sizeRemToPt].transform({ value: '1' }, { basePxFontSize: 14 }, {});
         expect(value).to.equal('14.00f');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => transforms[sizeRemToPt].transform({ value: 'a' }, {}, {})).to.throw();
       });
     });
 
@@ -1047,7 +1047,7 @@ describe('common', () => {
       });
       it('should throw an error if prop value is Nan', () => {
         expect(() =>
-          transforms['size/rem/remToCGFloat'].transform({ value: 'a' }, {}, {}),
+          transforms[sizeSwiftRemToCGFloat].transform({ value: 'a' }, {}, {}),
         ).to.throw();
       });
     });
@@ -1068,28 +1068,28 @@ describe('common', () => {
         expect(value).to.equal('14px');
       });
       it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+        expect(() => transforms[sizeRemToPx].transform({ value: 'a' }, {}, {})).to.throw();
       });
     });
 
     describe(sizePxToRem, () => {
-      const pxToRemtransform = transforms[sizePxToRem].transform;
+      const pxToRemTransform = transforms[sizePxToRem].transform;
 
       ['12', '12px', '12rem'].forEach((value) => {
         it(`ignoring unit, scales "${value}" to rem`, () => {
-          expect(pxToRemtransform({ value }, {}, {})).to.equal('0.75rem');
+          expect(pxToRemTransform({ value }, {}, {})).to.equal('0.75rem');
         });
       });
       it('converts pixel to rem using custom base font', () => {
-        expect(pxToRemtransform({ value: '14px' }, { basePxFontSize: 14 }, {})).to.equal('1rem');
+        expect(pxToRemTransform({ value: '14px' }, { basePxFontSize: 14 }, {})).to.equal('1rem');
       });
       ['0', '0px', '0rem'].forEach((value) => {
         it(`zero value "${value}" is returned without a unit`, () => {
-          expect(pxToRemtransform({ value }, {}, {})).to.equal('0');
+          expect(pxToRemTransform({ value }, {}, {})).to.equal('0');
         });
       });
       it('should throw an error if prop value is Nan', () => {
-        expect(() => pxToRemtransform({ value: 'a' }, {}, {})).to.throw();
+        expect(() => pxToRemTransform({ value: 'a' }, {}, {})).to.throw();
       });
     });
 
