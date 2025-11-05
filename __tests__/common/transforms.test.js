@@ -839,21 +839,29 @@ describe('common', () => {
 
     describe(sizeRemToSp, () => {
       it('should work', () => {
-        const value = transforms[sizeRemToSp].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00sp');
+        const unitlessValue = runTransform(sizeRemToSp, { value: '1' });
+        const unitlessFloatingValue = runTransform(sizeRemToSp, { value: 0.75 });
+
+        expect(unitlessValue).to.equal('16.00sp');
+        expect(unitlessFloatingValue).to.equal('12.00sp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeRemToSp, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeRemToSp, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16.00sp');
+        expect(remValue).to.equal('16.00sp');
       });
       it('converts rem to sp using custom base font', () => {
-        const value = transforms[sizeRemToSp].transform({ value: '1' }, { basePxFontSize: 14 }, {});
-        expect(value).to.equal('14.00sp');
+        const config = { basePxFontSize: 14 };
+        const unitlessValue = runTransform(sizeRemToSp, { value: '1' }, config);
+        const remValue = runTransform(sizeRemToSp, { value: { value: 1, unit: 'rem' } }, config);
+
+        expect(unitlessValue).to.equal('14.00sp');
+        expect(remValue).to.equal('14.00sp');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRemToSp, { value: 'a' })).to.throw();
       });
     });
 
