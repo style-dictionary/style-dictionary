@@ -779,25 +779,23 @@ describe('common', () => {
 
     describe(sizeDp, () => {
       it('should work', () => {
-        const value = transforms[sizeDp].transform(
-          {
-            value: '12px',
-          },
-          {},
-          {},
-        );
-        const value2 = transforms[sizeDp].transform(
-          {
-            value: '12',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('12.00dp');
-        expect(value2).to.equal('12.00dp');
+        const unitlessValue = runTransform(sizeDp, { value: '12' });
+        const pxValue = runTransform(sizeDp, { value: '12px' });
+        const remValue = runTransform(sizeDp, { value: '12rem' });
+
+        expect(unitlessValue).to.equal('12.00dp');
+        expect(pxValue).to.equal('12.00dp');
+        expect(remValue).to.equal('12.00dp');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' })).to.throw();
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeDp, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeDp, { value: { value: 12, unit: 'rem' } });
+
+        expect(pxValue).to.equal('12.00dp');
+        expect(remValue).to.equal('12.00dp');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeDp, { value: 'a' })).to.throw();
       });
     });
 
