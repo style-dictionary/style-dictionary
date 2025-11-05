@@ -3,8 +3,8 @@
     "padding": {
       "small": { "value": 0.5, "type": "dimension" },
       "medium": { "value": 1, "type": "dimension" },
-      "large": { "value": 1, "type": "dimension" },
-      "xl": { "value": 1, "type": "dimension" }
+      "large": { "value": { "value": 1, "unit": "rem" }, "type": "dimension" },
+      "xl": { "value": { "value": 1, "unit": "rem" }, "type": "dimension" }
     }
   }
 }

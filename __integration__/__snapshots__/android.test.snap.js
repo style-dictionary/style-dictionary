@@ -162,6 +162,8 @@ snapshots["integration android android/resources should match snapshot"] =
   <color name="color_font_warning">#ff601700</color>
   <color name="color_font_success">#ff08422f</color>
   <dimen name="size_border_radius_large">480.00dp</dimen>
+  <dimen name="size_border_radius_medium">384.00dp</dimen>
+  <dimen name="size_border_radius_small">256.00dp</dimen>
   <dimen name="size_font_small">12.00sp</dimen>
   <dimen name="size_font_medium">16.00sp</dimen>
   <dimen name="size_font_large">24.00sp</dimen>
@@ -334,6 +336,8 @@ snapshots["integration android android/resources with references should match sn
   <color name="color_font_warning">@color/color_core_orange_1000</color>
   <color name="color_font_success">@color/color_core_green_1000</color>
   <dimen name="size_border_radius_large">480.00dp</dimen>
+  <dimen name="size_border_radius_medium">384.00dp</dimen>
+  <dimen name="size_border_radius_small">256.00dp</dimen>
   <dimen name="size_font_small">12.00sp</dimen>
   <dimen name="size_font_medium">16.00sp</dimen>
   <dimen name="size_font_large">24.00sp</dimen>

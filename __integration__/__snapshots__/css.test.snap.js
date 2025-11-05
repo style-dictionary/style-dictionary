@@ -164,6 +164,8 @@ snapshots["integration css css/variables should match snapshot"] =
     --color-font-warning: #601700;
     --color-font-success: #08422f;
     --size-border-radius-large: 30rem;
+    --size-border-radius-medium: 1.5rem;
+    --size-border-radius-small: 16rem;
     --size-font-small: 0.75rem;
     --size-font-medium: 1rem;
     --size-font-large: 1.5rem;
@@ -317,6 +319,8 @@ snapshots["integration css css/variables with references should match snapshot"]
   --color-core-yellow-1000: #542a00;
   --color-core-yellow-1100: #2d1a05;
   --size-border-radius-large: 30rem;
+  --size-border-radius-medium: 1.5rem;
+  --size-border-radius-small: 16rem;
   --size-font-small: 0.75rem;
   --size-font-medium: 1rem;
   --size-font-large: 1.5rem;
@@ -514,6 +518,8 @@ snapshots["integration css css/variables with selector should match snapshot"] =
   --color-font-warning: #601700;
   --color-font-success: #08422f;
   --size-border-radius-large: 30rem;
+  --size-border-radius-medium: 1.5rem;
+  --size-border-radius-small: 16rem;
   --size-font-small: 0.75rem;
   --size-font-medium: 1rem;
   --size-font-large: 1.5rem;
@@ -667,6 +673,8 @@ snapshots["integration css css/variables with referenceFallbacks should match sn
   --color-core-yellow-1000: #542a00;
   --color-core-yellow-1100: #2d1a05;
   --size-border-radius-large: 30rem;
+  --size-border-radius-medium: 1.5rem;
+  --size-border-radius-small: 16rem;
   --size-font-small: 0.75rem;
   --size-font-medium: 1rem;
   --size-font-large: 1.5rem;

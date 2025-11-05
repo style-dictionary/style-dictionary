@@ -1281,6 +1281,22 @@ snapshots["integration ios objective-c ios/singleton.m should match snapshot"] =
           @"type": @"border",
           @"item": @"radius",
           @"subitem": @"large"
+          },
+        @"medium": @{
+          @"value": @384.00f,
+          @"name": @"SizeBorderRadiusMedium",
+          @"category": @"size",
+          @"type": @"border",
+          @"item": @"radius",
+          @"subitem": @"medium"
+          },
+        @"small": @{
+          @"value": @256.00f,
+          @"name": @"SizeBorderRadiusSmall",
+          @"category": @"size",
+          @"type": @"border",
+          @"item": @"radius",
+          @"subitem": @"small"
           }
         }
       },
@@ -1901,6 +1917,8 @@ snapshots["integration ios objective-c ios/macros.h should match snapshot"] =
 #define ColorFontWarning [UIColor colorWithRed:0.376f green:0.090f blue:0.000f alpha:1.000f]
 #define ColorFontSuccess [UIColor colorWithRed:0.031f green:0.259f blue:0.184f alpha:1.000f]
 #define SizeBorderRadiusLarge 480.00f
+#define SizeBorderRadiusMedium 384.00f
+#define SizeBorderRadiusSmall 256.00f
 #define SizeFontSmall 12.00f
 #define SizeFontMedium 16.00f
 #define SizeFontLarge 24.00f
@@ -1924,6 +1942,8 @@ snapshots["integration ios objective-c ios/static.h should match snapshot"] =
 
 
 extern CGFloat const SizeBorderRadiusLarge;
+extern CGFloat const SizeBorderRadiusMedium;
+extern CGFloat const SizeBorderRadiusSmall;
 extern CGFloat const SizeFontSmall;
 extern CGFloat const SizeFontMedium;
 extern CGFloat const SizeFontLarge;
@@ -1947,6 +1967,8 @@ snapshots["integration ios objective-c ios/static.m should match snapshot"] =
 
 
 CGFloat const SizeBorderRadiusLarge = 480.00f;
+CGFloat const SizeBorderRadiusMedium = 384.00f;
+CGFloat const SizeBorderRadiusSmall = 256.00f;
 CGFloat const SizeFontSmall = 12.00f;
 CGFloat const SizeFontMedium = 16.00f;
 CGFloat const SizeFontLarge = 24.00f;

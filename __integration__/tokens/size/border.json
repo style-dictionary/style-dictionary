@@ -2,7 +2,9 @@
   "size": {
     "border": {
       "radius": {
-        "large": { "value": 30, "type": "dimension" }
+        "large": { "value": 30, "type": "dimension" },
+        "medium": { "value": { "value": 24, "unit": "px" }, "type": "dimension" },
+        "small": { "value": { "value": 16, "unit": "rem" }, "type": "dimension" }
       }
     }
   }

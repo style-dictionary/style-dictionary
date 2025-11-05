@@ -1,0 +1,5 @@
+---
+'style-dictionary': minor
+---
+
+sizeRem

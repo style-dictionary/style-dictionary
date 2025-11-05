@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import Color from 'tinycolor2';
-import transforms, { isColor, isDTCGColorObject } from '../../lib/common/transforms.js';
+import transforms, { isColor, getTokenValue, isDTCGColorObject } from '../../lib/common/transforms.js';
 import { transforms as transformNames } from '../../lib/enums/index.js';
 
 const {
@@ -62,6 +62,9 @@ const {
 
 describe('common', () => {
   describe('transforms', () => {
+    const runTransform = (name, token, config = {}, options = {}) =>
+      transforms[name].transform(token, config, options);
+
     describe(nameCamel, () => {
       it('should handle prefix', () => {
         expect(
@@ -203,45 +206,43 @@ describe('common', () => {
       });
     });
 
-    describe('transform', () => {
-      describe(attributeCti, () => {
-        const prop = {
-          path: ['color', 'background', 'button', 'primary', 'active', 'extra'],
-        };
-        const propShort = { path: ['color', 'primary'] };
-        const propOverride = {
-          path: ['button', 'primary', 'border', 'width'],
-          attributes: { category: 'size', component: 'button' },
-        };
+    describe(attributeCti, () => {
+      const prop = {
+        path: ['color', 'background', 'button', 'primary', 'active', 'extra'],
+      };
+      const propShort = { path: ['color', 'primary'] };
+      const propOverride = {
+        path: ['button', 'primary', 'border', 'width'],
+        attributes: { category: 'size', component: 'button' },
+      };
 
-        const attrs = transforms[attributeCti].transform(prop, {}, {});
-        const attrsShort = transforms[attributeCti].transform(propShort, {}, {});
-        const attrsOverride = transforms[attributeCti].transform(propOverride, {}, {});
+      const attrs = transforms[attributeCti].transform(prop, {}, {});
+      const attrsShort = transforms[attributeCti].transform(propShort, {}, {});
+      const attrsOverride = transforms[attributeCti].transform(propOverride, {}, {});
 
-        it('should assign attributes correctly', () => {
-          expect(attrs).eql({
-            category: 'color',
-            type: 'background',
-            item: 'button',
-            subitem: 'primary',
-            state: 'active',
-          });
+      it('should assign attributes correctly', () => {
+        expect(attrs).eql({
+          category: 'color',
+          type: 'background',
+          item: 'button',
+          subitem: 'primary',
+          state: 'active',
         });
+      });
 
-        it('should not assign path props when path is short', () => {
-          expect(attrsShort).eql({
-            category: 'color',
-            type: 'primary',
-          });
+      it('should not assign path props when path is short', () => {
+        expect(attrsShort).eql({
+          category: 'color',
+          type: 'primary',
         });
+      });
 
-        it('should leave other attributes alone', () => {
-          expect(attrsOverride).to.have.property('component', 'button');
-        });
+      it('should leave other attributes alone', () => {
+        expect(attrsOverride).to.have.property('component', 'button');
+      });
 
-        it('should not override previously assigned path attributes', () => {
-          expect(attrsOverride).to.have.property('category', 'size');
-        });
+      it('should not override previously assigned path attributes', () => {
+        expect(attrsOverride).to.have.property('category', 'size');
       });
     });
 
@@ -1009,441 +1010,545 @@ describe('common', () => {
 
     describe(sizeSp, () => {
       it('should work', () => {
-        const value = transforms[sizeSp].transform(
-          {
-            value: '12px',
-          },
-          {},
-          {},
-        );
-        const value2 = transforms[sizeSp].transform(
-          {
-            value: '12',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('12.00sp');
-        expect(value2).to.equal('12.00sp');
+        const unitlessValue = runTransform(sizeSp, { value: '12' });
+        const pxValue = runTransform(sizeSp, { value: '12px' });
+        const remValue = runTransform(sizeSp, { value: '12rem' });
+
+        expect(unitlessValue).to.equal('12.00sp');
+        expect(pxValue).to.equal('12.00sp');
+        expect(remValue).to.equal('12.00sp');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeSp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeSp, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeSp, { value: { value: 12, unit: 'rem' } });
+
+        expect(pxValue).to.equal('12.00sp');
+        expect(remValue).to.equal('12.00sp');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeSp, { value: 'a' })).to.throw();
       });
     });
 
     describe(sizeDp, () => {
       it('should work', () => {
-        const value = transforms[sizeDp].transform(
-          {
-            value: '12px',
-          },
-          {},
-          {},
-        );
-        const value2 = transforms[sizeDp].transform(
-          {
-            value: '12',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('12.00dp');
-        expect(value2).to.equal('12.00dp');
+        const unitlessValue = runTransform(sizeDp, { value: '12' });
+        const pxValue = runTransform(sizeDp, { value: '12px' });
+        const remValue = runTransform(sizeDp, { value: '12rem' });
+
+        expect(unitlessValue).to.equal('12.00dp');
+        expect(pxValue).to.equal('12.00dp');
+        expect(remValue).to.equal('12.00dp');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' })).to.throw();
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeDp, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeDp, { value: { value: 12, unit: 'rem' } });
+
+        expect(pxValue).to.equal('12.00dp');
+        expect(remValue).to.equal('12.00dp');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeDp, { value: 'a' })).to.throw();
       });
     });
 
     describe(sizeObject, () => {
       it('should work', () => {
-        const value = transforms[sizeObject].transform(
-          {
-            value: '1px',
-          },
-          {},
-          {},
-        );
+        const value = runTransform(sizeObject, { value: '1px' });
+
         expect(value.original).to.equal('1px');
         expect(value.number).to.equal(1);
         expect(value.decimal).equal(0.01);
         expect(value.scale).to.equal(16);
       });
+      it('should work with value object using px unit', () => {
+        const pxValue = runTransform(sizeObject, { value: { value: 1, unit: 'px' } });
+
+        expect(pxValue.original).to.deep.equal({ value: 1, unit: 'px' });
+        expect(pxValue.number).to.equal(1);
+        expect(pxValue.decimal).equal(0.01);
+        expect(pxValue.scale).to.equal(16);
+      });
+      it('should work with value object using rem unit', () => {
+        const remValue = runTransform(sizeObject, { value: { value: 1, unit: 'rem' } });
+
+        expect(remValue.original).to.deep.equal({ value: 1, unit: 'rem' });
+        expect(remValue.number).to.equal(1);
+        expect(remValue.decimal).equal(0.01);
+        expect(remValue.scale).to.equal(16);
+      });
       it('should work with custom base font', () => {
-        const value = transforms[sizeObject].transform({ value: '1' }, { basePxFontSize: 14 }, {});
+        const value = runTransform(sizeObject, { value: '1' }, { basePxFontSize: 14 });
+
         expect(value.original).to.equal('1');
         expect(value.number).to.equal(1);
         expect(value.decimal).equal(0.01);
         expect(value.scale).to.equal(14);
       });
       it('should throw an error if prop value is NaN', () => {
-        expect(() => transforms[sizeObject].transform({ value: 'a' }, {}, {})).to.throw();
+        expect(() => runTransform(sizeObject, { value: 'a' })).to.throw();
       });
     });
 
     describe(sizeRemToSp, () => {
       it('should work', () => {
-        const value = transforms[sizeRemToSp].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00sp');
+        const unitlessValue = runTransform(sizeRemToSp, { value: '1' });
+        const unitlessFloatingValue = runTransform(sizeRemToSp, { value: 0.75 });
+
+        expect(unitlessValue).to.equal('16.00sp');
+        expect(unitlessFloatingValue).to.equal('12.00sp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeRemToSp, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeRemToSp, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16.00sp');
+        expect(remValue).to.equal('16.00sp');
       });
       it('converts rem to sp using custom base font', () => {
-        const value = transforms[sizeRemToSp].transform({ value: '1' }, { basePxFontSize: 14 }, {});
-        expect(value).to.equal('14.00sp');
+        const config = { basePxFontSize: 14 };
+        const unitlessValue = runTransform(sizeRemToSp, { value: '1' }, config);
+        const remValue = runTransform(sizeRemToSp, { value: { value: 1, unit: 'rem' } }, config);
+
+        expect(unitlessValue).to.equal('14.00sp');
+        expect(remValue).to.equal('14.00sp');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeRemToSp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRemToSp, { value: 'a' })).to.throw();
       });
     });
 
     describe(sizeRemToDp, () => {
       it('should work', () => {
-        const value = transforms[sizeRemToDp].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00dp');
+        const unitlessValue = runTransform(sizeRemToDp, { value: '1' });
+        const remValue = runTransform(sizeRemToDp, { value: '0.75rem' });
+        const pxValue = runTransform(sizeRemToDp, { value: '14px' });
+
+        expect(unitlessValue).to.equal('16.00dp');
+        expect(remValue).to.equal('12.00dp');
+        expect(pxValue).to.equal('224.00dp');
+      });
+      it('should work with value object', () => {
+        const remValue = runTransform(sizeRemToDp, { value: { value: 1, unit: 'rem' } });
+        const pxValue = runTransform(sizeRemToDp, { value: { value: 16, unit: 'px' } });
+
+        expect(remValue).to.equal('16.00dp');
+        expect(pxValue).to.equal('256.00dp');
       });
       it('converts rem to dp using custom base font', () => {
-        const value = transforms[sizeRemToDp].transform({ value: '1' }, { basePxFontSize: 14 }, {});
+        const config = { basePxFontSize: 14 };
+        const value = runTransform(sizeRemToDp, { value: '1' }, config);
+        const remValue = runTransform(sizeRemToDp, { value: { value: 1, unit: 'rem' } }, config);
+
         expect(value).to.equal('14.00dp');
+        expect(remValue).to.equal('14.00dp');
+      });
+      
+      it('should not convert px to dp using custom base font', () => {
+        const value = runTransform(
+          sizeRemToDp,
+          { value: { value: 16, unit: 'px' } },
+          { basePxFontSize: 14 },
+        );
+
+        expect(value).to.equal('16.00dp');
       });
       it('should throw an error if prop value is NaN', () => {
-        expect(() => transforms[sizeRemToDp].transform({ value: 'a' }, {}, {})).to.throw();
+        expect(() => runTransform(sizeRemToDp, { value: 'a' }, {}, {})).to.throw();
       });
     });
 
     describe(sizePx, () => {
       it('should work', () => {
-        const value = transforms[sizePx].transform(
-          {
-            value: '10',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('10px');
+        const unitlessValue = runTransform(sizePx, { value: '10' });
+        const pxValue = runTransform(sizePx, { value: '10px' });
+        const remValue = runTransform(sizePx, { value: '10rem' });
+
+        expect(unitlessValue).to.equal('10px');
+        expect(pxValue).to.equal('10px');
+        expect(remValue).to.equal('10px'); // value transformation doesn't make sense here
       });
       it('should work for negative values', () => {
-        const value = transforms[sizePx].transform(
-          {
-            value: '-10',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('-10px');
+        const unitlessValue = runTransform(sizePx, { value: '-10' });
+        const pxValue = runTransform(sizePx, { value: '-10px' });
+        const remValue = runTransform(sizePx, { value: '-10rem' });
+
+        expect(unitlessValue).to.equal('-10px');
+        expect(pxValue).to.equal('-10px');
+        expect(remValue).to.equal('-10px');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizePx, { value: { value: 10, unit: 'px' } });
+        const remValue = runTransform(sizePx, { value: { value: 10, unit: 'rem' } });
+
+        expect(pxValue).to.equal('10px');
+        expect(remValue).to.equal('10px'); // value transformation doesn't make sense here
+      });
+      it('should work for negative value objects', () => {
+        const pxValue = runTransform(sizePx, { value: { value: -10, unit: 'px' } });
+        const remValue = runTransform(sizePx, { value: { value: -10, unit: 'rem' } });
+
+        expect(pxValue).to.equal('-10px');
+        expect(remValue).to.equal('-10px'); // value transformation doesn't make sense here
       });
       it('should throw an error if prop value is NaN', () => {
-        expect(() => transforms[sizePx].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizeRemToPt, () => {
-      it('should work', () => {
-        const value = transforms[sizeRemToPt].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00f');
-      });
-      it('converts rem to pt using custom base font', () => {
-        const value = transforms[sizeRemToPt].transform({ value: '1' }, { basePxFontSize: 14 }, {});
-        expect(value).to.equal('14.00f');
-      });
-      it('should throw an error if prop value is NaN', () => {
-        expect(() => transforms[sizeRemToPt].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizeComposeRemToSp, () => {
-      it('should work', () => {
-        const value = transforms[sizeComposeRemToSp].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00.sp');
-      });
-      it('converts rem to sp using custom base font', () => {
-        const value = transforms[sizeComposeRemToSp].transform(
-          { value: '1' },
-          { basePxFontSize: 14 },
-          {},
-        );
-        expect(value).to.equal('14.00.sp');
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeRemToSp].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizeComposeSp, () => {
-      it('should work', () => {
-        const value = transforms[sizeComposeSp].transform(
-          {
-            value: '12px',
-          },
-          {},
-          {},
-        );
-        const value2 = transforms[sizeComposeSp].transform(
-          {
-            value: '12',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('12.00.sp');
-        expect(value2).to.equal('12.00.sp');
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeSp].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizeComposeDp, () => {
-      it('should work', () => {
-        const value = transforms[sizeComposeDp].transform(
-          {
-            value: '12px',
-          },
-          {},
-          {},
-        );
-        const value2 = transforms[sizeComposeDp].transform(
-          {
-            value: '12',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('12.00.dp');
-        expect(value2).to.equal('12.00.dp');
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeDp].transform({ value: 'a' })).to.throw();
-      });
-    });
-
-    describe(sizeComposeEm, () => {
-      it('should work', () => {
-        const value = transforms[sizeComposeEm].transform(
-          {
-            value: '10',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('10.em');
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeEm].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizeComposeRemToDp, () => {
-      it('should work', () => {
-        const value = transforms[sizeComposeRemToDp].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00.dp');
-      });
-      it('converts rem to dp using custom base font', () => {
-        const value = transforms[sizeComposeRemToDp].transform(
-          { value: '1' },
-          { basePxFontSize: 14 },
-          {},
-        );
-        expect(value).to.equal('14.00.dp');
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeRemToDp].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizeSwiftRemToCGFloat, () => {
-      it('should work', () => {
-        const value = transforms[sizeSwiftRemToCGFloat].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('CGFloat(16.00)');
-      });
-      it('converts rem to CGFloat using custom base font', () => {
-        const value = transforms[sizeSwiftRemToCGFloat].transform(
-          { value: '1' },
-          { basePxFontSize: 14 },
-          {},
-        );
-        expect(value).to.equal('CGFloat(14.00)');
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() =>
-          transforms[sizeSwiftRemToCGFloat].transform({ value: 'a' }, {}, {}),
-        ).to.throw();
-      });
-    });
-
-    describe(sizeRemToPx, () => {
-      it('should work', () => {
-        const value = transforms[sizeRemToPx].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16px');
-      });
-      it('converts rem to px using custom base font', () => {
-        const value = transforms[sizeRemToPx].transform({ value: '1' }, { basePxFontSize: 14 }, {});
-        expect(value).to.equal('14px');
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeRemToPx].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizePxToRem, () => {
-      const pxToRemTransform = transforms[sizePxToRem].transform;
-
-      ['12', '12px', '12rem'].forEach((value) => {
-        it(`ignoring unit, scales "${value}" to rem`, () => {
-          expect(pxToRemTransform({ value }, {}, {})).to.equal('0.75rem');
-        });
-      });
-      it('converts pixel to rem using custom base font', () => {
-        expect(pxToRemTransform({ value: '14px' }, { basePxFontSize: 14 }, {})).to.equal('1rem');
-      });
-      ['0', '0px', '0rem'].forEach((value) => {
-        it(`zero value "${value}" is returned without a unit`, () => {
-          expect(pxToRemTransform({ value }, {}, {})).to.equal('0');
-        });
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => pxToRemTransform({ value: 'a' }, {}, {})).to.throw();
+        expect(() => runTransform(sizePx, { value: 'a' })).to.throw();
       });
     });
 
     describe(sizeRem, () => {
       it('should work', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('1rem');
+        const unitlessValue = runTransform(sizeRem, { value: '1' });
+        const pxValue = runTransform(sizeRem, { value: '16px' });
+        const remValue = runTransform(sizeRem, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('1rem');
+        expect(pxValue).to.equal('1rem');
+        expect(remValue).to.equal('1rem');
       });
       it('should work for negative values with unit', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '-1rem',
-          },
-          {},
-          {},
-        );
+        const value = runTransform(sizeRem, { value: '-1rem' });
         expect(value).to.equal('-1rem');
       });
       it('should work for negative values', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '-1',
-          },
-          {},
-          {},
-        );
+        const value = runTransform(sizeRem, { value: '-1' });
         expect(value).to.equal('-1rem');
       });
       it('should work for positive values', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '+1',
-          },
-          {},
-          {},
-        );
+        const value = runTransform(sizeRem, { value: '+1' });
         expect(value).to.equal('1rem');
       });
       it('should work for floating values', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '.5',
-          },
-          {},
-          {},
-        );
+        const value = runTransform(sizeRem, { value: '.5' });
         expect(value).to.equal('0.5rem');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeRem, { value: { value: 16, unit: 'px' } });
+        const remValue = runTransform(sizeRem, { value: { value: 5, unit: 'rem' } });
+
+        expect(pxValue).to.equal('1rem');
+        expect(remValue).to.equal('5rem');
       });
       ['0', 0].forEach((value) => {
         it('zero value is returned without a unit and remains same type', () => {
-          expect(
-            transforms[sizeRem].transform(
-              {
-                value,
-              },
-              {},
-              {},
-            ),
-          ).to.equal(value);
+          expect(runTransform(sizeRem, { value })).to.equal(value);
+        });
+      });
+      it('should not change the unit to rem if the value already has a unit and it is not a pixel unit', () => {
+        const value = runTransform(sizeRem, { value: '1em' });
+        const nonUnitValue = runTransform(sizeRem, { value: '5lightyears' });
+
+        expect(value).to.equal('1em');
+        expect(nonUnitValue).to.equal('5lightyears');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRem, { value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizeRemToPt, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeRemToPt, { value: '1' });
+        const pxValue = runTransform(sizeRemToPt, { value: '1px' });
+        const remValue = runTransform(sizeRemToPt, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16.00f');
+        expect(pxValue).to.equal('16.00f');
+        expect(remValue).to.equal('16.00f');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeRemToPt, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeRemToPt, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16.00f');
+        expect(remValue).to.equal('16.00f');
+      });
+      it('converts rem to pt using custom base font', () => {
+        const value = runTransform(sizeRemToPt, { value: '1' }, { basePxFontSize: 14 }, {});
+        expect(value).to.equal('14.00f');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRemToPt, { value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizeComposeRemToSp, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeComposeRemToSp, { value: '1' });
+        const pxValue = runTransform(sizeComposeRemToSp, { value: '1px' });
+        const remValue = runTransform(sizeComposeRemToSp, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16.00.sp');
+        expect(pxValue).to.equal('16.00.sp');
+        expect(remValue).to.equal('16.00.sp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeRemToSp, { value: { value: 10, unit: 'px' } });
+        const remValue = runTransform(sizeComposeRemToSp, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('160.00.sp');
+        expect(remValue).to.equal('16.00.sp');
+      });
+      it('converts rem to sp using custom base font', () => {
+        const config = { basePxFontSize: 14 };
+        const unitlessValue = runTransform(sizeComposeRemToSp, { value: '1' }, config);
+        const remValue = runTransform(sizeComposeRemToSp, { value: '1rem' }, config);
+        const pxValue = runTransform(sizeComposeRemToSp, { value: '10px' }, config);
+
+        expect(unitlessValue).to.equal('14.00.sp');
+        expect(remValue).to.equal('14.00.sp');
+        expect(pxValue).to.equal('140.00.sp'); // expect pixel value to not be scaled
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform({ sizeComposeRemToSp, value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizeComposeRemToDp, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeComposeRemToDp, { value: '1' });
+        const pxValue = runTransform(sizeComposeRemToDp, { value: '1px' });
+        const remValue = runTransform(sizeComposeRemToDp, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16.00.dp');
+        expect(pxValue).to.equal('16.00.dp');
+        expect(remValue).to.equal('16.00.dp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeRemToDp, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeComposeRemToDp, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16.00.dp');
+        expect(remValue).to.equal('16.00.dp');
+      });
+      it('converts rem to dp using custom base font', () => {
+        const config = { basePxFontSize: 14 };
+        const value = runTransform(sizeComposeRemToDp, { value: 1 }, config);
+        const pxValue = runTransform(
+          sizeComposeRemToDp,
+          { value: { value: 1, unit: 'px' } },
+          config,
+        );
+        const remValue = runTransform(
+          sizeComposeRemToDp,
+          { value: { value: 1, unit: 'rem' } },
+          config,
+        );
+
+        expect(value).to.equal('14.00.dp');
+        expect(pxValue).to.deep.equal('14.00.dp'); // expect px value to not be scaled
+        expect(remValue).to.deep.equal('14.00.dp');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeComposeRemToDp, { value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizeComposeEm, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeComposeEm, { value: '10' });
+        const pxValue = runTransform(sizeComposeEm, { value: '10px' });
+        const remValue = runTransform(sizeComposeEm, { value: '10rem' });
+
+        expect(unitlessValue).to.equal('10.em');
+        expect(pxValue).to.equal('10.em');
+        expect(remValue).to.equal('10.em');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeEm, { value: { value: 10, unit: 'px' } });
+        const remValue = runTransform(sizeComposeEm, { value: { value: 10, unit: 'rem' } });
+
+        expect(pxValue).to.equal('10.em');
+        expect(remValue).to.equal('10.em');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform({ sizeComposeEm, value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizeComposeSp, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeComposeSp, { value: '12' });
+        const pxValue = runTransform(sizeComposeSp, { value: '12px' });
+        const remValue = runTransform(sizeComposeSp, { value: '12rem' });
+
+        expect(unitlessValue).to.equal('12.00.sp');
+        expect(pxValue).to.equal('12.00.sp');
+        expect(remValue).to.equal('12.00.sp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeSp, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeComposeSp, { value: { value: 12, unit: 'rem' } });
+
+        expect(pxValue).to.equal('12.00.sp');
+        expect(remValue).to.equal('12.00.sp');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeComposeSp, { value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizeComposeDp, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeComposeDp, { value: '12' });
+        const pxValue = runTransform(sizeComposeDp, { value: '12px' });
+        const remValue = runTransform(sizeComposeDp, { value: '12rem' });
+
+        expect(unitlessValue).to.equal('12.00.dp');
+        expect(pxValue).to.equal('12.00.dp');
+        expect(remValue).to.equal('12.00.dp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeDp, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeComposeDp, { value: { value: 12, unit: 'rem' } });
+
+        expect(pxValue).to.equal('12.00.dp');
+        expect(remValue).to.equal('12.00.dp');
+      });
+      it('should throw an error if prop value is Nan', () => {
+        expect(() => runTransform(sizeComposeDp, { value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizeSwiftRemToCGFloat, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeSwiftRemToCGFloat, { value: '1' });
+        const pxValue = runTransform(sizeSwiftRemToCGFloat, { value: '1px' });
+        const remValue = runTransform(sizeSwiftRemToCGFloat, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('CGFloat(16.00)');
+        expect(pxValue).to.equal('CGFloat(16.00)');
+        expect(remValue).to.equal('CGFloat(16.00)');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeSwiftRemToCGFloat, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeSwiftRemToCGFloat, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('CGFloat(16.00)');
+        expect(remValue).to.equal('CGFloat(16.00)');
+      });
+      it('converts rem to CGFloat using custom base font', () => {
+        const config = { basePxFontSize: 14 };
+        const unitlessValue = runTransform(sizeSwiftRemToCGFloat, { value: '1' }, config);
+        const remValue = runTransform(
+          sizeSwiftRemToCGFloat,
+          { value: { value: 1, unit: 'rem' } },
+          config,
+        );
+
+        expect(unitlessValue).to.equal('CGFloat(14.00)');
+        expect(remValue).to.equal('CGFloat(14.00)');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeSwiftRemToCGFloat, { value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizeRemToPx, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeRemToPx, { value: '1' });
+        const pxValue = runTransform(sizeRemToPx, { value: '1px' });
+        const remValue = runTransform(sizeRemToPx, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16px');
+        expect(pxValue).to.equal('16px'); // transformation does not make sense
+        expect(remValue).to.equal('16px');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeRemToPx, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeRemToPx, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16px');
+        expect(remValue).to.equal('16px');
+      });
+      it('converts rem to px using custom base font', () => {
+        const config = { basePxFontSize: 14 };
+        const unitlessValue = runTransform(sizeRemToPx, { value: '1' }, config);
+        const remValue = runTransform(sizeRemToPx, { value: { value: 1, unit: 'rem' } }, config);
+
+        expect(unitlessValue).to.equal('14px');
+        expect(remValue).to.equal('14px');
+      });
+      xit('does not convert nor scale existing px value using custom base font', () => {
+        const pxValue = runTransform(
+          sizeRemToPx,
+          { value: { value: 16, unit: 'px' } },
+          { basePxFontSize: 14 },
+        );
+
+        expect(pxValue).to.equal('16px');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRemToPx, { value: 'a' })).to.throw();
+      });
+    });
+
+    describe(sizePxToRem, () => {
+      ['12', '12px', '12rem', { value: 12, unit: 'px' }, { value: 12, unit: 'rem' }].forEach(
+        (value) => {
+          it(`ignoring unit, scales "${value}" to rem`, () => {
+            const val = runTransform(sizePxToRem, { value });
+
+            expect(val).to.equal('0.75rem');
+          });
+        },
+      );
+      it('converts pixel to rem using custom base font', () => {
+        ['14', '14px', '14rem', { value: 14, unit: 'px' }, { value: 14, unit: 'rem' }].forEach(
+          (value) => {
+            const val = runTransform(sizePxToRem, { value }, { basePxFontSize: 14 });
+            expect(val).to.equal('1rem');
+          },
+        );
+      });
+      ['0', '0px', '0rem', { value: 0, unit: 'px' }, { value: 0, unit: 'rem' }].forEach((value) => {
+        it(`zero value "${value}" is returned without a unit`, () => {
+          const val = runTransform(sizePxToRem, { value });
+
+          expect(val).to.equal('0');
         });
       });
       it('should throw an error if prop value is NaN', () => {
-        expect(() => transforms[sizeRem].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-
-      it('should not change the unit to rem if the value already has a unit', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '5px',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('5px');
+        expect(() => runTransform(sizePxToRem, { value: 'a' })).to.throw();
       });
     });
 
     describe(sizeFlutterRemToDouble, () => {
       it('should work', () => {
-        const value = transforms[sizeFlutterRemToDouble].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00');
+        const unitlessValue = runTransform(sizeFlutterRemToDouble, { value: '1' });
+        const pxValue = runTransform(sizeFlutterRemToDouble, { value: '1px' });
+        const remValue = runTransform(sizeFlutterRemToDouble, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16.00');
+        expect(pxValue).to.equal('16.00');
+        expect(remValue).to.equal('16.00');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeFlutterRemToDouble, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeFlutterRemToDouble, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16.00');
+        expect(remValue).to.equal('16.00');
       });
       it('converts rem to double using custom base font', () => {
-        const value = transforms[sizeFlutterRemToDouble].transform(
-          { value: '1' },
+        const value = runTransform(sizeFlutterRemToDouble, { value: '1' }, { basePxFontSize: 14 });
+        const pxValue = runTransform(
+          sizeFlutterRemToDouble,
+          { value: { value: 1, unit: 'px' } },
           { basePxFontSize: 14 },
-          {},
         );
+        const remValue = runTransform(
+          sizeFlutterRemToDouble,
+          { value: { value: 1, unit: 'rem' } },
+          { basePxFontSize: 14 },
+        );
+
         expect(value).to.equal('14.00');
+        expect(pxValue).to.equal('14.00');
+        expect(remValue).to.equal('14.00');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeFlutterRemToDouble, { value: 'a' })).to.throw();
       });
     });
 
@@ -2143,6 +2248,57 @@ describe('common', () => {
         expect(isDTCGColorObject(undefined)).to.be.false;
         expect(isDTCGColorObject({ colorSpace: 'invalid', components: [1, 0, 0] })).to.be.false;
         expect(isDTCGColorObject({ colorSpace: 'srgb' })).to.be.false; // missing components
+      });
+    });
+  });
+
+  describe('transform utilities', () => {
+    describe('function getTokenValue', () => {
+      it('should return token value', () => {
+        const allTokensNonDtcg = [
+          { value: 0.42 },
+          { value: '0.42' },
+          { value: 42 },
+          { value: '42' },
+          { value: '42px' },
+          { value: '42rem' },
+          { value: '42.em' },
+          { value: '42unit' },
+          { value: { value: 42, unit: 'px' } },
+          { value: { value: 42, unit: 'rem' } },
+        ];
+        const allTokensDtcg = [
+          { $value: 0.42 },
+          { $value: '0.42' },
+          { $value: 42 },
+          { $value: '42' },
+          { $value: '42px' },
+          { $value: '42rem' },
+          { $value: '42.em' },
+          { $value: '42unit' },
+          { $value: { value: 42, unit: 'px' } },
+          { $value: { value: 42, unit: 'rem' } },
+        ];
+        const expected = [
+          { value: 0.42, unit: undefined },
+          { value: '0.42', unit: undefined },
+          { value: 42, unit: undefined },
+          { value: '42', unit: undefined },
+          { value: '42px', unit: 'px' },
+          { value: '42rem', unit: 'rem' },
+          { value: '42.em', unit: '.em' },
+          { value: '42unit', unit: 'unit' },
+          { value: 42, unit: 'px' },
+          { value: 42, unit: 'rem' },
+        ];
+
+        allTokensDtcg.forEach((it, idx) => {
+          expect(getTokenValue(it, { usesDtcg: true })).to.deep.equal(expected[idx]);
+        });
+
+        allTokensNonDtcg.forEach((it, idx) => {
+          expect(getTokenValue(it)).to.deep.equal(expected[idx]);
+        });
       });
     });
   });
