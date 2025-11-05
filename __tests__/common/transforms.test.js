@@ -58,6 +58,9 @@ const {
 
 describe('common', () => {
   describe('transforms', () => {
+    const runTransform = (name, token, config = {}, options = {}) =>
+      transforms[name].transform(token, config, options);
+
     describe(nameCamel, () => {
       it('should handle prefix', () => {
         expect(
