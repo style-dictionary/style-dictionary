@@ -801,27 +801,39 @@ describe('common', () => {
 
     describe(sizeObject, () => {
       it('should work', () => {
-        const value = transforms[sizeObject].transform(
-          {
-            value: '1px',
-          },
-          {},
-          {},
-        );
+        const value = runTransform(sizeObject, { value: '1px' });
+
         expect(value.original).to.equal('1px');
         expect(value.number).to.equal(1);
         expect(value.decimal).equal(0.01);
         expect(value.scale).to.equal(16);
       });
+      it('should work with value object using px unit', () => {
+        const pxValue = runTransform(sizeObject, { value: { value: 1, unit: 'px' } });
+
+        expect(pxValue.original).to.deep.equal({ value: 1, unit: 'px' });
+        expect(pxValue.number).to.equal(1);
+        expect(pxValue.decimal).equal(0.01);
+        expect(pxValue.scale).to.equal(16);
+      });
+      it('should work with value object using rem unit', () => {
+        const remValue = runTransform(sizeObject, { value: { value: 1, unit: 'rem' } });
+
+        expect(remValue.original).to.deep.equal({ value: 1, unit: 'rem' });
+        expect(remValue.number).to.equal(1);
+        expect(remValue.decimal).equal(0.01);
+        expect(remValue.scale).to.equal(16);
+      });
       it('should work with custom base font', () => {
-        const value = transforms[sizeObject].transform({ value: '1' }, { basePxFontSize: 14 }, {});
+        const value = runTransform(sizeObject, { value: '1' }, { basePxFontSize: 14 });
+
         expect(value.original).to.equal('1');
         expect(value.number).to.equal(1);
         expect(value.decimal).equal(0.01);
         expect(value.scale).to.equal(14);
       });
       it('should throw an error if prop value is NaN', () => {
-        expect(() => transforms[sizeObject].transform({ value: 'a' }, {}, {})).to.throw();
+        expect(() => runTransform(sizeObject, { value: 'a' })).to.throw();
       });
     });
 
