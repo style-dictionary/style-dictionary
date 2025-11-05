@@ -9,13 +9,13 @@
         "_": { "value": "{color.brand.primary}", "type": "color" },
         "hover": { "value": "{color.brand.primary}", "type": "color" },
         "active": { "value": "{color.brand.secondary}", "type": "color" },
-        "disabled": { "value": "{color.font.tertiary}", "type": "color" },
+        "disabled": { "value": "{color.font.tertiary}", "type": "color" }
       },
 
       "danger": { "value": "{color.core.red.1000}", "type": "color" },
       "warning": { "value": "{color.core.orange.1000}", "type": "color" },
       // make sure references without .value work too
-      "success": { "value": "{color.core.green.1000}", "type": "color" },
-    },
-  },
+      "success": { "value": "{color.core.green.1000}", "type": "color" }
+    }
+  }
 }
