@@ -199,45 +199,43 @@ describe('common', () => {
       });
     });
 
-    describe('transform', () => {
-      describe(attributeCti, () => {
-        const prop = {
-          path: ['color', 'background', 'button', 'primary', 'active', 'extra'],
-        };
-        const propShort = { path: ['color', 'primary'] };
-        const propOverride = {
-          path: ['button', 'primary', 'border', 'width'],
-          attributes: { category: 'size', component: 'button' },
-        };
+    describe(attributeCti, () => {
+      const prop = {
+        path: ['color', 'background', 'button', 'primary', 'active', 'extra'],
+      };
+      const propShort = { path: ['color', 'primary'] };
+      const propOverride = {
+        path: ['button', 'primary', 'border', 'width'],
+        attributes: { category: 'size', component: 'button' },
+      };
 
-        const attrs = transforms[attributeCti].transform(prop, {}, {});
-        const attrsShort = transforms[attributeCti].transform(propShort, {}, {});
-        const attrsOverride = transforms[attributeCti].transform(propOverride, {}, {});
+      const attrs = transforms[attributeCti].transform(prop, {}, {});
+      const attrsShort = transforms[attributeCti].transform(propShort, {}, {});
+      const attrsOverride = transforms[attributeCti].transform(propOverride, {}, {});
 
-        it('should assign attributes correctly', () => {
-          expect(attrs).eql({
-            category: 'color',
-            type: 'background',
-            item: 'button',
-            subitem: 'primary',
-            state: 'active',
-          });
+      it('should assign attributes correctly', () => {
+        expect(attrs).eql({
+          category: 'color',
+          type: 'background',
+          item: 'button',
+          subitem: 'primary',
+          state: 'active',
         });
+      });
 
-        it('should not assign path props when path is short', () => {
-          expect(attrsShort).eql({
-            category: 'color',
-            type: 'primary',
-          });
+      it('should not assign path props when path is short', () => {
+        expect(attrsShort).eql({
+          category: 'color',
+          type: 'primary',
         });
+      });
 
-        it('should leave other attributes alone', () => {
-          expect(attrsOverride).to.have.property('component', 'button');
-        });
+      it('should leave other attributes alone', () => {
+        expect(attrsOverride).to.have.property('component', 'button');
+      });
 
-        it('should not override previously assigned path attributes', () => {
-          expect(attrsOverride).to.have.property('category', 'size');
-        });
+      it('should not override previously assigned path attributes', () => {
+        expect(attrsOverride).to.have.property('category', 'size');
       });
     });
 
