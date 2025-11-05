@@ -1,3 +1,8 @@
+export type DimensionUnit = 'px' | 'rem';
+export interface DimensionValue {
+  value: number;
+  unit: DimensionUnit;
+}
 /**
  * This type is also used in the `typescript/module-declarations` format
  * Make sure to also change it there when this type changes!

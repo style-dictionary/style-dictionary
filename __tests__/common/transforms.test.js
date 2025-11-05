@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import Color from 'tinycolor2';
-import transforms, { isColor } from '../../lib/common/transforms.js';
+import transforms, { getTokenValue, isColor } from '../../lib/common/transforms.js';
 import { transforms as transformNames } from '../../lib/enums/index.js';
 
 const {
@@ -1690,6 +1690,57 @@ describe('common', () => {
 
       it('should ignore values that cannot convert to a color', () => {
         expect(isColor({ type: 'color', value: 'currentColor' }, {})).to.be.false;
+      });
+    });
+  });
+
+  describe('transform utilities', () => {
+    describe('function getTokenValue', () => {
+      it('should return token value', () => {
+        const allTokensNonDtcg = [
+          { value: 0.42 },
+          { value: '0.42' },
+          { value: 42 },
+          { value: '42' },
+          { value: '42px' },
+          { value: '42rem' },
+          { value: '42.em' },
+          { value: '42unit' },
+          { value: { value: 42, unit: 'px' } },
+          { value: { value: 42, unit: 'rem' } },
+        ];
+        const allTokensDtcg = [
+          { $value: 0.42 },
+          { $value: '0.42' },
+          { $value: 42 },
+          { $value: '42' },
+          { $value: '42px' },
+          { $value: '42rem' },
+          { $value: '42.em' },
+          { $value: '42unit' },
+          { $value: { value: 42, unit: 'px' } },
+          { $value: { value: 42, unit: 'rem' } },
+        ];
+        const expected = [
+          { value: 0.42, unit: undefined },
+          { value: '0.42', unit: undefined },
+          { value: 42, unit: undefined },
+          { value: '42', unit: undefined },
+          { value: '42px', unit: 'px' },
+          { value: '42rem', unit: 'rem' },
+          { value: '42.em', unit: '.em' },
+          { value: '42unit', unit: 'unit' },
+          { value: 42, unit: 'px' },
+          { value: 42, unit: 'rem' },
+        ];
+
+        allTokensDtcg.forEach((it, idx) => {
+          expect(getTokenValue(it, { usesDtcg: true })).to.deep.equal(expected[idx]);
+        });
+
+        allTokensNonDtcg.forEach((it, idx) => {
+          expect(getTokenValue(it)).to.deep.equal(expected[idx]);
+        });
       });
     });
   });
