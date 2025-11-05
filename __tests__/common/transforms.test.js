@@ -906,27 +906,39 @@ describe('common', () => {
 
     describe(sizePx, () => {
       it('should work', () => {
-        const value = transforms[sizePx].transform(
-          {
-            value: '10',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('10px');
+        const unitlessValue = runTransform(sizePx, { value: '10' });
+        const pxValue = runTransform(sizePx, { value: '10px' });
+        const remValue = runTransform(sizePx, { value: '10rem' });
+
+        expect(unitlessValue).to.equal('10px');
+        expect(pxValue).to.equal('10px');
+        expect(remValue).to.equal('10px'); // value transformation doesn't make sense here
       });
       it('should work for negative values', () => {
-        const value = transforms[sizePx].transform(
-          {
-            value: '-10',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('-10px');
+        const unitlessValue = runTransform(sizePx, { value: '-10' });
+        const pxValue = runTransform(sizePx, { value: '-10px' });
+        const remValue = runTransform(sizePx, { value: '-10rem' });
+
+        expect(unitlessValue).to.equal('-10px');
+        expect(pxValue).to.equal('-10px');
+        expect(remValue).to.equal('-10px');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizePx, { value: { value: 10, unit: 'px' } });
+        const remValue = runTransform(sizePx, { value: { value: 10, unit: 'rem' } });
+
+        expect(pxValue).to.equal('10px');
+        expect(remValue).to.equal('10px'); // value transformation doesn't make sense here
+      });
+      it('should work for negative value objects', () => {
+        const pxValue = runTransform(sizePx, { value: { value: -10, unit: 'px' } });
+        const remValue = runTransform(sizePx, { value: { value: -10, unit: 'rem' } });
+
+        expect(pxValue).to.equal('-10px');
+        expect(remValue).to.equal('-10px'); // value transformation doesn't make sense here
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizePx, { value: 'a' })).to.throw();
       });
     });
 
