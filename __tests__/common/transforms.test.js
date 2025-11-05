@@ -1274,22 +1274,37 @@ describe('common', () => {
 
     describe(sizeFlutterRemToDouble, () => {
       it('should work', () => {
-        const value = transforms[sizeFlutterRemToDouble].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00');
+        const unitlessValue = runTransform(sizeFlutterRemToDouble, { value: '1' });
+        const pxValue = runTransform(sizeFlutterRemToDouble, { value: '1px' });
+        const remValue = runTransform(sizeFlutterRemToDouble, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16.00');
+        expect(pxValue).to.equal('16.00');
+        expect(remValue).to.equal('16.00');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeFlutterRemToDouble, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeFlutterRemToDouble, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16.00');
+        expect(remValue).to.equal('16.00');
       });
       it('converts rem to double using custom base font', () => {
-        const value = transforms[sizeFlutterRemToDouble].transform(
-          { value: '1' },
+        const value = runTransform(sizeFlutterRemToDouble, { value: '1' }, { basePxFontSize: 14 });
+        const pxValue = runTransform(
+          sizeFlutterRemToDouble,
+          { value: { value: 1, unit: 'px' } },
           { basePxFontSize: 14 },
-          {},
         );
+        const remValue = runTransform(
+          sizeFlutterRemToDouble,
+          { value: { value: 1, unit: 'rem' } },
+          { basePxFontSize: 14 },
+        );
+
         expect(value).to.equal('14.00');
+        expect(pxValue).to.equal('14.00');
+        expect(remValue).to.equal('14.00');
       });
     });
 

@@ -882,6 +882,9 @@ snapshots["integration custom formats inline custom with new args should match s
         "size/pxToRem": {
           "type": "value"
         },
+        "size/flutter/remToDouble": {
+          "type": "value"
+        },
         "html/icon": {
           "type": "value"
         },
@@ -947,9 +950,6 @@ snapshots["integration custom formats inline custom with new args should match s
           "type": "value"
         },
         "asset/flutter/literal": {
-          "type": "value"
-        },
-        "size/flutter/remToDouble": {
           "type": "value"
         }
       },
@@ -1896,6 +1896,9 @@ snapshots["integration custom formats register custom format with new args shoul
         "size/pxToRem": {
           "type": "value"
         },
+        "size/flutter/remToDouble": {
+          "type": "value"
+        },
         "html/icon": {
           "type": "value"
         },
@@ -1961,9 +1964,6 @@ snapshots["integration custom formats register custom format with new args shoul
           "type": "value"
         },
         "asset/flutter/literal": {
-          "type": "value"
-        },
-        "size/flutter/remToDouble": {
           "type": "value"
         }
       },
