@@ -1007,21 +1007,27 @@ describe('common', () => {
 
     describe(sizeRemToPt, () => {
       it('should work', () => {
-        const value = transforms[sizeRemToPt].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00f');
+        const unitlessValue = runTransform(sizeRemToPt, { value: '1' });
+        const pxValue = runTransform(sizeRemToPt, { value: '1px' });
+        const remValue = runTransform(sizeRemToPt, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16.00f');
+        expect(pxValue).to.equal('16.00f');
+        expect(remValue).to.equal('16.00f');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeRemToPt, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeRemToPt, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16.00f');
+        expect(remValue).to.equal('16.00f');
       });
       it('converts rem to pt using custom base font', () => {
-        const value = transforms[sizeRemToPt].transform({ value: '1' }, { basePxFontSize: 14 }, {});
+        const value = runTransform(sizeRemToPt, { value: '1' }, { basePxFontSize: 14 }, {});
         expect(value).to.equal('14.00f');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRemToPt, { value: 'a' })).to.throw();
       });
     });
 
