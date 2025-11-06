@@ -1243,23 +1243,32 @@ describe('common', () => {
     });
 
     describe(sizePxToRem, () => {
-      const pxToRemtransform = transforms[sizePxToRem].transform;
+      ['12', '12px', '12rem', { value: 12, unit: 'px' }, { value: 12, unit: 'rem' }].forEach(
+        (value) => {
+          it(`ignoring unit, scales "${value}" to rem`, () => {
+            const val = runTransform(sizePxToRem, { value });
 
-      ['12', '12px', '12rem'].forEach((value) => {
-        it(`ignoring unit, scales "${value}" to rem`, () => {
-          expect(pxToRemtransform({ value }, {}, {})).to.equal('0.75rem');
-        });
-      });
+            expect(val).to.equal('0.75rem');
+          });
+        },
+      );
       it('converts pixel to rem using custom base font', () => {
-        expect(pxToRemtransform({ value: '14px' }, { basePxFontSize: 14 }, {})).to.equal('1rem');
+        ['14', '14px', '14rem', { value: 14, unit: 'px' }, { value: 14, unit: 'rem' }].forEach(
+          (value) => {
+            const val = runTransform(sizePxToRem, { value }, { basePxFontSize: 14 });
+            expect(val).to.equal('1rem');
+          },
+        );
       });
-      ['0', '0px', '0rem'].forEach((value) => {
+      ['0', '0px', '0rem', { value: 0, unit: 'px' }, { value: 0, unit: 'rem' }].forEach((value) => {
         it(`zero value "${value}" is returned without a unit`, () => {
-          expect(pxToRemtransform({ value }, {}, {})).to.equal('0');
+          const val = runTransform(sizePxToRem, { value });
+
+          expect(val).to.equal('0');
         });
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => pxToRemtransform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizePxToRem, { value: 'a' })).to.throw();
       });
     });
 
