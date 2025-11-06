@@ -942,6 +942,69 @@ describe('common', () => {
       });
     });
 
+    describe(sizeRem, () => {
+      it('should work', () => {
+        const unitlessValue = runTransform(sizeRem, { value: '1' });
+        const pxValue = runTransform(sizeRem, { value: '1px' });
+        const remValue = runTransform(sizeRem, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('1rem');
+        expect(pxValue).to.equal('1px'); // incorrect transformation of token value
+        expect(remValue).to.equal('1rem');
+      });
+      it('should work for negative values with unit', () => {
+        const value = runTransform(sizeRem, { value: '-1rem' });
+        expect(value).to.equal('-1rem');
+      });
+      it('should work for negative values', () => {
+        const value = runTransform(sizeRem, { value: '-1' });
+        expect(value).to.equal('-1rem');
+      });
+      it('should work for positive values', () => {
+        const value = runTransform(sizeRem, { value: '+1' });
+        expect(value).to.equal('1rem');
+      });
+      it('should work for floating values', () => {
+        const value = runTransform(sizeRem, { value: '.5' });
+        expect(value).to.equal('0.5rem');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeRem, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeRem, { value: { value: 5, unit: 'rem' } });
+
+        expect(pxValue).to.equal('12rem');
+        expect(remValue).to.equal('5rem');
+      });
+      it('should scale px value when option provided', () => {
+        const config = { options: { useUnits: true } };
+
+        const pxValueLegacy = runTransform(sizeRem, { value: '12px' }, config);
+        const pxValueScaled = runTransform(sizeRem, { value: { value: 12, unit: 'px' } }, config);
+        const pxValueUnScaled = runTransform(sizeRem, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeRem, { value: { value: 5, unit: 'rem' } }, config);
+
+        expect(pxValueLegacy).to.equal('0.75rem');
+        expect(pxValueScaled).to.equal('0.75rem');
+        expect(pxValueUnScaled).to.equal('12rem');
+        expect(remValue).to.equal('5rem');
+      });
+      ['0', 0].forEach((value) => {
+        it('zero value is returned without a unit and remains same type', () => {
+          expect(runTransform(sizeRem, { value })).to.equal(value);
+        });
+      });
+      it('should not change the unit to rem if the value already has a unit', () => {
+        const value = runTransform(sizeRem, { value: '5px' });
+        const nonUnitValue = runTransform(sizeRem, { value: '5lightyears' });
+
+        expect(value).to.equal('5px');
+        expect(nonUnitValue).to.equal('5lightyears');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRem, { value: 'a' })).to.throw();
+      });
+    });
+
     describe(sizeRemToPt, () => {
       it('should work', () => {
         const value = transforms[sizeRemToPt].transform(
@@ -1138,86 +1201,6 @@ describe('common', () => {
       });
       it('should throw an error if prop value is Nan', () => {
         expect(() => pxToRemtransform({ value: 'a' }, {}, {})).to.throw();
-      });
-    });
-
-    describe(sizeRem, () => {
-      it('should work', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('1rem');
-      });
-      it('should work for negative values with unit', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '-1rem',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('-1rem');
-      });
-      it('should work for negative values', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '-1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('-1rem');
-      });
-      it('should work for positive values', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '+1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('1rem');
-      });
-      it('should work for floating values', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '.5',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('0.5rem');
-      });
-      ['0', 0].forEach((value) => {
-        it('zero value is returned without a unit and remains same type', () => {
-          expect(
-            transforms[sizeRem].transform(
-              {
-                value,
-              },
-              {},
-              {},
-            ),
-          ).to.equal(value);
-        });
-      });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
-      });
-
-      it('should not change the unit to rem if the value already has a unit', () => {
-        const value = transforms[sizeRem].transform(
-          {
-            value: '5px',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('5px');
       });
     });
 
