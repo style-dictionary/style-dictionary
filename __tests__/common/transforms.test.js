@@ -1171,27 +1171,35 @@ describe('common', () => {
 
     describe(sizeSwiftRemToCGFloat, () => {
       it('should work', () => {
-        const value = transforms[sizeSwiftRemToCGFloat].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('CGFloat(16.00)');
+        const unitlessValue = runTransform(sizeSwiftRemToCGFloat, { value: '1' });
+        const pxValue = runTransform(sizeSwiftRemToCGFloat, { value: '1px' });
+        const remValue = runTransform(sizeSwiftRemToCGFloat, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('CGFloat(16.00)');
+        expect(pxValue).to.equal('CGFloat(16.00)');
+        expect(remValue).to.equal('CGFloat(16.00)');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeSwiftRemToCGFloat, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeSwiftRemToCGFloat, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('CGFloat(16.00)');
+        expect(remValue).to.equal('CGFloat(16.00)');
       });
       it('converts rem to CGFloat using custom base font', () => {
-        const value = transforms[sizeSwiftRemToCGFloat].transform(
-          { value: '1' },
-          { basePxFontSize: 14 },
-          {},
+        const config = { basePxFontSize: 14 };
+        const unitlessValue = runTransform(sizeSwiftRemToCGFloat, { value: '1' }, config);
+        const remValue = runTransform(
+          sizeSwiftRemToCGFloat,
+          { value: { value: 1, unit: 'rem' } },
+          config,
         );
-        expect(value).to.equal('CGFloat(14.00)');
+
+        expect(unitlessValue).to.equal('CGFloat(14.00)');
+        expect(remValue).to.equal('CGFloat(14.00)');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() =>
-          transforms['size/rem/remToCGFloat'].transform({ value: 'a' }, {}, {}),
-        ).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeSwiftRemToCGFloat, { value: 'a' })).to.throw();
       });
     });
 
