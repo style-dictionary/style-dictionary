@@ -1205,21 +1205,40 @@ describe('common', () => {
 
     describe(sizeRemToPx, () => {
       it('should work', () => {
-        const value = transforms[sizeRemToPx].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16px');
+        const unitlessValue = runTransform(sizeRemToPx, { value: '1' });
+        const pxValue = runTransform(sizeRemToPx, { value: '1px' });
+        const remValue = runTransform(sizeRemToPx, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16px');
+        expect(pxValue).to.equal('16px'); // transformation does not make sense
+        expect(remValue).to.equal('16px');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeRemToPx, { value: { value: 1, unit: 'px' } });
+        const remValue = runTransform(sizeRemToPx, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('16px');
+        expect(remValue).to.equal('16px');
       });
       it('converts rem to px using custom base font', () => {
-        const value = transforms[sizeRemToPx].transform({ value: '1' }, { basePxFontSize: 14 }, {});
-        expect(value).to.equal('14px');
+        const config = { basePxFontSize: 14 };
+        const unitlessValue = runTransform(sizeRemToPx, { value: '1' }, config);
+        const remValue = runTransform(sizeRemToPx, { value: { value: 1, unit: 'rem' } }, config);
+
+        expect(unitlessValue).to.equal('14px');
+        expect(remValue).to.equal('14px');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeDp].transform({ value: 'a' }, {}, {})).to.throw();
+      xit('does not convert nor scale existing px value using custom base font', () => {
+        const pxValue = runTransform(
+          sizeRemToPx,
+          { value: { value: 16, unit: 'px' } },
+          { basePxFontSize: 14 },
+        );
+
+        expect(pxValue).to.equal('16px');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeRemToPx, { value: 'a' })).to.throw();
       });
     });
 
