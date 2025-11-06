@@ -1127,25 +1127,23 @@ describe('common', () => {
 
     describe(sizeComposeSp, () => {
       it('should work', () => {
-        const value = transforms[sizeComposeSp].transform(
-          {
-            value: '12px',
-          },
-          {},
-          {},
-        );
-        const value2 = transforms[sizeComposeSp].transform(
-          {
-            value: '12',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('12.00.sp');
-        expect(value2).to.equal('12.00.sp');
+        const unitlessValue = runTransform(sizeComposeSp, { value: '12' });
+        const pxValue = runTransform(sizeComposeSp, { value: '12px' });
+        const remValue = runTransform(sizeComposeSp, { value: '12rem' });
+
+        expect(unitlessValue).to.equal('12.00.sp');
+        expect(pxValue).to.equal('12.00.sp');
+        expect(remValue).to.equal('12.00.sp');
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeSp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeSp, { value: { value: 12, unit: 'px' } });
+        const remValue = runTransform(sizeComposeSp, { value: { value: 12, unit: 'rem' } });
+
+        expect(pxValue).to.equal('12.00.sp');
+        expect(remValue).to.equal('12.00.sp');
+      });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeComposeSp, { value: 'a' })).to.throw();
       });
     });
 
