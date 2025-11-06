@@ -1033,25 +1033,33 @@ describe('common', () => {
 
     describe(sizeComposeRemToSp, () => {
       it('should work', () => {
-        const value = transforms[sizeComposeRemToSp].transform(
-          {
-            value: '1',
-          },
-          {},
-          {},
-        );
-        expect(value).to.equal('16.00.sp');
+        const unitlessValue = runTransform(sizeComposeRemToSp, { value: '1' });
+        const pxValue = runTransform(sizeComposeRemToSp, { value: '1px' });
+        const remValue = runTransform(sizeComposeRemToSp, { value: '1rem' });
+
+        expect(unitlessValue).to.equal('16.00.sp');
+        expect(pxValue).to.equal('16.00.sp');
+        expect(remValue).to.equal('16.00.sp');
+      });
+      it('should work with value object', () => {
+        const pxValue = runTransform(sizeComposeRemToSp, { value: { value: 10, unit: 'px' } });
+        const remValue = runTransform(sizeComposeRemToSp, { value: { value: 1, unit: 'rem' } });
+
+        expect(pxValue).to.equal('160.00.sp');
+        expect(remValue).to.equal('16.00.sp');
       });
       it('converts rem to sp using custom base font', () => {
-        const value = transforms[sizeComposeRemToSp].transform(
-          { value: '1' },
-          { basePxFontSize: 14 },
-          {},
-        );
-        expect(value).to.equal('14.00.sp');
+        const config = { basePxFontSize: 14 };
+        const unitlessValue = runTransform(sizeComposeRemToSp, { value: '1' }, config);
+        const remValue = runTransform(sizeComposeRemToSp, { value: '1rem' }, config);
+        const pxValue = runTransform(sizeComposeRemToSp, { value: '10px' }, config);
+
+        expect(unitlessValue).to.equal('14.00.sp');
+        expect(remValue).to.equal('14.00.sp');
+        expect(pxValue).to.equal('140.00.sp'); // expect pixel value to not be scaled
       });
-      it('should throw an error if prop value is Nan', () => {
-        expect(() => transforms[sizeComposeRemToSp].transform({ value: 'a' }, {}, {})).to.throw();
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform({ sizeComposeRemToSp, value: 'a' })).to.throw();
       });
     });
 
