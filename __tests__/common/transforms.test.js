@@ -1306,6 +1306,9 @@ describe('common', () => {
         expect(pxValue).to.equal('14.00');
         expect(remValue).to.equal('14.00');
       });
+      it('should throw an error if prop value is NaN', () => {
+        expect(() => runTransform(sizeFlutterRemToDouble, { value: 'a' })).to.throw();
+      });
     });
 
     describe(contentQuote, () => {
