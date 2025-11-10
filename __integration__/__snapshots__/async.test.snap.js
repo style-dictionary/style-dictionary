@@ -161,6 +161,8 @@ snapshots["integration async hooks should match snapshot"] =
   --color-font-warning: #601700;
   --color-font-success: #08422f;
   --size-border-radius-large: 30rem;
+  --size-border-radius-medium: 24rem;
+  --size-border-radius-small: 16rem;
   --size-font-small: 0.75rem;
   --size-font-medium: 1rem;
   --size-font-large: 1.5rem;

@@ -170,6 +170,8 @@ class StyleDictionary {
     static const colorFontTertiary = Color(0xFF364141);
     static const colorFontWarning = Color(0xFF601700);
     static const sizeBorderRadiusLarge = 480.00;
+    static const sizeBorderRadiusMedium = 384.00;
+    static const sizeBorderRadiusSmall = 256.00;
     static const sizeFontLarge = 24.00;
     static const sizeFontMedium = 16.00;
     static const sizeFontSmall = 12.00;
@@ -329,6 +331,8 @@ class StyleDictionary {
     static const colorCoreYellow1000 = Color(0xFF542A00);
     static const colorCoreYellow1100 = Color(0xFF2D1A05);
     static const sizeBorderRadiusLarge = 480.00;
+    static const sizeBorderRadiusMedium = 384.00;
+    static const sizeBorderRadiusSmall = 256.00;
     static const sizeFontSmall = 12.00;
     static const sizeFontMedium = 16.00;
     static const sizeFontLarge = 24.00;

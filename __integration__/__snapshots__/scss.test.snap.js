@@ -159,6 +159,8 @@ $color-font-danger: #6d1313;
 $color-font-warning: #601700;
 $color-font-success: #08422f;
 $size-border-radius-large: 30rem;
+$size-border-radius-medium: 24rem;
+$size-border-radius-small: 16rem;
 $size-font-small: 0.75rem;
 $size-font-medium: 1rem;
 $size-font-large: 1.5rem;
@@ -328,6 +330,8 @@ $color-font-danger: #6d1313 !default;
 $color-font-warning: #601700 !default;
 $color-font-success: #08422f !default;
 $size-border-radius-large: 30rem !default;
+$size-border-radius-medium: 24rem !default;
+$size-border-radius-small: 16rem !default;
 $size-font-small: 0.75rem !default;
 $size-font-medium: 1rem !default;
 $size-font-large: 1.5rem !default;
@@ -476,6 +480,8 @@ $color-core-yellow-900: #944c0c;
 $color-core-yellow-1000: #542a00;
 $color-core-yellow-1100: #2d1a05;
 $size-border-radius-large: 30rem;
+$size-border-radius-medium: 24rem;
+$size-border-radius-small: 16rem;
 $size-font-small: 0.75rem;
 $size-font-medium: 1rem;
 $size-font-large: 1.5rem;
@@ -684,6 +690,8 @@ $design-system-tokens: (
   'color-font-warning': #601700,
   'color-font-success': #08422f,
   'size-border-radius-large': 30rem,
+  'size-border-radius-medium': 24rem,
+  'size-border-radius-small': 16rem,
   'size-font-small': 0.75rem,
   'size-font-medium': 1rem,
   'size-font-large': 1.5rem,
@@ -855,6 +863,8 @@ $color-font-danger: #6d1313 !default;
 $color-font-warning: #601700 !default;
 $color-font-success: #08422f !default;
 $size-border-radius-large: 30rem !default;
+$size-border-radius-medium: 24rem !default;
+$size-border-radius-small: 16rem !default;
 $size-font-small: 0.75rem !default;
 $size-font-medium: 1rem !default;
 $size-font-large: 1.5rem !default;
@@ -1057,7 +1067,9 @@ $design-system-tokens: (
   'size': (
     'border': (
       'radius': (
-        'large': $size-border-radius-large
+        'large': $size-border-radius-large,
+        'medium': $size-border-radius-medium,
+        'small': $size-border-radius-small
       )
     ),
     'font': (
@@ -1216,6 +1228,8 @@ $color-core-yellow-900: #944c0c !default;
 $color-core-yellow-1000: #542a00 !default;
 $color-core-yellow-1100: #2d1a05 !default;
 $size-border-radius-large: 30rem !default;
+$size-border-radius-medium: 24rem !default;
+$size-border-radius-small: 16rem !default;
 $size-font-small: 0.75rem !default;
 $size-font-medium: 1rem !default;
 $size-font-large: 1.5rem !default;
@@ -1439,7 +1453,9 @@ $design-system-tokens: (
   'size': (
     'border': (
       'radius': (
-        'large': $size-border-radius-large
+        'large': $size-border-radius-large,
+        'medium': $size-border-radius-medium,
+        'small': $size-border-radius-small
       )
     ),
     'font': (
@@ -1619,6 +1635,8 @@ $color-font-danger: #6d1313;
 $color-font-warning: #601700;
 $color-font-success: #08422f;
 $size-border-radius-large: 30rem;
+$size-border-radius-medium: 24rem;
+$size-border-radius-small: 16rem;
 $size-font-small: 0.75rem;
 $size-font-medium: 1rem;
 $size-font-large: 1.5rem;
@@ -1821,7 +1839,9 @@ $design-system-tokens: (
   'size': (
     'border': (
       'radius': (
-        'large': $size-border-radius-large
+        'large': $size-border-radius-large,
+        'medium': $size-border-radius-medium,
+        'small': $size-border-radius-small
       )
     ),
     'font': (

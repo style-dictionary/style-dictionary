@@ -168,6 +168,8 @@ object StyleDictionary {
   val colorFontTertiary = Color(0xff364141)
   val colorFontWarning = Color(0xff601700)
   val sizeBorderRadiusLarge = 480.00.dp
+  val sizeBorderRadiusMedium = 384.00.dp
+  val sizeBorderRadiusSmall = 256.00.dp
   val sizeFontLarge = 24.00.sp
   val sizeFontMedium = 16.00.sp
   val sizeFontSmall = 12.00.sp
@@ -326,6 +328,8 @@ object StyleDictionary {
   val colorCoreYellow1000 = Color(0xff542a00)
   val colorCoreYellow1100 = Color(0xff2d1a05)
   val sizeBorderRadiusLarge = 480.00.dp
+  val sizeBorderRadiusMedium = 384.00.dp
+  val sizeBorderRadiusSmall = 256.00.dp
   val sizeFontSmall = 12.00.sp
   val sizeFontMedium = 16.00.sp
   val sizeFontLarge = 24.00.sp
