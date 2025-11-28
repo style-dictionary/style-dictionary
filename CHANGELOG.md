@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.2
+
+### Patch Changes
+
+- 51fe904: fix handle `NaN` token value in `size/rem` transformer and throw exception when a `NaN` value is provided.
+
 ## 5.1.1
 
 ### Patch Changes
