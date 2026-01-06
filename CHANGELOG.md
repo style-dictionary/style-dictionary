@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.3
+
+### Patch Changes
+
+- 6e306bc: Upgrade glob@11.1.0 forked package to fix vulnerability in origin package.
+
 ## 5.1.2
 
 ### Patch Changes
