@@ -40,6 +40,30 @@ describe('transform', () => {
       expect(test).to.have.property('name', 'hello');
     });
 
+    it('can throw anything and handle gracefully', async () => {
+      const test = await transformToken(
+        { name: 'foo-bar', value: 'abc', path: ['foo', 'bar'], original: { value: 'abc' } },
+        {
+          transforms: [
+            {
+              type: transformTypeValue,
+              transform: function () {
+                return 'def';
+              },
+            },
+            {
+              type: transformTypeValue,
+              transform: function () {
+                throw 123;
+              },
+            },
+          ],
+        },
+        {},
+      );
+      expect(test).to.have.property('value', 'def');
+    });
+
     // This allows transformObject utility to then consider this token's transformation undefined and thus "deferred"
     it('returns a token as undefined if transitive transform dictates that the transformation has to be deferred', async () => {
       const result = await transformToken(
