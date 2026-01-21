@@ -196,6 +196,144 @@ In this scenario, it's often preferable not to output a reference.
 
 There is an [`outputReferencesTransformed`](/reference/utils/references/#outputreferencestransformed) utility function that takes care of checking if this happened and not outputting refs for tokens in this scenario.
 
+## Sorting token output (WIP)
+
+:::caution
+This feature is a work in progress and some improvements are already planned.
+This means that in **minor** (SemVer) updates of Style Dictionary, you may encounter some reshuffling of your tokens output if you're using this feature.
+The differences in shuffling should not be "breaking" in practice, and generally will see improvements in alignment with your preferred sorting intentions.
+:::
+
+A couple of our built-in formats (CSS, SCSS, LESS, and Stylus variables) support a `sort` option to control the ordering of tokens in the output. This is useful for organizing your tokens in a specific order.
+
+The `sort` option accepts one or more sorters: `Sorter | Sorter[]` where `Sorter = 'name' | (a: DesignToken, b: DesignToken) => number`.
+
+- `'name'` - Sort tokens alphabetically by name
+- A custom comparator function `(a, b) => number` - Use your own sorting logic
+- An array of sorters `[Sorter, ...]` - Apply multiple sorters in sequence as tie-breakers
+
+```json
+// config.json
+{
+  "source": ["tokens.json"],
+  "platforms": {
+    "css": {
+      "transformGroup": "css",
+      "files": [
+        {
+          "destination": "variables.css",
+          "format": "css/variables",
+          "options": {
+            "sort": "name"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+### Sorting with tie-breakers
+
+When you provide multiple sorters in an array, they act as **tie-breakers**: if the first sorter returns `0` (meaning the two tokens are considered equal), the next sorter is used to determine the order. This allows you to create complex sorting logic.
+
+For example, to sort tokens by value first, then by name when values are equal:
+
+```js title="build-tokens.js"
+import StyleDictionary from 'style-dictionary';
+import { formattedVariables } from 'style-dictionary/utils';
+import { formats, builtInSorts } from 'style-dictionary/enums';
+
+const { cssVariables } = formats;
+const { name } = builtInSorts;
+
+const byValue = (a, b) => String(a.value).localeCompare(String(b.value));
+
+StyleDictionary.registerFormat({
+  name: 'css/variables-sorted',
+  format: ({ dictionary, options }) => {
+    return formattedVariables({
+      format: cssVariables,
+      dictionary,
+      sort: [byValue, name], // Sort by value first, then by name as tie-breaker
+    });
+  },
+});
+```
+
+In this example:
+
+- Tokens with different values are sorted by value (e.g., `#000000` comes before `#111111`)
+- Tokens with the same value are sorted alphabetically by name (e.g., `a-same` comes before `z-same`)
+
+You can interact with a demo below:
+
+~ sd-playground
+
+```json tokens
+{
+  "colors": {
+    "a": {
+      "value": "#111111"
+    },
+    "c": {
+      "value": "#000000"
+    },
+    "b": {
+      "value": "#000000"
+    }
+  }
+}
+```
+
+```js config
+import { formats, transformGroups, builtInSorts } from 'style-dictionary/enums';
+
+const { cssVariables } = formats;
+const { css } = transformGroups;
+const { name } = builtInSorts;
+
+const byValue = (a, b) => String(a.value).localeCompare(String(b.value));
+
+export default {
+  source: ['tokens.json'],
+  platforms: {
+    scss: {
+      transformGroup: css,
+      buildPath: 'build/css/',
+      files: [
+        {
+          destination: 'vars.scss',
+          format: cssVariables,
+          options: {
+            sort: [byValue, name],
+          },
+        },
+      ],
+    },
+  },
+};
+```
+
+### Sorting with outputReferences
+
+When using `outputReferences: true`, reference-safe ordering is automatically applied first to ensure proper define-before-use ordering, and any user-provided sorters act as tie-breakers.
+
+For example, if you have tokens where `a-token` references `d-token` and `b-token` references `c-token`, the reference-safe ordering ensures that base tokens (`c-token`, `d-token`) appear before referencing tokens (`a-token`, `b-token`). Then, your custom sorters (like `'name'`) are applied as tie-breakers:
+
+- Base tokens that don't reference each other are sorted by name
+- Referencing tokens with the same "depth" in the reference chain, are also sorted by name
+
+The formats that support the `sort` option:
+
+- [css/variables](/reference/hooks/formats/predefined/#cssvariables)
+- [scss/variables](/reference/hooks/formats/predefined/#scssvariables)
+- [scss/map-deep](/reference/hooks/formats/predefined/#scssmap-deep)
+- [less/variables](/reference/hooks/formats/predefined/#lessvariables)
+- [stylus/variables](/reference/hooks/formats/predefined/#stylusvariables)
+
+Pull requests are welcome to add it to other formats as well!
+
 ## File headers
 
 By default Style Dictionary adds a file header comment in the top of files built using built-in formats like this:

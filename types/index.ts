@@ -26,6 +26,8 @@ export type { Filter } from './Filter.js';
 
 export type { Format, FormatFnArguments, FormatFn, OutputReferences } from './Format.js';
 
+export type { SortOption, SortFn, BuiltInSorts } from './Sort.js';
+
 export type { Parser, ParserOptions } from './Parser.js';
 
 export type { Preprocessor } from './Preprocessor.js';
