@@ -14,7 +14,7 @@ import { propertyFormatNames } from 'style-dictionary/enums';
 StyleDictionary.registerFormat({
   name: 'myCustomFormat',
   format: async ({ dictionary, file, options }) => {
-    const { outputReferences } = options;
+    const { outputReferences, sort } = options;
     const header = await fileHeader({ file });
     return (
       header +
@@ -23,6 +23,7 @@ StyleDictionary.registerFormat({
         format: propertyFormatNames.css,
         dictionary,
         outputReferences,
+        sort, // 'name' | ['name'] | [customFn, 'name'] | (a, b) => number
       }) +
       '\n}\n'
     );
@@ -118,7 +119,7 @@ and not wanting to create redundant git diffs just because of the timestamp chan
 This is used to create lists of variables like Sass variables or CSS custom properties
 
 | Param                                 | Type                                  | Description                                                                                                                                                                                                    |
-| ------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `options`                             | `Object`                              |                                                                                                                                                                                                                |
 | `options.format`                      | `string`                              | What type of variables to output. Options are: `'css'`, `'sass'`, `'less'`, and `'stylus'`.                                                                                                                    |
 | `options.dictionary`                  | `Dictionary`                          | Transformed Dictionary object containing `allTokens`, `tokens` and `unfilteredTokens`.                                                                                                                         |
@@ -129,6 +130,7 @@ This is used to create lists of variables like Sass variables or CSS custom prop
 | `options.formatting`                  | `Object`                              | Custom formatting properties that define parts of a comment in code. The configurable strings are: `prefix`, `lineSeparator`, `header`, and `footer`.                                                          |
 | `options.themeable`                   | `boolean`                             | Whether tokens should default to being themeable. Defaults to `false`.                                                                                                                                         |
 | `options.usesDtcg`                    | `boolean`                             | Whether tokens use the DTCG standard. Defaults to `false`                                                                                                                                                      |
+| `options.sort`                        | `SortOption`                          | Optional sorting strategy. Use `'name'` to sort alphabetically by token name or a custom comparator function `(a: Token, b: Token) => -1                                                                       | 1   | 0`. You can chain multiple sorters with an array of sorters (e.g., `[customFn, 'name']`). When `outputReferences`is`true`, reference-safe ordering is automatically enforced first, and your sort acts as a tie-breaker. Defaults to no sorting. |
 
 Example:
 
@@ -142,6 +144,7 @@ StyleDictionary.registerFormat({
       format: propertyFormatNames.less,
       dictionary,
       outputReferences: options.outputReferences,
+      sort: options.sort,
     });
   },
 });

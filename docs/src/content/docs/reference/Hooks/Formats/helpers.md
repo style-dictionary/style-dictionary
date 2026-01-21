@@ -16,7 +16,7 @@ import { propertyFormatNames } from 'style-dictionary/enums';
 StyleDictionary.registerFormat({
   name: 'myCustomFormat',
   format: async ({ dictionary, file, options }) => {
-    const { outputReferences } = options;
+    const { outputReferences, sort } = options;
     const header = await fileHeader({ file });
     return (
       header +
@@ -25,6 +25,7 @@ StyleDictionary.registerFormat({
         format: propertyFormatNames.css,
         dictionary,
         outputReferences,
+        sort, // SortOption - see types
       }) +
       '\n}\n'
     );

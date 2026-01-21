@@ -122,6 +122,16 @@ describe('common', () => {
 #}`,
         );
       });
+
+      it(`should handle commentStyle passed via formatting options`, async () => {
+        const comment = await fileHeader({ formatting: { commentStyle: commentStyles.short } });
+        expect(comment).to.equal(
+          `
+// ${defaultLine1}
+
+`,
+        );
+      });
     });
   });
 });
