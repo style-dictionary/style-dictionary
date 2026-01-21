@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.2.0
+
+### Minor Changes
+
+- 752a50c: Add (wip) sort option to formattedVariables and formats css, scss, less, stylus. See format docs on how to use it.
+
+### Patch Changes
+
+- 6e9164e: Small bugfix where formatting.commentStyle was not taken into account for fileHeader comments when possible.
+
 ## 5.1.4
 
 ### Patch Changes
