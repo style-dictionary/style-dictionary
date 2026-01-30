@@ -606,11 +606,8 @@ snapshots["integration custom formats inline custom with new args should match s
       }
     ],
     "log": {
-      "warnings": "warn",
       "verbosity": "default",
-      "errors": {
-        "brokenReferences": "throw"
-      }
+      "warnings": "warn"
     },
     "transforms": [
       {
@@ -1009,33 +1006,31 @@ snapshots["integration custom formats inline custom with new args should match s
       }
     },
     "log": {
-      "warnings": "warn",
       "verbosity": "default",
-      "errors": {
-        "brokenReferences": "throw"
-      }
+      "warnings": "warn"
     },
     "logger": {
-      "throw": {
-        "references": {}
+      "store": {
+        "throw": {
+          "references": {}
+        },
+        "error": {
+          "transforms": {}
+        },
+        "warn": {
+          "collisions": {},
+          "nameCollisions": {}
+        },
+        "success": {},
+        "info": {},
+        "debug": {}
       },
-      "error": {
-        "transforms": {}
-      },
-      "warn": {
-        "collisions": {},
-        "nameCollisions": {}
-      },
-      "success": {},
-      "info": {},
-      "debug": {},
-      "logConfig": {
-        "warnings": "warn",
+      "logMap": {},
+      "config": {
         "verbosity": "default",
-        "errors": {
-          "brokenReferences": "throw"
-        }
-      }
+        "warnings": "warn"
+      },
+      "__handleBackwardsCompatibility": true
     },
     "usesDtcg": false,
     "otherOption": "Test",
@@ -1642,11 +1637,8 @@ snapshots["integration custom formats register custom format with new args shoul
       }
     ],
     "log": {
-      "warnings": "warn",
       "verbosity": "default",
-      "errors": {
-        "brokenReferences": "throw"
-      }
+      "warnings": "warn"
     },
     "transforms": [
       {
@@ -2045,33 +2037,31 @@ snapshots["integration custom formats register custom format with new args shoul
       }
     },
     "log": {
-      "warnings": "warn",
       "verbosity": "default",
-      "errors": {
-        "brokenReferences": "throw"
-      }
+      "warnings": "warn"
     },
     "logger": {
-      "throw": {
-        "references": {}
+      "store": {
+        "throw": {
+          "references": {}
+        },
+        "error": {
+          "transforms": {}
+        },
+        "warn": {
+          "collisions": {},
+          "nameCollisions": {}
+        },
+        "success": {},
+        "info": {},
+        "debug": {}
       },
-      "error": {
-        "transforms": {}
-      },
-      "warn": {
-        "collisions": {},
-        "nameCollisions": {}
-      },
-      "success": {},
-      "info": {},
-      "debug": {},
-      "logConfig": {
-        "warnings": "warn",
+      "logMap": {},
+      "config": {
         "verbosity": "default",
-        "errors": {
-          "brokenReferences": "throw"
-        }
-      }
+        "warnings": "warn"
+      },
+      "__handleBackwardsCompatibility": true
     },
     "usesDtcg": false,
     "otherOption": "Test",

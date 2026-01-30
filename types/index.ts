@@ -35,4 +35,11 @@ export type { Transform, NameTransform, AttributeTransform, ValueTransform } fro
 
 export type { Volume } from './Volume.js';
 
-export type { Log, LogConfig } from './Logger.js';
+export type {
+  Log,
+  LogConfig,
+  LogConfigSub,
+  LogBuiltinKeys,
+  LogLevels,
+  LogVerbosityLevels,
+} from './Logger.js';

@@ -110,7 +110,7 @@ describe(`integration`, () => {
         const firstLog = [...stub.calls][0].args[0];
         await expect(cleanConsoleOutput(firstLog)).to.matchSnapshot(1);
 
-        sd.log.verbosity = 'verbose';
+        sd.logger.config.verbosity = 'verbose';
         await sd.buildAllPlatforms({ cache: false });
         // we skip 1 and 2 because those are success logs from building the tokens in the previous run
         const secondLog = [...stub.calls][1].args[0];

@@ -26,3 +26,9 @@ snapshots["formatHelpers formattedVariables should output references when output
   --color-semantic-primary: var(--color-base-red-400);`;
 /* end snapshot formatHelpers formattedVariables should output references when outputReferences=true and match snapshot */
 
+snapshots["formatHelpers formattedVariables should use custom lineSeparator from formatting options"] = 
+`  --color-base-red-400: #EF5350;
+
+  --color-base-blue-500: #2196F3;`;
+/* end snapshot formatHelpers formattedVariables should use custom lineSeparator from formatting options */
+

@@ -1,17 +1,16 @@
 import { expect } from 'chai';
 import { stubMethod, restore } from 'hanbi';
-import chalk from 'chalk';
+import StyleDictionary from '../../../lib/StyleDictionary.js';
 import { Logger } from '../../../lib/utils/logging/logger.js';
-
-// logger.test.js
+import { verbosityInfo } from '../../../lib/utils/groupMessages.js';
 
 describe('Logger', () => {
+  /** @type {import('../../../lib/utils/logging/logger.js').Logger} */
   let logger;
   let consoleErrorStub, consoleLogStub;
-  const defaultConfig = {};
 
   beforeEach(() => {
-    logger = new Logger(defaultConfig);
+    logger = new Logger({});
     consoleErrorStub = stubMethod(console, 'error');
     consoleLogStub = stubMethod(console, 'log');
   });
@@ -42,13 +41,13 @@ describe('Logger', () => {
     it('should log info messages to console.log', () => {
       logger.log('info message', 'info');
       expect(consoleLogStub.callCount).to.equal(1);
-      expect(consoleLogStub.firstCall.args[0]).to.equal('info message');
+      expect(consoleLogStub.firstCall.args[0]).to.equal('info message\n');
     });
 
     it('should log debug messages to console.log dimmed', () => {
       logger.log('debug message', 'debug');
       expect(consoleLogStub.callCount).to.equal(1);
-      expect(consoleLogStub.firstCall.args[0]).to.equal(chalk.dim('debug message'));
+      expect(consoleLogStub.firstCall.args[0]).to.include('debug message');
     });
 
     it('should throw an error for throw level', () => {
@@ -65,27 +64,27 @@ describe('Logger', () => {
 
     it('should use messageVerbose if verbosity is verbose', () => {
       logger = new Logger({ verbosity: 'verbose' });
-      logger.log('short', 'info', 'long verbose');
-      expect(consoleLogStub.firstCall.args[0]).to.equal('long verbose');
+      logger.log('short', 'long verbose', 'info');
+      expect(consoleLogStub.firstCall.args[0]).to.equal('long verbose\n');
     });
 
     it('should append verbosityInfo if messageVerbose and not verbose', () => {
       logger = new Logger({ verbosity: 'normal' });
-      logger.log('short', 'info', 'long verbose');
+      logger.log('short', 'long verbose', 'info');
       expect(consoleLogStub.firstCall.args[0]).to.equal(`short
 Use log.verbosity "verbose" or use CLI option --verbose for more details.
 Refer to: https://styledictionary.com/reference/logging/
 `);
     });
 
-    it('should use logConfig[type].level override', () => {
+    it('should use config[type].level override', () => {
       logger = new Logger({ 'warn.collisions': { level: 'error' } });
       logger.log('collision!', 'warn.collisions');
       expect(consoleErrorStub.callCount).to.equal(1);
       expect(consoleErrorStub.firstCall.args[0]).to.include('collision!');
     });
 
-    it('should use logConfig[subType].level override', () => {
+    it('should use config[subType].level override', () => {
       logger = new Logger({ warn: { level: 'error' } });
       logger.log('warn as error', 'warn.collisions');
       expect(consoleErrorStub.callCount).to.equal(1);
@@ -129,9 +128,207 @@ Refer to: https://styledictionary.com/reference/logging/
     });
 
     it('should throw if log type does not exist', () => {
-      expect(() => logger.add('nonexistent.type', '{foo}', 'bar')).to.throw(
+      expect(() => logger.delete('nonexistent.type', '{foo}', 'bar')).to.throw(
         'Log type "nonexistent.type" does not exist.',
       );
+    });
+  });
+
+  describe('log levels', () => {
+    it('should have a default log level for logs', () => {
+      logger.log('something');
+      // defaults to info log
+      expect(consoleLogStub.firstCall.args[0]).to.equal('something\n');
+    });
+
+    it('should allow setting the log level for log categories globally', () => {
+      const logger = new Logger({
+        info: 'warn',
+      });
+      logger.log('something', 'info');
+      expect(consoleLogStub.firstCall.args[0]).to.include('⚠︎ something');
+    });
+
+    it('should allow setting the log level for logs specifically', () => {
+      const logger = new Logger({
+        info: 'error',
+        'info.subtype': 'warn',
+      });
+      logger.log('something', 'info.subtype');
+      expect(consoleLogStub.firstCall.args[0]).to.include('⚠︎ something');
+      logger.log('something', 'info');
+      expect(consoleErrorStub.firstCall.args[0]).to.equal('✘ something\n');
+    });
+  });
+
+  describe('verbosity levels', () => {
+    it('should have a default verbosity level for logs', () => {
+      logger.log('something', 'something verbose', 'info');
+      // defaults to info log
+      expect(consoleLogStub.firstCall.args[0]).to.equal(`something\n${verbosityInfo}\n`);
+    });
+
+    it('should allow setting the verbosity level globally', () => {
+      const logger = new Logger({
+        verbosity: 'verbose',
+      });
+      logger.log('something', 'something verbose', 'info');
+      expect(consoleLogStub.firstCall.args[0]).to.equal(`something verbose\n`);
+    });
+
+    it('should allow setting the verbosity level for log categories globally', () => {
+      const logger = new Logger({
+        verbosity: 'default',
+        info: {
+          verbosity: 'verbose',
+        },
+      });
+      logger.log('something', 'something verbose', 'info');
+      expect(consoleLogStub.firstCall.args[0]).to.equal(`something verbose\n`);
+    });
+
+    it('should allow setting the verbosity level for logs specifically', () => {
+      const logger = new Logger({
+        verbosity: 'default',
+        info: {
+          verbosity: 'default',
+        },
+        'info.test': {
+          verbosity: 'verbose',
+        },
+      });
+      logger.log('something', 'something verbose', 'info.test');
+      expect(consoleLogStub.firstCall.args[0]).to.equal(`something verbose\n`);
+    });
+  });
+
+  describe('subclass log types', () => {
+    class ExtensionLogger extends Logger {
+      /**
+       * @param {string} message
+       */
+      throw(message) {
+        throw new Error(`${message} 123`);
+      }
+
+      /**
+       * @param {string} message
+       */
+      error(message) {
+        console.error(`${message} 456`);
+      }
+
+      /**
+       * @param {string} message
+       */
+      warn(message) {
+        /* eslint-disable no-console */
+        console.log(`${message} 789`);
+      }
+
+      /**
+       * @param {string} message
+       */
+      success(message) {
+        console.log(`${message} 321`);
+      }
+
+      /**
+       * @param {string} message
+       */
+      info(message) {
+        console.log(`${message} 654`);
+      }
+
+      /**
+       * @param {string} message
+       */
+      debug(message) {
+        console.log(`${message} 987`);
+        /* eslint-enable no-console */
+      }
+    }
+    const sd = new StyleDictionary({ logger: new ExtensionLogger() });
+
+    it('should allow overriding the way errors are thrown', () => {
+      expect(() => {
+        sd.logger.log('throw example', 'throw.test');
+      }).to.throw('throw example 123');
+    });
+
+    it('should allow overriding the way errors are logged', () => {
+      sd.logger.log('error example', 'error.test');
+      expect(consoleErrorStub.firstCall.args[0]).to.equal('error example 456');
+    });
+
+    it('should allow overriding the way warnings are logged', () => {
+      sd.logger.log('warn example', 'warn.test');
+      expect(consoleLogStub.firstCall.args[0]).to.equal('warn example 789');
+    });
+
+    it('should allow overriding the way success logs are logged', () => {
+      sd.logger.log('success example', 'success.test');
+      expect(consoleLogStub.firstCall.args[0]).to.equal('success example 321');
+    });
+
+    it('should allow overriding the way regular info logs are logged', () => {
+      sd.logger.log('info example', 'info.test');
+      expect(consoleLogStub.firstCall.args[0]).to.equal('info example 654');
+    });
+
+    it('should allow overriding the way debug logs are logged', () => {
+      sd.logger.log('debug example', 'debug.test');
+      expect(consoleLogStub.firstCall.args[0]).to.equal('debug example 987');
+    });
+  });
+
+  describe('backwards compatibility', () => {
+    it('should detect whether user has opted into the new system or still using the old', () => {
+      const loggerOld = new Logger({
+        warnings: 'error',
+      });
+      const loggerNew = new Logger({
+        warn: 'throw',
+      });
+      const loggerMixed = new Logger({
+        warnings: 'error',
+        warn: 'info',
+      });
+
+      expect(loggerOld.__handleBackwardsCompatibility).to.be.true;
+      expect(loggerNew.__handleBackwardsCompatibility).to.be.false;
+      expect(loggerMixed.__handleBackwardsCompatibility).to.be.false;
+    });
+
+    it('should allow using old way of setting transform errors to just be console logged', () => {
+      const logger = new Logger({
+        errors: { transforms: 'console' },
+      });
+      logger.log('some transform error', 'error.transforms');
+      expect(consoleLogStub.firstCall.args[0]).to.equal('some transform error\n');
+    });
+
+    it('should allow using old way of setting broken reference errors to just be console logged', () => {
+      const logger = new Logger({
+        errors: { brokenReferences: 'console' },
+      });
+      logger.log('some reference error', 'throw.references');
+      expect(consoleLogStub.firstCall.args[0]).to.equal('some reference error\n');
+    });
+
+    it('should allow using old way of setting warnings to be disabled', () => {
+      const logger = new Logger({
+        warnings: 'disabled',
+      });
+      logger.log('some warning', 'warn');
+      expect(consoleLogStub.called).to.be.false;
+    });
+
+    it('should allow using old way of setting warnings to be thrown', () => {
+      const logger = new Logger({
+        warnings: 'error',
+      });
+      expect(() => logger.log('some warning', 'warn')).to.throw('some warning');
     });
   });
 });
