@@ -84,23 +84,49 @@ This is for creating the comment at the top of generated files with the generate
 It will use the custom file header if defined on the configuration, or use the
 default file header.
 
-| Param                     | Type                             | Description                                                                                                                                                                                                                                                   |
-| ------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `options`                 | `Object`                         |                                                                                                                                                                                                                                                               |
-| `options.file`            | [`File`](/reference/config#file) | The file object that is passed to the format.                                                                                                                                                                                                                 |
-| `options.commentStyle`    | `string`                         | The only options are `'short'`, `'xml'` and `'long'`, which will use the `//`, `<!-- -->` or `/*` style comments respectively. Defaults to `'long'`. There is an [enum-like JS object](/reference/enums#comment-styles) `commentStyles` available for import. |
-| `options.commentPosition` | `string`                         | `'above'` or `'inline'`, so either above the token or inline with the token. There is an [enum-like JS object](/reference/enums#comment-positions) `commentPositions` available for import.                                                                   |
-| `options.formatting`      | `Object`                         | Custom formatting properties that define parts of a comment in code. The configurable strings are: `prefix`, `lineSeparator`, `header`, `footer` and `fileHeaderTimestamp`.                                                                                   |
+| Param                     | Type                             | Description                                                                                                                                                                                                                                                              |
+| ------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `options`                 | `Object`                         |                                                                                                                                                                                                                                                                          |
+| `options.file`            | [`File`](/reference/config#file) | The file object that is passed to the format.                                                                                                                                                                                                                            |
+| `options.commentStyle`    | `string`                         | The format's default comment style. Options: `'short'`, `'xml'`, `'long'`. Can be overridden via `formatting.fileHeader.commentStyle`. There is an [enum-like JS object](/reference/enums#file-header-comment-styles) `fileHeaderCommentStyles` available for import.    |
+| `options.formatting`      | `Object`                         | Custom formatting properties. Use `formatting.fileHeader` for file-header-specific options (see below).                                                                                                                                                                  |
+| `options.options`         | `Object`                         | The options/config object passed to the format. Used for legacy `commentStyle` resolution.                                                                                                                                                                               |
 
-Example:
+#### File Header Formatting Options
+
+You can configure file header formatting via `formatting.fileHeader`:
+
+| Property                              | Type      | Description                                                                              |
+| ------------------------------------- | --------- | ---------------------------------------------------------------------------------------- |
+| `formatting.fileHeader.commentStyle`  | `string`  | Comment style: `'short'` (`//`), `'long'` (`/* */`), or `'xml'` (`<!-- -->`).             |
+| `formatting.fileHeader.timestamp`     | `boolean` | Whether to include a timestamp. Defaults to `false`.                                     |
+| `formatting.fileHeader.prefix`        | `string`  | Prefix for each line (e.g., `' * '`).                                                    |
+| `formatting.fileHeader.header`        | `string`  | Opening string (e.g., `'/**\n'`). Use `'/*!\n'` for legal comments preserved in minification. |
+| `formatting.fileHeader.footer`        | `string`  | Closing string (e.g., `'\n */\n\n'`).                                                    |
+| `formatting.fileHeader.lineSeparator` | `string`  | Line separator. Defaults to `'\n'`.                                                      |
+
+**Priority Chain:** Options are resolved in this order (highest priority first):
+1. `formatting.fileHeader.*` - Most specific file header options
+2. `file.options.formatting.fileHeader.*` - File-level config
+3. `formatting.commentStyle` - General formatting (for both tokens and file header)
+4. `file.options.commentStyle` - Legacy file-level option
+5. `commentStyle` parameter - Format's default
+6. `'long'` - Ultimate default
+
+Example using the new API:
 
 ```js title="build-tokens.js"
-import { commentStyles } from 'style-dictionary/enums';
+import { fileHeaderCommentStyles } from 'style-dictionary/enums';
 
 StyleDictionary.registerFormat({
   name: 'myCustomFormat',
-  format: async ({ dictionary, file }) => {
-    const header = await fileHeader({ file, commentStyle: commentStyles.short });
+  format: async ({ dictionary, file, options }) => {
+    const header = await fileHeader({
+      file,
+      commentStyle: fileHeaderCommentStyles.short, // format's default
+      formatting: options.formatting,
+      options,
+    });
     return (
       header + dictionary.allTokens.map((token) => `${token.name} = ${token.value};`).join('\n')
     );
@@ -108,9 +134,47 @@ StyleDictionary.registerFormat({
 });
 ```
 
-Use `options.formatting.fileHeaderTimestamp` set to `true` to create a fileHeader that contains a timestamp for when the file was created.
-This used to be default behavior but was made opt-in to accompany the common use case of Style Dictionary running in Continuous Integration (CI) pipelines,
-and not wanting to create redundant git diffs just because of the timestamp changing between versions.
+User can override via config:
+
+```js title="config.js"
+export default {
+  platforms: {
+    css: {
+      options: {
+        formatting: {
+          fileHeader: {
+            commentStyle: 'long', // override format's default
+            timestamp: true,
+          },
+        },
+      },
+      files: [
+        {
+          destination: 'variables.css',
+          format: 'myCustomFormat',
+          options: {
+            formatting: {
+              fileHeader: {
+                // Legal comment preserved in minification
+                header: '/*!\n',
+                footer: '\n */\n\n',
+              },
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+```
+
+#### Backward Compatibility
+
+The following legacy options are still supported:
+
+- `formatting.fileHeaderTimestamp` - Use `formatting.fileHeader.timestamp` instead (deprecated, will be removed in v6.0)
+- `file.options.commentStyle` - Use `formatting.fileHeader.commentStyle` instead
+- Top-level `formatting.header`, `formatting.footer`, `formatting.prefix` - Still work but `formatting.fileHeader.*` takes precedence
 
 ---
 
