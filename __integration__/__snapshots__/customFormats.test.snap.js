@@ -834,6 +834,18 @@ snapshots["integration custom formats inline custom with new args should match s
         "color/sketch": {
           "type": "value"
         },
+        "color/oklch": {
+          "type": "value"
+        },
+        "color/oklab": {
+          "type": "value"
+        },
+        "color/p3": {
+          "type": "value"
+        },
+        "color/lch": {
+          "type": "value"
+        },
         "size/sp": {
           "type": "value"
         },
@@ -1846,6 +1858,18 @@ snapshots["integration custom formats register custom format with new args shoul
           "type": "value"
         },
         "color/sketch": {
+          "type": "value"
+        },
+        "color/oklch": {
+          "type": "value"
+        },
+        "color/oklab": {
+          "type": "value"
+        },
+        "color/p3": {
+          "type": "value"
+        },
+        "color/lch": {
           "type": "value"
         },
         "size/sp": {

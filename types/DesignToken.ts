@@ -67,3 +67,34 @@ export interface Dictionary {
   unfilteredAllTokens?: TransformedToken[];
   unfilteredTokenMap?: Map<string, TransformedToken>;
 }
+
+/**
+ * DTCG v2025.10 color spaces
+ * @see https://tr.designtokens.org/format/#color
+ */
+export type DTCGColorSpace =
+  | 'srgb'
+  | 'srgb-linear'
+  | 'display-p3'
+  | 'a98-rgb'
+  | 'prophoto-rgb'
+  | 'rec2020'
+  | 'xyz-d50'
+  | 'xyz-d65'
+  | 'lab'
+  | 'lch'
+  | 'oklab'
+  | 'oklch'
+  | 'hsl'
+  | 'hwb';
+
+/**
+ * DTCG v2025.10 color value format
+ * @see https://tr.designtokens.org/format/#color
+ */
+export interface DTCGColorValue {
+  colorSpace: DTCGColorSpace;
+  components: (number | 'none')[];
+  alpha?: number | 'none';
+  hex?: string;
+}

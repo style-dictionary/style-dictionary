@@ -121,6 +121,7 @@
     "@zip.js/zip.js": "^2.7.44",
     "chalk": "^5.3.0",
     "change-case": "^5.3.0",
+    "colorjs.io": "^0.5.2",
     "commander": "^12.1.0",
     "is-plain-obj": "^4.1.0",
     "json5": "^2.2.2",

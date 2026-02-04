@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import Color from 'tinycolor2';
-import transforms, { isColor } from '../../lib/common/transforms.js';
+import transforms, { isColor, isDTCGColorObject } from '../../lib/common/transforms.js';
 import { transforms as transformNames } from '../../lib/enums/index.js';
 
 const {
@@ -23,6 +23,10 @@ const {
   colorHex8flutter,
   colorCss,
   colorSketch,
+  colorOklch,
+  colorOklab,
+  colorP3,
+  colorLch,
   sizeSp,
   sizeDp,
   sizeObject,
@@ -419,6 +423,60 @@ describe('common', () => {
         expect(value).to.equal('#80808080');
         expect(value2).to.equal('#808080');
       });
+
+      it('should handle DTCG sRGB object format', () => {
+        const value = transforms[colorHex].transform(
+          {
+            $value: { colorSpace: 'srgb', components: [1, 0.42, 0.21], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.equal('#ff6b36');
+      });
+
+      it('should handle DTCG object format with alpha', () => {
+        const value = transforms[colorHex].transform(
+          {
+            $value: { colorSpace: 'srgb', components: [0.667, 0.667, 0.667], alpha: 0.5 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.equal('#aaaaaa80');
+      });
+
+      it('should handle DTCG oklch color space', () => {
+        const value = transforms[colorHex].transform(
+          {
+            $value: { colorSpace: 'oklch', components: [0.628, 0.258, 29.23], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        // Should convert oklch to sRGB hex
+        expect(value).to.match(/^#[0-9a-f]{6}$/i);
+      });
+
+      it('should use hex fallback for out-of-gamut colors', () => {
+        const value = transforms[colorHex].transform(
+          {
+            $value: {
+              colorSpace: 'display-p3',
+              components: [1, 0, 0],
+              alpha: 1,
+              hex: '#ff0000',
+            },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.equal('#ff0000');
+      });
     });
 
     describe(colorHex8, () => {
@@ -499,6 +557,30 @@ describe('common', () => {
           },
           {},
           {},
+        );
+        expect(value).to.equal('rgba(170, 170, 170, 0.6)');
+      });
+
+      it('should handle DTCG sRGB object format', () => {
+        const value = transforms[colorRgb].transform(
+          {
+            $value: { colorSpace: 'srgb', components: [0.667, 0.667, 0.667], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.equal('rgb(170, 170, 170)');
+      });
+
+      it('should handle DTCG object format with alpha', () => {
+        const value = transforms[colorRgb].transform(
+          {
+            $value: { colorSpace: 'srgb', components: [0.667, 0.667, 0.667], alpha: 0.6 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
         );
         expect(value).to.equal('rgba(170, 170, 170, 0.6)');
       });
@@ -751,6 +833,177 @@ describe('common', () => {
           b: value.blue * 255,
         });
         expect(originalHex).equal(newHex.toHexString());
+      });
+
+      it('should handle DTCG sRGB object format', () => {
+        const value = transforms[colorSketch].transform(
+          {
+            $value: { colorSpace: 'srgb', components: [0.5, 0.5, 0.5], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(parseFloat(value.red)).to.be.closeTo(0.5, 0.01);
+        expect(parseFloat(value.green)).to.be.closeTo(0.5, 0.01);
+        expect(parseFloat(value.blue)).to.be.closeTo(0.5, 0.01);
+        expect(value.alpha).to.equal(1);
+      });
+    });
+
+    describe(colorOklch, () => {
+      it('should transform hex color to oklch', () => {
+        const value = transforms[colorOklch].transform(
+          {
+            value: '#ff0000',
+          },
+          {},
+          {},
+        );
+        expect(value).to.match(/^oklch\(\d+\.\d+ \d+\.\d+ \d+\.\d+\)$/);
+      });
+
+      it('should handle colors with alpha', () => {
+        const value = transforms[colorOklch].transform(
+          {
+            value: 'rgba(255, 0, 0, 0.5)',
+          },
+          {},
+          {},
+        );
+        expect(value).to.match(/^oklch\(\d+\.\d+ \d+\.\d+ \d+\.\d+ \/ 0\.5\)$/);
+      });
+
+      it('should handle DTCG oklch object format', () => {
+        const value = transforms[colorOklch].transform(
+          {
+            $value: { colorSpace: 'oklch', components: [0.7, 0.15, 180], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.equal('oklch(0.7000 0.1500 180.00)');
+      });
+
+      it('should handle DTCG sRGB color conversion to oklch', () => {
+        const value = transforms[colorOklch].transform(
+          {
+            $value: { colorSpace: 'srgb', components: [1, 0, 0], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.match(/^oklch\(\d+\.\d+ \d+\.\d+ \d+\.\d+\)$/);
+      });
+    });
+
+    describe(colorOklab, () => {
+      it('should transform hex color to oklab', () => {
+        const value = transforms[colorOklab].transform(
+          {
+            value: '#ff0000',
+          },
+          {},
+          {},
+        );
+        expect(value).to.match(/^oklab\(\d+\.\d+ -?\d+\.\d+ -?\d+\.\d+\)$/);
+      });
+
+      it('should handle colors with alpha', () => {
+        const value = transforms[colorOklab].transform(
+          {
+            value: 'rgba(255, 0, 0, 0.5)',
+          },
+          {},
+          {},
+        );
+        expect(value).to.match(/^oklab\(\d+\.\d+ -?\d+\.\d+ -?\d+\.\d+ \/ 0\.5\)$/);
+      });
+
+      it('should handle DTCG oklab object format', () => {
+        const value = transforms[colorOklab].transform(
+          {
+            $value: { colorSpace: 'oklab', components: [0.7, -0.1, 0.1], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.equal('oklab(0.7000 -0.1000 0.1000)');
+      });
+    });
+
+    describe(colorP3, () => {
+      it('should transform hex color to display-p3', () => {
+        const value = transforms[colorP3].transform(
+          {
+            value: '#ff0000',
+          },
+          {},
+          {},
+        );
+        expect(value).to.match(/^color\(display-p3 \d+\.\d+ \d+\.\d+ \d+\.\d+\)$/);
+      });
+
+      it('should handle colors with alpha', () => {
+        const value = transforms[colorP3].transform(
+          {
+            value: 'rgba(255, 0, 0, 0.5)',
+          },
+          {},
+          {},
+        );
+        expect(value).to.match(/^color\(display-p3 \d+\.\d+ \d+\.\d+ \d+\.\d+ \/ 0\.5\)$/);
+      });
+
+      it('should handle DTCG display-p3 object format', () => {
+        const value = transforms[colorP3].transform(
+          {
+            $value: { colorSpace: 'display-p3', components: [0.5, 0.5, 0.5], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.equal('color(display-p3 0.50000 0.50000 0.50000)');
+      });
+    });
+
+    describe(colorLch, () => {
+      it('should transform hex color to lch', () => {
+        const value = transforms[colorLch].transform(
+          {
+            value: '#ff0000',
+          },
+          {},
+          {},
+        );
+        expect(value).to.match(/^lch\(\d+\.\d+% \d+\.\d+ \d+\.\d+\)$/);
+      });
+
+      it('should handle colors with alpha', () => {
+        const value = transforms[colorLch].transform(
+          {
+            value: 'rgba(255, 0, 0, 0.5)',
+          },
+          {},
+          {},
+        );
+        expect(value).to.match(/^lch\(\d+\.\d+% \d+\.\d+ \d+\.\d+ \/ 0\.5\)$/);
+      });
+
+      it('should handle DTCG lch object format', () => {
+        const value = transforms[colorLch].transform(
+          {
+            $value: { colorSpace: 'lch', components: [50, 30, 180], alpha: 1 },
+            $type: 'color',
+          },
+          {},
+          { usesDtcg: true },
+        );
+        expect(value).to.equal('lch(50.00% 30.00 180.00)');
       });
     });
 
@@ -1692,6 +1945,67 @@ describe('common', () => {
 
       it('should ignore values that cannot convert to a color', () => {
         expect(isColor({ type: 'color', value: 'currentColor' }, {})).to.be.false;
+      });
+
+      it('should match DTCG object format colors', () => {
+        expect(
+          isColor(
+            {
+              $type: 'color',
+              $value: { colorSpace: 'srgb', components: [1, 0.42, 0.21], alpha: 1 },
+            },
+            { usesDtcg: true },
+          ),
+        ).to.be.true;
+        expect(
+          isColor(
+            {
+              $type: 'color',
+              $value: { colorSpace: 'oklch', components: [0.7, 0.15, 180], alpha: 0.5 },
+            },
+            { usesDtcg: true },
+          ),
+        ).to.be.true;
+        expect(
+          isColor(
+            {
+              $type: 'color',
+              $value: { colorSpace: 'display-p3', components: [0.5, 0.5, 0.5] },
+            },
+            { usesDtcg: true },
+          ),
+        ).to.be.true;
+      });
+
+      it('should reject DTCG objects with invalid colorSpace', () => {
+        expect(
+          isColor(
+            {
+              $type: 'color',
+              $value: { colorSpace: 'invalid', components: [1, 0, 0] },
+            },
+            { usesDtcg: true },
+          ),
+        ).to.be.false;
+      });
+    });
+
+    describe('isDTCGColorObject', () => {
+      it('should return true for valid DTCG color objects', () => {
+        expect(isDTCGColorObject({ colorSpace: 'srgb', components: [1, 0, 0] })).to.be.true;
+        expect(isDTCGColorObject({ colorSpace: 'oklch', components: [0.7, 0.15, 180], alpha: 0.5 }))
+          .to.be.true;
+        expect(isDTCGColorObject({ colorSpace: 'display-p3', components: [0.5, 0.5, 0.5] })).to.be
+          .true;
+      });
+
+      it('should return false for non-DTCG values', () => {
+        expect(isDTCGColorObject('#ff0000')).to.be.false;
+        expect(isDTCGColorObject('rgb(255, 0, 0)')).to.be.false;
+        expect(isDTCGColorObject(null)).to.be.false;
+        expect(isDTCGColorObject(undefined)).to.be.false;
+        expect(isDTCGColorObject({ colorSpace: 'invalid', components: [1, 0, 0] })).to.be.false;
+        expect(isDTCGColorObject({ colorSpace: 'srgb' })).to.be.false; // missing components
       });
     });
   });
