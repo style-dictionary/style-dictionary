@@ -3,6 +3,7 @@ import { stubMethod, restore } from 'hanbi';
 import StyleDictionary from '../../../lib/StyleDictionary.js';
 import { Logger } from '../../../lib/utils/logging/logger.js';
 import { verbosityInfo } from '../../../lib/utils/groupMessages.js';
+import { logLevels } from '../../../lib/enums/index.js';
 
 describe('Logger', () => {
   /** @type {import('../../../lib/utils/logging/logger.js').Logger} */
@@ -89,6 +90,34 @@ Refer to: https://styledictionary.com/reference/logging/
       logger.log('warn as error', 'warn.collisions');
       expect(consoleErrorStub.callCount).to.equal(1);
       expect(consoleErrorStub.firstCall.args[0]).to.include('warn as error');
+    });
+
+    it('should throw an error if the log to be added does not use a correct logLevel prefix', () => {
+      expect(() => logger.add('foo.bar', 'baz.qux', { message: 'some log' })).to.throw(
+        `When adding logs, the "type" argument must be a string with one of the allowed log level prefixes: [throw, error, warn, success, info, debug]. We got foo instead.`,
+      );
+    });
+
+    it('the test above cannot have its error silenced via logger', () => {
+      // attempt to silence via threshold as well as setting throws to be logged as debugs
+      logger = new Logger({ threshold: logLevels.silent, throw: 'debug' });
+      // still errors
+      expect(() => logger.add('foo.bar', 'baz.qux', { message: 'some log' })).to.throw();
+    });
+
+    it('throw an error if log method itself does not use a correct log level', () => {
+      const errMessage = `When adding logs, the "type" argument must be a string with one of the allowed log level prefixes: [throw, error, warn, success, info, debug]. We got foo instead.`;
+      expect(() => logger.log('some log', 'foo.bar')).to.throw(errMessage);
+      expect(() => logger.log('some log', 'foo')).to.throw(errMessage);
+      expect(() => logger.log('some log', 'info')).to.not.throw();
+      expect(() => logger.log('some log')).to.not.throw();
+    });
+
+    it('the test above cannot have its error silenced via logger', () => {
+      // attempt to silence via threshold as well as setting throws to be logged as debugs
+      logger = new Logger({ threshold: logLevels.silent, throw: 'debug' });
+      // still errors
+      expect(() => logger.log('some log', 'foo.bar')).to.throw();
     });
   });
 

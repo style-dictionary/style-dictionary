@@ -1011,16 +1011,9 @@ snapshots["integration custom formats inline custom with new args should match s
     },
     "logger": {
       "store": {
-        "throw": {
-          "references": {}
-        },
-        "error": {
-          "transforms": {}
-        },
-        "warn": {
-          "collisions": {},
-          "nameCollisions": {}
-        },
+        "throw": {},
+        "error": {},
+        "warn": {},
         "success": {},
         "info": {},
         "debug": {}
@@ -2042,16 +2035,9 @@ snapshots["integration custom formats register custom format with new args shoul
     },
     "logger": {
       "store": {
-        "throw": {
-          "references": {}
-        },
-        "error": {
-          "transforms": {}
-        },
-        "warn": {
-          "collisions": {},
-          "nameCollisions": {}
-        },
+        "throw": {},
+        "error": {},
+        "warn": {},
         "success": {},
         "info": {},
         "debug": {}
