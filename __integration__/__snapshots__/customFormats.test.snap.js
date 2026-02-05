@@ -1020,6 +1020,7 @@ snapshots["integration custom formats inline custom with new args should match s
       },
       "logMap": {},
       "config": {
+        "threshold": "info",
         "verbosity": "default",
         "warnings": "warn"
       },
@@ -2044,6 +2045,7 @@ snapshots["integration custom formats register custom format with new args shoul
       },
       "logMap": {},
       "config": {
+        "threshold": "info",
         "verbosity": "default",
         "warnings": "warn"
       },

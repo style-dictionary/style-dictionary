@@ -45,7 +45,13 @@ describe('Logger', () => {
       expect(consoleLogStub.firstCall.args[0]).to.equal('info message\n');
     });
 
-    it('should log debug messages to console.log dimmed', () => {
+    it('should not log debug messages by default, because default threshold is info', () => {
+      logger.log('debug message', 'debug');
+      expect(consoleLogStub.callCount).to.equal(0);
+    });
+
+    it('should allow logging debug messages to console.log dimmed by specifying a debug threshold', () => {
+      logger = new Logger({ threshold: logLevels.debug });
       logger.log('debug message', 'debug');
       expect(consoleLogStub.callCount).to.equal(1);
       expect(consoleLogStub.firstCall.args[0]).to.include('debug message');
@@ -306,6 +312,7 @@ Refer to: https://styledictionary.com/reference/logging/
     });
 
     it('should allow overriding the way debug logs are logged', () => {
+      sd.logger = new ExtensionLogger({ threshold: logLevels.debug });
       sd.logger.log('debug example', 'debug.test');
       expect(consoleLogStub.firstCall.args[0]).to.equal('debug example 987');
     });

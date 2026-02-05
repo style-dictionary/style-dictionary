@@ -69,7 +69,7 @@ Filtering tokens works by adding a `filter` attribute on the file object, where 
 
 ```javascript
 {
-  "destination": "destination",
+  "destination": "destination.filetype",
   "format": "myCustomFormat",
   "filter": "myCustomFilter", // a named filter defined with .registerFilter
   "filter": function(token) {}, // an inline function
@@ -452,7 +452,7 @@ To use your custom format, you call it by name in the file configuration object:
       "transformGroup": "css",
       "files": [
         {
-          "destination": "destination",
+          "destination": "destination.filetype",
           "format": "myCustomFormat",
           "options": {
             "showFileHeader": false

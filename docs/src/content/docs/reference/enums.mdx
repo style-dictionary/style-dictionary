@@ -4,11 +4,13 @@ sidebar:
   order: 4
 ---
 
-This page documents the enums introduced in Style-Dictionary. Enums provide a set of named constants that enhance code maintainability, readability, and type safety.
+import { Badge } from '@astrojs/starlight/components';
 
-Although Style-Dictionary offers TypeScript type definition files, it cannot provide actual TypeScript enums because its code base is written in JavaScript using JSDocs type annotations, and real enums are a TypeScript-only feature. To still leverage the benefits of enums and reduce the use of hardcoded strings throughout the JavaScript codebase of Style-Dictionary itself, we have introduced enum-like JavaScript objects, which provide the same kind of type safety, but can also be used in JavaScript projects.
+This page documents the enums introduced in Style Dictionary. Enums provide a set of named constants that enhance code maintainability, readability, and type safety.
 
-These enum-like objects are used internally within Style-Dictionary, and you can also use them in your own configurations, whether you are working with TypeScript or JavaScript.
+Given that Style Dictionary is written in type-annotated JavaScript (via JSDocs) and that TypeScript enums are notoriously user-unfriendly, we're exporting enums as type-annotated JavaScript constants (enum-like objects). This provides the same kind of type-safety, is easier to use because you can use the matching string, and it can also be used in JavaScript projects.
+
+These enum-like objects are used internally within Style Dictionary. You can also use them in your own configurations, whether you are working with TypeScript or JavaScript.
 
 ## Enums Usage Example
 
@@ -118,6 +120,7 @@ export const formats = {
   androidStrings: 'android/strings',
   composeObject: 'compose/object',
   cssVariables: 'css/variables',
+  cssFonts: 'css/fonts.css',
   flutterClassDart: 'flutter/class.dart',
   iosColorsH: 'ios/colors.h',
   iosColorsM: 'ios/colors.m',
@@ -133,11 +136,13 @@ export const formats = {
   iosSwiftClassSwift: 'ios-swift/class.swift',
   iosSwiftEnumSwift: 'ios-swift/enum.swift',
   javascriptEs6: 'javascript/es6',
+  javascriptEsm: 'javascript/esm',
   javascriptModule: 'javascript/module',
   javascriptModuleFlat: 'javascript/module-flat',
   javascriptObject: 'javascript/object',
   javascriptUmd: 'javascript/umd',
   json: 'json',
+  jsonAsset: 'json/asset',
   jsonNested: 'json/nested',
   jsonFlat: 'json/flat',
   sketchPalette: 'sketchPalette',
@@ -154,38 +159,6 @@ export const formats = {
 };
 ```
 
-### Log Broken Reference Levels
-
-```javascript
-// enums/logErrorLevels.js
-export const logErrorLevels = {
-  throw: 'throw',
-  console: 'console',
-};
-```
-
-### Log Verbosity Levels
-
-```javascript
-// enums/logVerbosityLevels.js
-export const logVerbosityLevels = {
-  default: 'default',
-  silent: 'silent',
-  verbose: 'verbose',
-};
-```
-
-### Log Warning Levels
-
-```javascript
-// enums/logWarningLevels.js
-export const logWarningLevels = {
-  warn: 'warn',
-  error: 'error',
-  disabled: 'disabled',
-};
-```
-
 ### Property Format Names
 
 ```javascript
@@ -195,6 +168,15 @@ export const propertyFormatNames = {
   sass: 'sass',
   less: 'less',
   stylus: 'stylus',
+};
+```
+
+### Builtin Sorts
+
+```javascript
+// enums/sorts.js
+export const builtInSorts = {
+  name: 'name',
 };
 ```
 
@@ -297,6 +279,80 @@ export const transformTypes = {
   attribute: 'attribute',
   name: 'name',
   value: 'value',
+};
+```
+
+### Logging
+
+#### Log Broken Reference Levels <Badge text="Deprecated" variant="danger" />
+
+Use logErrorLevels instead
+
+```javascript
+// enums/logging/logBrokenReferenceLevels.js
+export const logBrokenReferenceLevels = {
+  throw: 'throw',
+  console: 'console',
+};
+```
+
+#### Log Builtin Keys
+
+```javascript
+// enums/logging/logBuiltinKeys.js
+export const logBuiltinKeys = {
+  'throw.references': 'throw.references',
+  'error.transforms': 'error.transforms',
+  'warn.collisions': 'warn.collisions',
+  'warn.nameCollisions': 'warn.nameCollisions',
+};
+```
+
+#### Log Error Levels
+
+```javascript
+// enums/logging/logErrorLevels.js
+export const logErrorLevels = {
+  throw: 'throw',
+  console: 'console',
+};
+```
+
+#### Log Levels
+
+```javascript
+// enums/logging/logLevels.js
+export const logLevels = {
+  throw: 'throw',
+  error: 'error',
+  warn: 'warn',
+  success: 'success',
+  info: 'info',
+  debug: 'debug',
+  silent: 'silent',
+};
+```
+
+#### Log Verbosity Levels
+
+```javascript
+// enums/logging/logVerbosityLevels.js
+export const logVerbosityLevels = {
+  default: 'default',
+  verbose: 'verbose',
+  /** @deprecated  use log.threshold -> 'silent' instead */
+  silent: 'silent',
+};
+```
+
+#### Log Warning Levels
+
+```javascript
+// enums/logging/logWarningLevels.js
+export const logWarningLevels = {
+  warn: 'warn',
+  error: 'error',
+  disabled: 'disabled',
 };
 ```
 
