@@ -606,11 +606,8 @@ snapshots["integration custom formats inline custom with new args should match s
       }
     ],
     "log": {
-      "warnings": "warn",
       "verbosity": "default",
-      "errors": {
-        "brokenReferences": "throw"
-      }
+      "warnings": "warn"
     },
     "transforms": [
       {
@@ -1009,11 +1006,25 @@ snapshots["integration custom formats inline custom with new args should match s
       }
     },
     "log": {
-      "warnings": "warn",
       "verbosity": "default",
-      "errors": {
-        "brokenReferences": "throw"
-      }
+      "warnings": "warn"
+    },
+    "logger": {
+      "store": {
+        "throw": {},
+        "error": {},
+        "warn": {},
+        "success": {},
+        "info": {},
+        "debug": {}
+      },
+      "logMap": {},
+      "config": {
+        "threshold": "info",
+        "verbosity": "default",
+        "warnings": "warn"
+      },
+      "__handleBackwardsCompatibility": true
     },
     "usesDtcg": false,
     "otherOption": "Test",
@@ -1620,11 +1631,8 @@ snapshots["integration custom formats register custom format with new args shoul
       }
     ],
     "log": {
-      "warnings": "warn",
       "verbosity": "default",
-      "errors": {
-        "brokenReferences": "throw"
-      }
+      "warnings": "warn"
     },
     "transforms": [
       {
@@ -2023,11 +2031,25 @@ snapshots["integration custom formats register custom format with new args shoul
       }
     },
     "log": {
-      "warnings": "warn",
       "verbosity": "default",
-      "errors": {
-        "brokenReferences": "throw"
-      }
+      "warnings": "warn"
+    },
+    "logger": {
+      "store": {
+        "throw": {},
+        "error": {},
+        "warn": {},
+        "success": {},
+        "info": {},
+        "debug": {}
+      },
+      "logMap": {},
+      "config": {
+        "threshold": "info",
+        "verbosity": "default",
+        "warnings": "warn"
+      },
+      "__handleBackwardsCompatibility": true
     },
     "usesDtcg": false,
     "otherOption": "Test",

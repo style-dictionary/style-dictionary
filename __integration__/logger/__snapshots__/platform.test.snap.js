@@ -37,16 +37,15 @@ Refer to: https://styledictionary.com/reference/logging/
 /* end snapshot integration logging platform property reference errors circular references should throw and notify users */
 
 snapshots["integration logging platform should warn and notify users of transform errors 1"] = 
-`
-Some token transformations (1) could not be applied correctly.
+`✘ Some token transformations (1) could not be applied correctly.
+
 Use log.verbosity "verbose" or use CLI option --verbose for more details.
 Refer to: https://styledictionary.com/reference/logging/
 `;
 /* end snapshot integration logging platform should warn and notify users of transform errors 1 */
 
 snapshots["integration logging platform should warn and notify users of transform errors 2"] = 
-`
-Some token transformations (1) could not be applied correctly.
+`✘ Some token transformations (1) could not be applied correctly.
 
 Transform Error: token "colors.red" with value:
 \`123\` (type: number)

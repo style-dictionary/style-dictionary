@@ -4,7 +4,6 @@ export type {
   PlatformConfig,
   Config,
   LocalOptions,
-  LogConfig,
   Hooks,
   ExpandFilter,
   Expand,
@@ -35,3 +34,12 @@ export type { Preprocessor } from './Preprocessor.js';
 export type { Transform, NameTransform, AttributeTransform, ValueTransform } from './Transform.js';
 
 export type { Volume } from './Volume.js';
+
+export type {
+  Log,
+  LogConfig,
+  LogConfigSub,
+  LogBuiltinKeys,
+  LogLevels,
+  LogVerbosityLevels,
+} from './Logger.js';
