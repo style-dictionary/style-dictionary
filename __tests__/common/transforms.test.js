@@ -1741,6 +1741,62 @@ describe('common', () => {
         ).to.equal('5px dashed #000000');
       });
 
+      it('handles color prop when using DTCGColorValue', () => {
+        expect(
+          borderTransform({
+            width: '5px',
+            style: {
+              dashArray: ['0.5rem', '0.25rem'],
+              lineCap: 'round',
+            },
+            color: {
+              colorSpace: 'lab',
+              components: [60.17, 93.54, -60.5],
+            },
+          }),
+        ).to.match(/^5px dashed lab\(\d+.\d+ \d+.\d+ -\d+.\d+\)$/);
+
+        // with alpha
+        expect(
+          borderTransform({
+            width: '5px',
+            style: {
+              dashArray: ['0.5rem', '0.25rem'],
+              lineCap: 'round',
+            },
+            color: {
+              colorSpace: 'lab',
+              components: [60.17, 93.54, -60.5],
+              alpha: 0.5,
+            },
+          }),
+        ).to.equal('5px dashed lab(60.17 93.54 -60.5 / 0.5)');
+      });
+
+      it('supports specifying to what format the color prop should be stringified', () => {
+        expect(
+          transforms[borderCssShorthand].transform(
+            {
+              value: {
+                width: '5px',
+                style: {
+                  dashArray: ['0.5rem', '0.25rem'],
+                  lineCap: 'round',
+                },
+                color: {
+                  colorSpace: 'lab',
+                  components: [60.17, 93.54, -60.5],
+                  alpha: 0.5,
+                },
+              },
+              type: 'border',
+            },
+            { cssShorthandsColorSpace: 'srgb', cssShorthandsColorFormat: 'rgba' },
+            {},
+          ),
+        ).to.match(/^5px dashed rgba\(\d+(\.\d+)?%, \d+(\.\d+)?%, \d+(\.\d+)?%, \d+(\.\d+)?\)$/);
+      });
+
       it('allows every property to be optional', () => {
         expect(borderTransform({})).to.equal('none');
       });
@@ -1831,6 +1887,72 @@ describe('common', () => {
             },
           ]),
         ).to.equal('inset 4px 4px 12px 6px #000000, 2px 2px 4px rgba(0,0,0, 0.4)');
+      });
+
+      it('handles DTCG color values in shadows', () => {
+        expect(
+          shadowTransform([
+            {
+              type: 'inset',
+              color: {
+                colorSpace: 'lab',
+                components: [60.17, 90, -60.5],
+              },
+              offsetX: '4px',
+              offsetY: '4px',
+              blur: '12px',
+              spread: '6px',
+            },
+            {
+              color: {
+                colorSpace: 'lab',
+                components: [60.17, 90, -60.5],
+                alpha: 0.5,
+              },
+              offsetX: '2px',
+              offsetY: '2px',
+              blur: '4px',
+            },
+          ]),
+        ).to.equal(
+          'inset 4px 4px 12px 6px lab(60.17 90 -60.5), 2px 2px 4px lab(60.17 90 -60.5 / 0.5)',
+        );
+      });
+
+      it('supports specifying to what format the color prop should be stringified', () => {
+        expect(
+          transforms[transformNames.shadowCssShorthand].transform(
+            {
+              value: [
+                {
+                  type: 'inset',
+                  color: {
+                    colorSpace: 'lab',
+                    components: [60.17, 90, -60.5],
+                  },
+                  offsetX: '4px',
+                  offsetY: '4px',
+                  blur: '12px',
+                  spread: '6px',
+                },
+                {
+                  color: {
+                    colorSpace: 'lab',
+                    components: [60.17, 90, -60.5],
+                    alpha: 0.5,
+                  },
+                  offsetX: '2px',
+                  offsetY: '2px',
+                  blur: '4px',
+                },
+              ],
+            },
+            { cssShorthandsColorSpace: 'srgb', cssShorthandsColorFormat: 'rgba' },
+            {},
+          ),
+        ).to.match(
+          /^inset 4px 4px 12px 6px rgba\(\d+(\.\d+)?%, \d+(\.\d+)?%, \d+(\.\d+)?%(, \d+(\.\d+)?)?\), 2px 2px 4px rgba\(\d+(\.\d+)?%, \d+(\.\d+)?%, \d+(\.\d+)?%(, \d+(\.\d+)?)?\)$/,
+        );
       });
     });
 
