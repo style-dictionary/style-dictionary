@@ -114,4 +114,8 @@ export interface Config {
   parsers?: string[];
   preprocessors?: string[];
   usesDtcg?: boolean;
+  /**
+   * @deprecated Use `formatting.fileHeader.commentStyle` instead. Will be removed in v6.0.
+   */
+  commentStyle?: 'short' | 'long' | 'xml';
 }

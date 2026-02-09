@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { fixDate } from '../../__helpers.js';
 import fileHeader from '../../../lib/common/formatHelpers/fileHeader.js';
-import { fileHeaderCommentStyles } from '../../../lib/enums/index.js';
+import { fileHeaderCommentStyles, commentStyles } from '../../../lib/enums/index.js';
 
 const defaultLine1 = `Do not edit directly, this file was auto-generated.`;
 const defaultLine2 = `Generated on Sat, 01 Jan 2000 00:00:00 GMT`;

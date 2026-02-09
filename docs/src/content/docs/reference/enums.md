@@ -113,8 +113,10 @@ export const fileHeaderCommentStyles = {
 
 :::note
 The key difference between `commentStyles` and `fileHeaderCommentStyles`:
+
 - `commentStyles` includes `'none'` (to disable token comments) but not `'xml'`
 - `fileHeaderCommentStyles` includes `'xml'` (for Android/iOS XML files) but not `'none'` (use `showFileHeader: false` to disable file headers)
+
 :::
 
 ### Formats

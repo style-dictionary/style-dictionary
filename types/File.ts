@@ -48,6 +48,8 @@ export interface FormattingOverrides {
   commentStyle?: commentStyles[keyof commentStyles];
   commentPosition?: commentPositions[keyof commentPositions];
   indentation?: string;
+  /** Line separator (default: '\n'). For file header line separator, use formatting.fileHeader.lineSeparator */
+  lineSeparator?: string;
   header?: string;
   footer?: string;
   /**

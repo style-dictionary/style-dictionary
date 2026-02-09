@@ -35,9 +35,11 @@ The current implementation has overlapping formatting properties that are consum
 ### 3. Add JSDoc documentation to enums
 
 **File:** [lib/enums/fileHeaderCommentStyles.js](lib/enums/fileHeaderCommentStyles.js)
+
 - Add JSDoc clarifying: "Use for file header comments. Values: short, long, xml."
 
 **File:** [lib/enums/commentStyles.js](lib/enums/commentStyles.js)
+
 - Add JSDoc clarifying: "Use for token property comments. Values: short, long, none."
 
 ### 4. Update formats.js to pass formatting correctly
@@ -51,9 +53,10 @@ The current implementation has overlapping formatting properties that are consum
 
 ### 5. Update unit tests
 
-**File:** [\_\_tests\_\_/common/formatHelpers/fileHeader.test.js](\_\_tests\_\_/common/formatHelpers/fileHeader.test.js)
+**File:** [\_\_tests\_\_/common/formatHelpers/fileHeader.test.js](__tests__/common/formatHelpers/fileHeader.test.js)
 
 Add tests for:
+
 - New `formatting.fileHeader` API (commentStyle, timestamp, prefix, etc.)
 - Priority chain (fileHeader-specific overrides general formatting)
 - Backward compatibility (legacy `fileHeaderTimestamp` still works)
@@ -63,10 +66,12 @@ Add tests for:
 ### 6. Update integration tests
 
 **Files:**
-- [\_\_integration\_\_/customFileHeader.test.js](\_\_integration\_\_/customFileHeader.test.js)
-- [\_\_integration\_\_/showFileHeader.test.js](\_\_integration\_\_/showFileHeader.test.js)
+
+- [\_\_integration\_\_/customFileHeader.test.js](__integration__/customFileHeader.test.js)
+- [\_\_integration\_\_/showFileHeader.test.js](__integration__/showFileHeader.test.js)
 
 Add tests for:
+
 - Platform-level `formatting.fileHeader` overrides
 - File-level `formatting.fileHeader` overrides
 - Both old and new API working together
@@ -82,6 +87,7 @@ Add tests for:
 **File:** [CHANGELOG.md](CHANGELOG.md)
 
 Add entries:
+
 - **Added:** `formatting.fileHeader` option for file-header-specific formatting
 - **Deprecated:** `formatting.fileHeaderTimestamp` (use `formatting.fileHeader.timestamp`)
 - Note: v6.0.0 will remove deprecated options
@@ -123,6 +129,7 @@ Add entries:
 ## Priority Chain Summary
 
 For `commentStyle`:
+
 1. `formatting.fileHeader.commentStyle` - most specific
 2. `file.options.formatting.fileHeader.commentStyle`
 3. `formatting.commentStyle` - general (tokens + fileHeader follow)
@@ -135,6 +142,7 @@ For `commentStyle`:
 ## Backward Compatibility
 
 All existing configurations continue to work:
+
 - `formatting.fileHeaderTimestamp: true` → works (mapped to `fileHeader.timestamp`)
 - `file.options.commentStyle: 'short'` → works (legacy support)
 - `fileHeader({ commentStyle: 'xml' })` → works (format default parameter)
