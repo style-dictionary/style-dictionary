@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { fixDate } from '../../__helpers.js';
 import fileHeader from '../../../lib/common/formatHelpers/fileHeader.js';
+import { _resetDeprecationWarnings } from '../../../lib/common/formatHelpers/fileHeader.js';
 import { fileHeaderCommentStyles, commentStyles } from '../../../lib/enums/index.js';
 
 const defaultLine1 = `Do not edit directly, this file was auto-generated.`;
@@ -478,6 +479,217 @@ describe('common', () => {
 
 `,
         );
+      });
+
+      describe('additional priority chain coverage', () => {
+        it(`options.commentStyle (Config-level root) should override commentStyle parameter`, async () => {
+          const comment = await fileHeader({
+            commentStyle: 'long', // format's default
+            options: {
+              commentStyle: 'short', // Config-level root override
+            },
+          });
+          expect(comment).to.equal(
+            `
+// ${defaultLine1}
+
+`,
+          );
+        });
+
+        it(`file.options.formatting.fileHeader.prefix should be respected`, async () => {
+          const comment = await fileHeader({
+            file: {
+              options: {
+                formatting: {
+                  fileHeader: {
+                    prefix: '## ',
+                  },
+                },
+              },
+            },
+          });
+          expect(comment).to.equal(
+            `/**
+## ${defaultLine1}
+ */
+
+`,
+          );
+        });
+
+        it(`file.options.formatting.fileHeaderTimestamp (file-level legacy) should work`, async () => {
+          const comment = await fileHeader({
+            file: {
+              options: {
+                formatting: {
+                  fileHeaderTimestamp: true,
+                },
+              },
+            },
+          });
+          expect(comment).to.equal(
+            `/**
+ * ${defaultLine1}
+ * ${defaultLine2}
+ */
+
+`,
+          );
+        });
+
+        it(`file.options.formatting.fileHeader overrides should not be lost when formatting.fileHeader also exists`, async () => {
+          // This tests that file-level prefix is preserved even when
+          // formatting.fileHeader exists with a different property (commentStyle)
+          const comment = await fileHeader({
+            formatting: {
+              fileHeader: {
+                commentStyle: 'short', // platform-level commentStyle
+              },
+            },
+            file: {
+              options: {
+                formatting: {
+                  fileHeader: {
+                    prefix: '## ', // file-level prefix should be kept
+                  },
+                },
+              },
+            },
+          });
+          expect(comment).to.equal(
+            `
+## ${defaultLine1}
+
+`,
+          );
+        });
+
+        it(`file-level fileHeader.header should not be overridden by comment style defaults`, async () => {
+          const comment = await fileHeader({
+            formatting: {
+              fileHeader: {
+                commentStyle: 'xml',
+              },
+            },
+            file: {
+              options: {
+                formatting: {
+                  fileHeader: {
+                    header: '<!-- LICENSE\n',
+                  },
+                },
+              },
+            },
+          });
+          expect(comment).to.equal(
+            `<!-- LICENSE
+  ${defaultLine1}
+-->`,
+          );
+        });
+      });
+
+      describe('commentStyle none filtering', () => {
+        it(`should ignore commentStyle 'none' from formatting.commentStyle and fall back to default`, async () => {
+          // 'none' is valid for token comments but not for file headers
+          const comment = await fileHeader({
+            formatting: {
+              commentStyle: 'none',
+            },
+          });
+          // Should fall back to 'long' (default) instead of using 'none'
+          expect(comment).to.equal(
+            `/**
+ * ${defaultLine1}
+ */
+
+`,
+          );
+        });
+
+        it(`should ignore commentStyle 'none' and use commentStyle parameter as fallback`, async () => {
+          const comment = await fileHeader({
+            commentStyle: 'short',
+            formatting: {
+              commentStyle: 'none',
+            },
+          });
+          // 'none' is filtered, so commentStyle parameter 'short' should be used
+          expect(comment).to.equal(
+            `
+// ${defaultLine1}
+
+`,
+          );
+        });
+      });
+
+      describe('showFileHeader interaction with formatting.fileHeader', () => {
+        it(`showFileHeader false should return empty string even with formatting.fileHeader set`, async () => {
+          const comment = await fileHeader({
+            file: {
+              options: {
+                showFileHeader: false,
+              },
+            },
+            formatting: {
+              fileHeader: {
+                commentStyle: 'short',
+                timestamp: true,
+                prefix: '## ',
+              },
+            },
+          });
+          expect(comment).to.equal('');
+        });
+      });
+
+      describe('runtime deprecation warnings', () => {
+        let warnings;
+        let originalWarn;
+
+        beforeEach(() => {
+          warnings = [];
+          originalWarn = console.warn;
+          console.warn = (msg) => warnings.push(msg);
+          // Reset the "warn once" tracker so each test can observe its own warnings
+          _resetDeprecationWarnings();
+        });
+
+        afterEach(() => {
+          console.warn = originalWarn;
+        });
+
+        it(`should warn when using legacy fileHeaderTimestamp`, async () => {
+          await fileHeader({ formatting: { fileHeaderTimestamp: true } });
+          expect(
+            warnings.some((w) => w.includes('fileHeaderTimestamp') && w.includes('deprecated')),
+          ).to.be.true;
+        });
+
+        it(`should warn when using legacy file.options.commentStyle`, async () => {
+          await fileHeader({
+            file: { options: { commentStyle: 'short' } },
+          });
+          expect(
+            warnings.some(
+              (w) => w.includes('file.options.commentStyle') && w.includes('deprecated'),
+            ),
+          ).to.be.true;
+        });
+
+        it(`should warn about unknown keys in formatting.fileHeader`, async () => {
+          await fileHeader({
+            formatting: {
+              fileHeader: {
+                commentStlye: 'short', // typo
+              },
+            },
+          });
+          expect(warnings.some((w) => w.includes('commentStlye') && w.includes('Unknown'))).to.be
+            .true;
+        });
       });
     });
   });

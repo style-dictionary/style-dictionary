@@ -4,7 +4,7 @@ import {
   formattedVariables,
   sortByReference,
 } from 'style-dictionary/utils';
-import { commentStyles, transformGroups } from 'style-dictionary/enums';
+import { fileHeaderCommentStyles, transformGroups } from 'style-dictionary/enums';
 
 export default {
   hooks: {
@@ -29,8 +29,9 @@ export default {
         // or formatting object and will generate a file header comment in the
         // proper style. If the file has a custom file header defined, or
         // showFileHeader option, it will honor those.
+        // Use fileHeaderCommentStyles enum for the commentStyle parameter.
         return (
-          (await fileHeader({ file, commentStyle: commentStyles.short })) +
+          (await fileHeader({ file, commentStyle: fileHeaderCommentStyles.short })) +
           dictionary.allTokens
             // sortByReference returns a function that can be used as to sort
             // an array. This will sort the array so that references always
@@ -49,16 +50,18 @@ export default {
         const { outputReferences } = options;
         const lineSeparator = `\n`;
 
-        // Here we are using fileHeader with a formatting object,
+        // Here we are using fileHeader with the formatting.fileHeader API,
         // this will show the file header with a block-style comment
         return (
           (await fileHeader({
             file,
             formatting: {
-              lineSeparator,
-              prefix: ` * `,
-              header: `/**${lineSeparator}`,
-              footer: `${lineSeparator} */${lineSeparator}${lineSeparator}`,
+              fileHeader: {
+                lineSeparator,
+                prefix: ` * `,
+                header: `/**${lineSeparator}`,
+                footer: `${lineSeparator} */${lineSeparator}${lineSeparator}`,
+              },
             },
           })) +
           formattedVariables({

@@ -187,3 +187,134 @@ All backward compatibility testing uses inline config objects in test code. Ther
 | **P2**   | Fix Finding #7 — remove stray backtick in commentStyles.js                            | Trivial                 |
 | **P3**   | Fix Finding #8 — update example files to showcase new API                             | Small                   |
 | **P3**   | Consider Finding #9 — consolidate per-style defaults into resolveFileHeaderFormatting | Medium (design change)  |
+
+---
+
+## Progress Update
+
+**Date:** 2025-02-12 (follow-up)  
+**All 943 tests pass** after the fixes below. 0 failures, 2 pending (pre-existing).
+
+### Fixes Applied
+
+| Finding           | Fix                                                                                                                                                                                                                                                                                                                                                               | Files Changed                                                                                                                                                                                  |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **#1 (Critical)** | Replaced `??`-based `fileHeaderOpts` with separate `fhOpts` / `fileFhOpts` variables, checking both independently for `prefix`, `header`, `footer` in all 3 comment style blocks                                                                                                                                                                                  | [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L186-L230)                                                                                                     |
+| **#2 (Moderate)** | Updated comment to: "fileHeader-specific values take priority, but we fall back to general formatting for backward compatibility. Note: prefix does not fall back to fileFormatting.prefix because getFormattingCloneWithoutPrefix() strips it before reaching here."                                                                                             | [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L82-L85)                                                                                                       |
+| **#4 (Moderate)** | Added 2 missing levels to docs priority chain: `file.options.formatting.commentStyle` (step 4) and `options.commentStyle` / Config-level root (step 6). Chain now has 8 levels matching the code.                                                                                                                                                                 | [docs/src/content/docs/reference/Utils/format-helpers.md](docs/src/content/docs/reference/Utils/format-helpers.md#L108-L115)                                                                   |
+| **#5 (Moderate)** | Exported `FileHeaderFormatting` and `FormattingOverrides` from the types barrel                                                                                                                                                                                                                                                                                   | [types/index.ts](types/index.ts#L23-L28)                                                                                                                                                       |
+| **#6 (Minor)**    | Changed `@deprecated` message from `fileHeader.timestamp` to `formatting.fileHeader.timestamp`                                                                                                                                                                                                                                                                    | [types/File.ts](types/File.ts#L58-L60)                                                                                                                                                         |
+| **#7 (Minor)**    | Removed stray backtick from `@property {string} long` JSDoc                                                                                                                                                                                                                                                                                                       | [lib/enums/commentStyles.js](lib/enums/commentStyles.js#L24)                                                                                                                                   |
+| **#8 (Minor)**    | Updated both example files to import and use `fileHeaderCommentStyles` instead of `commentStyles`. Updated `myOtherFormat` to use the new `formatting.fileHeader` API.                                                                                                                                                                                            | [examples/advanced/format-helpers/sd.config.js](examples/advanced/format-helpers/sd.config.js), [examples/advanced/tokens-deprecation/build.js](examples/advanced/tokens-deprecation/build.js) |
+| **#10 (Tests)**   | Added 5 new unit tests: `options.commentStyle` Config-level root, `file.options.formatting.fileHeader.prefix`, `file.options.formatting.fileHeaderTimestamp` legacy, cross-level override preservation (`formatting.fileHeader` + `file.options.formatting.fileHeader` with different properties), and file-level header not overridden by comment style defaults | [\_\_tests\_\_/common/formatHelpers/fileHeader.test.js](__tests__/common/formatHelpers/fileHeader.test.js)                                                                                     |
+
+### New Findings Discovered During Fixes
+
+The following additional weak spots were identified during deeper analysis of the codebase. These are not regressions from the refactor but are pre-existing design concerns that the refactor makes more visible.
+
+#### 12. (Medium) Token `commentStyle: 'none'` Leaks Into File Header Resolution
+
+**File:** [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L55-L60)
+
+The `resolveFileHeaderFormatting` fallback chain includes `formatting.commentStyle` (priority 3) — which is the **token property** comment style accepting `'short' | 'long' | 'none'`. If a user sets `formatting: { commentStyle: 'none' }` (valid for tokens, meaning "no inline comments"), this value propagates into the file header resolution as an unrecognized comment style. The `'none'` value won't match any of the `if/else if (effectiveCommentStyle === ...)` blocks, so the `long`-style defaults from `resolveFileHeaderFormatting` are used — which happens to work but is accidental and could produce confusing output.
+
+**More subtly:** Setting `formatting: { commentStyle: 'short' }` to get short-style token comments **also** switches the file header from `/** */` to `// ...`, which is the exact cross-contamination the refactor was designed to solve. The fallback chain preserves it for backward compatibility, but it should at minimum be documented as a known behavior.
+
+**Recommendation:** Consider filtering out `'none'` when reading `formatting.commentStyle` for the file header, or document clearly that `formatting.commentStyle` affects both tokens and file headers unless `formatting.fileHeader.commentStyle` is explicitly set.
+
+#### 13. (Medium) Return Type Mismatch — `resolveFileHeaderFormatting` Claims `'short' | 'xml' | 'long'` But Can Return `'none'`
+
+**File:** [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L42)
+
+The JSDoc return type declares:
+
+```js
+@returns {FileHeaderFormatting & { commentStyle: 'short' | 'xml' | 'long' }}
+```
+
+But the actual resolved value can be `'none'` (from `formatting.commentStyle`) or any arbitrary string (from `fileOpts.commentStyle` which is typed as `any` via the `[key: string]: any` index signature). TypeScript consumers relying on this return type for exhaustive switch/case handling would miss the `'none'` case.
+
+#### 14. (Medium) Ambiguous Dual Path: `formatting.header`/`footer` vs. `formatting.fileHeader.header`/`footer`
+
+**File:** [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L88-L99)
+
+`FormattingOverrides.header` and `FormattingOverrides.footer` are used as fallbacks in the file header resolution chain. A user setting `formatting: { header: '/*!\n' }` might intend this for something format-specific, but it silently changes the file header comment opening. Neither `FormattingOverrides.header` nor `FormattingOverrides.footer` have JSDoc explaining this dual role. The backward-compatibility docs mention this, but the TypeScript interface itself provides no hint.
+
+**Recommendation:** Add JSDoc to `FormattingOverrides.header` and `FormattingOverrides.footer` explaining they affect both the format output and the file header (as fallback for `formatting.fileHeader.header`/`footer`).
+
+#### 15. (Low) No Runtime Deprecation Warnings for JS Users
+
+**Files:** [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L64-L68), [types/File.ts](types/File.ts#L58-L60), [types/Config.ts](types/Config.ts#L118)
+
+`fileHeaderTimestamp` and `Config.commentStyle` are marked `@deprecated` in JSDoc/TypeScript, but there are no `console.warn()` calls when these properties are actually used at runtime. Pure JavaScript users will never see deprecation notices. Since v6.0 plans to remove these properties, a runtime warning would help users migrate.
+
+#### 16. (Low) `fileHeader` Sub-Object Leaks Into `createPropertyFormatter`
+
+**File:** [lib/common/formats.js](lib/common/formats.js) (multiple locations)
+
+Formats that spread `formatting` into `createPropertyFormatter` (e.g., `{ suffix: '', ...formatting }`) include the `fileHeader` sub-object as noise in the merged options. While harmless at runtime, a future change to `createPropertyFormatter` that iterates over properties or validates them could break.
+
+#### 17. (Low) Stale JSDoc on `createPropertyFormatter` Lists File Header Properties
+
+**File:** [lib/common/formatHelpers/createPropertyFormatter.js](lib/common/formatHelpers/createPropertyFormatter.js#L111)
+
+The JSDoc lists `fileHeaderTimestamp`, `header`, and `footer` as configurable formatting strings for the property formatter. Post-refactor, these are file-header concerns, not property-formatter concerns. The JSDoc is misleading.
+
+#### 18. (Info) `showFileHeader: false` Silently Discards All `formatting.fileHeader` Settings
+
+**File:** [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L153-L157)
+
+When `showFileHeader: false`, the function returns `''` immediately, ignoring all `formatting.fileHeader` settings including `timestamp`. This is correct behavior, but the combination is untested and undocumented. A user setting both may wonder why their timestamp doesn't appear.
+
+#### 19. (Info) No Config Validation — Typos in `formatting.fileHeader` Are Silently Ignored
+
+The `LocalOptions` interface in [types/Config.ts](types/Config.ts#L39-L44) has `[key: string]: any`, so any arbitrary formatting properties pass TypeScript checking. A typo like `formatting: { fileHeadr: { commentStyle: 'short' } }` is silently accepted with no error, and the user gets default behavior with no indication their config is being ignored. This is a pre-existing concern but becomes more likely with the new nested API.
+
+### Updated Action Items (New Findings)
+
+| Priority | Item                                                                                                                                 | Effort  |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------- |
+| **P1**   | Finding #12 — filter `'none'` from `formatting.commentStyle` in file header resolution, or document the cross-contamination behavior | Small   |
+| **P2**   | Finding #13 — fix JSDoc return type to include `'none'` or add runtime guard                                                         | Trivial |
+| **P2**   | Finding #14 — add JSDoc to `FormattingOverrides.header`/`footer` clarifying dual role                                                | Trivial |
+| **P2**   | Finding #15 — add runtime `console.warn()` for deprecated `fileHeaderTimestamp` and `Config.commentStyle`                            | Small   |
+| **P3**   | Finding #16 — consider destructuring out `fileHeader` before spreading into `createPropertyFormatter`                                | Small   |
+| **P3**   | Finding #17 — update stale JSDoc on `createPropertyFormatter`                                                                        | Trivial |
+| **P3**   | Finding #18 — add test for `showFileHeader: false` + `formatting.fileHeader` combination                                             | Trivial |
+| **P3**   | Finding #19 — consider adding runtime config validation for `formatting` shape                                                       | Medium  |
+
+---
+
+## Progress Update 2 — Findings #12–#19 Fixed
+
+**Date:** 2025-02-12 (second follow-up)  
+**All 949 tests pass** (6 new tests added). TypeScript compiles cleanly (`tsc --noEmit` — 0 errors).
+
+### Fixes Applied
+
+| Finding          | Fix                                                                                                                                                                                                                                                                                                                                                                                       | Files Changed                                                                                                        |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **#12 (Medium)** | Added `validFileHeaderCommentStyles` Set. `formatting.commentStyle` and `fileFormatting.commentStyle` are now validated against valid file header styles before entering the priority chain. A value of `'none'` (valid for token comments, invalid for file headers) is filtered out and the chain falls through to the next level.                                                      | [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L14)                                 |
+| **#13 (Medium)** | Resolved implicitly by #12 — the `resolvedCommentStyle` can no longer receive `'none'` from the token `commentStyle` fallback, so the return type `'short' \| 'xml' \| 'long'` is now accurate. Added proper JSDoc type casts to satisfy TypeScript.                                                                                                                                      | [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L110-L118)                           |
+| **#14 (Medium)** | Added JSDoc to `FormattingOverrides.header` and `FormattingOverrides.footer` explaining their dual role: they affect both the output format and act as a fallback for the file header opening/closing comment when `formatting.fileHeader.header`/`footer` is not set.                                                                                                                    | [types/File.ts](types/File.ts#L56-L63)                                                                               |
+| **#15 (Low)**    | Added `warnDeprecatedOnce()` helper that emits `console.warn()` once per unique message. Deprecation warnings are now emitted at runtime for: `formatting.fileHeaderTimestamp`, `file.options.formatting.fileHeaderTimestamp`, `file.options.commentStyle`, and `options.commentStyle` (Config-level root). All warnings include the recommended replacement and note about v6.0 removal. | [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L28-L40)                             |
+| **#16 (Low)**    | Added `{ fileHeader: _fh, ...cleanFormatting } = formatting` destructuring inside `createPropertyFormatter` to strip the `fileHeader` sub-object before merging into `mergedOptions`. This covers all callers (including custom formats using the public `createPropertyFormatter` API) without requiring changes to individual format call sites.                                        | [lib/common/formatHelpers/createPropertyFormatter.js](lib/common/formatHelpers/createPropertyFormatter.js#L120-L123) |
+| **#17 (Low)**    | Updated the JSDoc to list only the properties actually consumed by `createPropertyFormatter`: `prefix`, `indentation`, `separator`, `suffix`, `lineSeparator`, `commentStyle`, `commentPosition`. Removed `fileHeaderTimestamp`, `header`, `footer` and added a note that those are consumed by the `fileHeader()` helper instead.                                                        | [lib/common/formatHelpers/createPropertyFormatter.js](lib/common/formatHelpers/createPropertyFormatter.js#L113)      |
+| **#18 (Info)**   | Added unit test: `showFileHeader: false` returns `''` even when `formatting.fileHeader` is set with `commentStyle`, `timestamp`, and `prefix`. Confirms the correct behavior is tested.                                                                                                                                                                                                   | [\_\_tests\_\_/common/formatHelpers/fileHeader.test.js](__tests__/common/formatHelpers/fileHeader.test.js)           |
+| **#19 (Info)**   | Added `knownFileHeaderKeys` Set and `warnUnknownFileHeaderKeys()` helper. Both `formatting.fileHeader` and `file.options.formatting.fileHeader` are now validated on each `resolveFileHeaderFormatting()` call. Unknown keys (e.g., typo `commentStlye`) trigger a `console.warn()` listing the valid property names. Added test covering the typo scenario.                              | [lib/common/formatHelpers/fileHeader.js](lib/common/formatHelpers/fileHeader.js#L17-L50)                             |
+
+### New Tests Added (6 total)
+
+| Test                                                                                      | Validates                                                      |
+| ----------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `should ignore commentStyle 'none' from formatting.commentStyle and fall back to default` | Finding #12 — `'none'` is filtered out, falls back to `'long'` |
+| `should ignore commentStyle 'none' and use commentStyle parameter as fallback`            | Finding #12 — `'none'` filtered, `commentStyle` param used     |
+| `showFileHeader false should return empty string even with formatting.fileHeader set`     | Finding #18 — `showFileHeader` takes precedence                |
+| `should warn when using legacy fileHeaderTimestamp`                                       | Finding #15 — runtime deprecation warning emitted              |
+| `should warn when using legacy file.options.commentStyle`                                 | Finding #15 — runtime deprecation warning emitted              |
+| `should warn about unknown keys in formatting.fileHeader`                                 | Finding #19 — typo detection warning emitted                   |
+
+### Implementation Notes
+
+- **`_resetDeprecationWarnings()`** — A private test-only export was added to `fileHeader.js` to allow the `warnDeprecatedOnce()` deduplication set to be cleared between test cases. Without this, the "warn once" behavior means earlier tests consuming legacy APIs would prevent later deprecation-specific tests from observing warnings.
+- **`createPropertyFormatter` stripping** — The `fileHeader` sub-object is stripped via destructuring inside `createPropertyFormatter` rather than at each of the 37+ call sites in `formats.js`. This means custom format authors using the public `createPropertyFormatter` API also benefit automatically.

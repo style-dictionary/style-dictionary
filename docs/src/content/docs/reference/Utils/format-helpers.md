@@ -110,9 +110,11 @@ You can configure file header formatting via `formatting.fileHeader`:
 1. `formatting.fileHeader.*` - Most specific file header options
 2. `file.options.formatting.fileHeader.*` - File-level config
 3. `formatting.commentStyle` - General formatting (for both tokens and file header)
-4. `file.options.commentStyle` - Legacy file-level option
-5. `commentStyle` parameter - Format's default
-6. `'long'` - Ultimate default
+4. `file.options.formatting.commentStyle` - Legacy file-level formatting option
+5. `file.options.commentStyle` - Legacy file-level option
+6. `options.commentStyle` - Config-level root option (legacy)
+7. `commentStyle` parameter - Format's default
+8. `'long'` - Ultimate default
 
 Example using the new API:
 

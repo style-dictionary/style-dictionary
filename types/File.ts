@@ -2,11 +2,7 @@ import type { TransformedToken } from './DesignToken.js';
 import type { FormatFn } from './Format.js';
 import type { LocalOptions, Config } from './Config.js';
 import type { Filter } from './Filter.js';
-import {
-  commentPositions,
-  commentStyles,
-  fileHeaderCommentStyles,
-} from '../lib/enums/index.js';
+import { commentPositions, commentStyles, fileHeaderCommentStyles } from '../lib/enums/index.js';
 
 type commentStyles = typeof commentStyles;
 type commentPositions = typeof commentPositions;
@@ -50,10 +46,18 @@ export interface FormattingOverrides {
   indentation?: string;
   /** Line separator (default: '\n'). For file header line separator, use formatting.fileHeader.lineSeparator */
   lineSeparator?: string;
+  /**
+   * Opening string for the output format. Also used as a fallback for the file header
+   * opening comment if `formatting.fileHeader.header` is not set.
+   */
   header?: string;
+  /**
+   * Closing string for the output format. Also used as a fallback for the file header
+   * closing comment if `formatting.fileHeader.footer` is not set.
+   */
   footer?: string;
   /**
-   * @deprecated Use `fileHeader.timestamp` instead. Will be removed in v6.0.
+   * @deprecated Use `formatting.fileHeader.timestamp` instead. Will be removed in v6.0.
    */
   fileHeaderTimestamp?: boolean;
   /** File header specific formatting options */

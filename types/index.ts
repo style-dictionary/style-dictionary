@@ -20,7 +20,13 @@ export type {
   Dictionary,
 } from './DesignToken.js';
 
-export type { FileHeader, File, FormattingOptions } from './File.js';
+export type {
+  FileHeader,
+  File,
+  FileHeaderFormatting,
+  FormattingOptions,
+  FormattingOverrides,
+} from './File.js';
 
 export type { Filter } from './Filter.js';
 
