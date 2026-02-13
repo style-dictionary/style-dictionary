@@ -630,22 +630,7 @@ Transforms `border` type object-value token into a CSS string, using the CSS `bo
 }
 ```
 
-Use PlatformConfig option `cssShorthandsColorSpace` & `cssShorthandsColorFormat` to determine the format to which you want DTCG color definitions to be stringified.
-This is using ColorJS conversions.
-
-Example: if your source token is in lab colorspace and you want hex output, you'll have to convert to srgb colorspace first.
-
-```js
-{
-  platforms: {
-    css: {
-      files: [{}],
-      cssShorthandsColorSpace: 'srgb';
-      cssShorthandsColorFormat: 'hex';
-    }
-  }
-}
-```
+When using DTCG color object definition for the color property, it will auto-convert it to a CSS compatible string if available in the color space in which it is defined.
 
 ---
 
@@ -701,22 +686,7 @@ Transforms `shadow` type object-value token (which can also be an array) into a 
 }
 ```
 
-Use PlatformConfig option `cssShorthandsColorSpace` & `cssShorthandsColorFormat` to determine the format to which you want DTCG color definitions to be stringified.
-This is using ColorJS conversions.
-
-Example: if your source token is in lab colorspace and you want hex output, you'll have to convert to srgb colorspace first.
-
-```js
-{
-  platforms: {
-    css: {
-      files: [{}],
-      cssShorthandsColorSpace: 'srgb';
-      cssShorthandsColorFormat: 'hex';
-    }
-  }
-}
-```
+When using DTCG color object definition for the color property, it will auto-convert it to a CSS compatible string if available in the color space in which it is defined.
 
 ---
 

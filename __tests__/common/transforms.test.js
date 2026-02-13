@@ -1773,7 +1773,7 @@ describe('common', () => {
         ).to.equal('5px dashed lab(60.17 93.54 -60.5 / 0.5)');
       });
 
-      it('supports specifying to what format the color prop should be stringified', () => {
+      it.skip('supports specifying to what format the color prop should be stringified', () => {
         expect(
           transforms[borderCssShorthand].transform(
             {
@@ -1919,7 +1919,9 @@ describe('common', () => {
         );
       });
 
-      it('supports specifying to what format the color prop should be stringified', () => {
+      // Probably we want to run transforms transitively on deep token props instead of specifying this via
+      // platform config options
+      it.skip('supports specifying to what format the color prop should be stringified', () => {
         expect(
           transforms[transformNames.shadowCssShorthand].transform(
             {
