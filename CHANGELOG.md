@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.3.1
+
+### Patch Changes
+
+- 9f51f0d: Fix shadow and border CSS shorthands to also support latest DTCG color module. Add platform options to configure how the shorthand transforms stringify the color property.
+
 ## 5.3.0
 
 ### Minor Changes
