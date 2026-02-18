@@ -1919,6 +1919,19 @@ describe('common', () => {
         );
       });
 
+      it('supports DTCG inset boolean property', () => {
+        expect(
+          shadowTransform({
+            inset: true,
+            color: '#00000080',
+            offsetX: '4px',
+            offsetY: '4px',
+            blur: '12px',
+            spread: '6px',
+          }),
+        ).to.equal('inset 4px 4px 12px 6px #00000080');
+      });
+
       // Probably we want to run transforms transitively on deep token props instead of specifying this via
       // platform config options
       it.skip('supports specifying to what format the color prop should be stringified', () => {
