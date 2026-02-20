@@ -1,6 +1,6 @@
 {
   "name": "style-dictionary",
-  "version": "5.3.1",
+  "version": "5.3.2",
   "description": "Style once, use everywhere. A build system for creating cross-platform styles.",
   "keywords": [
     "style dictionary",
