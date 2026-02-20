@@ -20,7 +20,7 @@ snapshots["integration output references should support outputReferencesTransfor
 
 :root {
   --axis-0: 0;
-  --shadow: innerShadow 0 0 0 0 rgba(0,0,0,0.4);
+  --shadow: inset 0 0 0 0 rgba(0,0,0,0.4);
 }
 `;
 /* end snapshot integration output references should support outputReferencesTransformed for values that were originally objects */

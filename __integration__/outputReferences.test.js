@@ -101,7 +101,7 @@ describe('integration', async () => {
               blur: '{axis.0}',
               spread: '{axis.0}',
               color: 'rgba(0,0,0,0.4)',
-              type: 'innerShadow',
+              inset: true,
             },
             type: 'shadow',
           },
