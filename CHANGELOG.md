@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.3.3
+
+### Patch Changes
+
+- 52817e1: Fix vulnerability in bundled version of glob -> minimatch.
+
 ## 5.3.2
 
 ### Patch Changes
