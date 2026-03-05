@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-// import stylus from 'stylus'; see comment in test below
 import formats from '../../lib/common/formats.js';
 import createFormatArgs from '../../lib/utils/createFormatArgs.js';
 import { convertTokenData } from '../../lib/utils/convertTokenData.js';
@@ -48,11 +47,6 @@ describe('formats', () => {
         file,
       );
       expect(result).to.matchSnapshot(1);
-
-      // Unfortunately, stylus has not followed less and scss in exposing
-      // a browser compatible version of the package to run client-side.
-      // const stylusResult = stylus.render(result);
-      // expect(stylusResult).to.matchSnapshot(2);
     });
   });
 });
