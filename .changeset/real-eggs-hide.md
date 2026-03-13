@@ -1,5 +1,0 @@
----
-'style-dictionary': patch
----
-
-adas

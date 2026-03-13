@@ -1,5 +1,0 @@
----
-'style-dictionary': minor
----
-
-sizeRemToDp

@@ -1,9 +1,9 @@
-// So far DTCG spec supports these units
-// TODO: change to Enum
-export type DimensionUnit = 'px' | 'rem';
+import { dimensionUnit } from '../lib/enums/index.js';
+type dimensionUnit = typeof dimensionUnit;
+
 export interface DimensionValue {
   value: number;
-  unit: DimensionUnit;
+  unit: dimensionUnit[keyof dimensionUnit];
 }
 /**
  * This type is also used in the `typescript/module-declarations` format

@@ -159,7 +159,7 @@ $color-font-danger: #6d1313;
 $color-font-warning: #601700;
 $color-font-success: #08422f;
 $size-border-radius-large: 30rem;
-$size-border-radius-medium: 1.5rem;
+$size-border-radius-medium: 24px;
 $size-border-radius-small: 16rem;
 $size-font-small: 0.75rem;
 $size-font-medium: 1rem;
@@ -330,7 +330,7 @@ $color-font-danger: #6d1313 !default;
 $color-font-warning: #601700 !default;
 $color-font-success: #08422f !default;
 $size-border-radius-large: 30rem !default;
-$size-border-radius-medium: 1.5rem !default;
+$size-border-radius-medium: 24px !default;
 $size-border-radius-small: 16rem !default;
 $size-font-small: 0.75rem !default;
 $size-font-medium: 1rem !default;
@@ -480,7 +480,7 @@ $color-core-yellow-900: #944c0c;
 $color-core-yellow-1000: #542a00;
 $color-core-yellow-1100: #2d1a05;
 $size-border-radius-large: 30rem;
-$size-border-radius-medium: 1.5rem;
+$size-border-radius-medium: 24px;
 $size-border-radius-small: 16rem;
 $size-font-small: 0.75rem;
 $size-font-medium: 1rem;
@@ -690,7 +690,7 @@ $design-system-tokens: (
   'color-font-warning': #601700,
   'color-font-success': #08422f,
   'size-border-radius-large': 30rem,
-  'size-border-radius-medium': 1.5rem,
+  'size-border-radius-medium': 24px,
   'size-border-radius-small': 16rem,
   'size-font-small': 0.75rem,
   'size-font-medium': 1rem,
@@ -863,7 +863,7 @@ $color-font-danger: #6d1313 !default;
 $color-font-warning: #601700 !default;
 $color-font-success: #08422f !default;
 $size-border-radius-large: 30rem !default;
-$size-border-radius-medium: 1.5rem !default;
+$size-border-radius-medium: 24px !default;
 $size-border-radius-small: 16rem !default;
 $size-font-small: 0.75rem !default;
 $size-font-medium: 1rem !default;
@@ -1228,7 +1228,7 @@ $color-core-yellow-900: #944c0c !default;
 $color-core-yellow-1000: #542a00 !default;
 $color-core-yellow-1100: #2d1a05 !default;
 $size-border-radius-large: 30rem !default;
-$size-border-radius-medium: 1.5rem !default;
+$size-border-radius-medium: 24px !default;
 $size-border-radius-small: 16rem !default;
 $size-font-small: 0.75rem !default;
 $size-font-medium: 1rem !default;
@@ -1635,7 +1635,7 @@ $color-font-danger: #6d1313;
 $color-font-warning: #601700;
 $color-font-success: #08422f;
 $size-border-radius-large: 30rem;
-$size-border-radius-medium: 1.5rem;
+$size-border-radius-medium: 24px;
 $size-border-radius-small: 16rem;
 $size-font-small: 0.75rem;
 $size-font-medium: 1rem;
