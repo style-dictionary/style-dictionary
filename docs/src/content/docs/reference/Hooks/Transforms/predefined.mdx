@@ -376,6 +376,32 @@ Adds 'rem' to the end of the number. Does not scale the number.
 
 ---
 
+### size/remToFloat
+
+Scales the number and adds 'f' to the end.
+The default `basePxFontSize` scale is `16`, [which can be configured on the platform in your config](https://styledictionary.com/reference/config/#platform).
+
+```js
+// Matches: token.type === 'dimension'
+// Returns:
+'16f';
+```
+
+Configuring the `basePxFontSize`:
+
+```json title="config.json"
+{
+  "platforms": {
+    "css": {
+      "transforms": ["size/remToFloat"],
+      "basePxFontSize": 14
+    }
+  }
+}
+```
+
+---
+
 ### size/remToPt
 
 Scales the number and adds 'pt' to the end.
@@ -393,7 +419,7 @@ Configuring the `basePxFontSize`:
 {
   "platforms": {
     "css": {
-      "transforms": ["size/rem"],
+      "transforms": ["size/remToSp"],
       "basePxFontSize": 14
     }
   }

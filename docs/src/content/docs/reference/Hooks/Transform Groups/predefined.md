@@ -136,7 +136,7 @@ Transforms:
 [color/UIColor](/reference/hooks/transforms/predefined#coloruicolor)
 [content/objC/literal](/reference/hooks/transforms/predefined#contentobjcliteral)
 [asset/objC/literal](/reference/hooks/transforms/predefined#assetobjcliteral)
-[size/remToPt](/reference/hooks/transforms/predefined#sizeremtopt)
+[size/remToFloat](/reference/hooks/transforms/predefined#sizeremtofloat)
 
 ---
 

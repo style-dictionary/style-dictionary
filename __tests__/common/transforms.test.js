@@ -37,6 +37,7 @@ const {
   sizeRemToSp,
   sizeRemToDp,
   sizePx,
+  sizeRemToFloat,
   sizeRemToPt,
   sizeComposeRemToSp,
   sizeComposeEm,
@@ -1294,26 +1295,55 @@ describe('common', () => {
           const pxValue = runTransform(sizeRemToPt, { value: '1px' });
           const remValue = runTransform(sizeRemToPt, { value: '1rem' });
 
-          expect(unitlessValue).to.equal('16.00f');
-          expect(pxValue).to.equal('16.00f');
-          expect(remValue).to.equal('16.00f');
+          expect(unitlessValue).to.equal('16.00pt');
+          expect(pxValue).to.equal('16.00pt');
+          expect(remValue).to.equal('16.00pt');
         });
 
         it('should work with value object', () => {
           const pxValue = runTransform(sizeRemToPt, { value: { value: 1, unit: 'px' } });
           const remValue = runTransform(sizeRemToPt, { value: { value: 1, unit: 'rem' } });
 
-          expect(pxValue).to.equal('16.00f');
-          expect(remValue).to.equal('16.00f');
+          expect(pxValue).to.equal('16.00pt');
+          expect(remValue).to.equal('16.00pt');
         });
 
         it('converts rem to pt using custom base font', () => {
           const value = runTransform(sizeRemToPt, { value: '1' }, { basePxFontSize: 14 }, {});
-          expect(value).to.equal('14.00f');
+          expect(value).to.equal('14.00pt');
         });
 
         it('should throw an error if prop value is NaN', () => {
           expect(() => runTransform(sizeRemToPt, { value: 'a' })).to.throw();
+        });
+      });
+
+      describe(sizeRemToFloat, () => {
+        it('should work', () => {
+          const unitlessValue = runTransform(sizeRemToFloat, { value: '1' });
+          const pxValue = runTransform(sizeRemToFloat, { value: '1px' });
+          const remValue = runTransform(sizeRemToFloat, { value: '1rem' });
+
+          expect(unitlessValue).to.equal('16.00f');
+          expect(pxValue).to.equal('16.00f');
+          expect(remValue).to.equal('16.00f');
+        });
+
+        it('should work with value object', () => {
+          const pxValue = runTransform(sizeRemToFloat, { value: { value: 1, unit: 'px' } });
+          const remValue = runTransform(sizeRemToFloat, { value: { value: 1, unit: 'rem' } });
+
+          expect(pxValue).to.equal('16.00f');
+          expect(remValue).to.equal('16.00f');
+        });
+
+        it('converts rem to float using custom base font', () => {
+          const value = runTransform(sizeRemToFloat, { value: '1' }, { basePxFontSize: 14 }, {});
+          expect(value).to.equal('14.00f');
+        });
+
+        it('should throw an error if prop value is NaN', () => {
+          expect(() => runTransform(sizeRemToFloat, { value: 'a' })).to.throw();
         });
       });
 

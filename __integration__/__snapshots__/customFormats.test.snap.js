@@ -790,7 +790,7 @@ snapshots["integration custom formats inline custom with new args should match s
           "color/UIColor",
           "content/objC/literal",
           "asset/objC/literal",
-          "size/remToPt"
+          "size/remToFloat"
         ],
         "ios-swift": [
           "attribute/cti",
@@ -925,6 +925,9 @@ snapshots["integration custom formats inline custom with new args should match s
           "type": "value"
         },
         "size/rem": {
+          "type": "value"
+        },
+        "size/remToFloat": {
           "type": "value"
         },
         "size/remToPt": {
@@ -1876,7 +1879,7 @@ snapshots["integration custom formats register custom format with new args shoul
           "color/UIColor",
           "content/objC/literal",
           "asset/objC/literal",
-          "size/remToPt"
+          "size/remToFloat"
         ],
         "ios-swift": [
           "attribute/cti",
@@ -2011,6 +2014,9 @@ snapshots["integration custom formats register custom format with new args shoul
           "type": "value"
         },
         "size/rem": {
+          "type": "value"
+        },
+        "size/remToFloat": {
           "type": "value"
         },
         "size/remToPt": {
