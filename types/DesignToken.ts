@@ -1,10 +1,3 @@
-import { dimensionUnit } from '../lib/enums/index.js';
-type dimensionUnit = typeof dimensionUnit;
-
-export interface DimensionValue {
-  value: number;
-  unit: dimensionUnit[keyof dimensionUnit];
-}
 /**
  * This type is also used in the `typescript/module-declarations` format
  * Make sure to also change it there when this type changes!

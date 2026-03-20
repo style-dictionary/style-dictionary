@@ -198,6 +198,29 @@ export const propertyFormatNames = {
 };
 ```
 
+### Sorts
+
+```javascript
+// enums/sorts.js
+export const builtInSorts = {
+  name: 'name',
+};
+```
+
+### Token Types (WIP)
+
+> This will become its own page, to cover all token types and all properties within token type values.
+> For now, all we have is the `dimension` token type `unit` property.
+
+####
+
+```javascript
+export const dimensionUnit = {
+  px: /** @type {'px'} */ ('px'),
+  rem: /** @type {'rem'} */ ('rem'),
+};
+```
+
 ### Transform Groups
 
 ```javascript

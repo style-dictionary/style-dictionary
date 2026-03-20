@@ -1945,6 +1945,22 @@ describe('common', () => {
           expect(typographyTransform({})).to.equal('16px sans-serif');
           expect(typographyTransform({}, { basePxFontSize: 12 })).to.equal('12px sans-serif');
         });
+
+        it('should handle composed dimension values in fontFamily props', () => {
+          expect(
+            typographyTransform({
+              fontSize: '20px',
+              lineHeight: '1rem',
+            }),
+          ).to.equal('20px/1rem sans-serif');
+
+          expect(
+            typographyTransform({
+              fontSize: { value: 20, unit: 'px' },
+              lineHeight: { value: 1, unit: 'rem' },
+            }),
+          ).to.equal('20px/1rem sans-serif');
+        });
       });
 
       // https://design-tokens.github.io/community-group/format/#border
@@ -2008,6 +2024,33 @@ describe('common', () => {
           ).to.equal('5px dashed lab(60.17 93.54 -60.5 / 0.5)');
         });
 
+        it('should handle composed dimension values in borderWidth props', () => {
+          expect(
+            borderTransform({
+              width: '5px',
+              style: {
+                dashArray: ['0.5rem', '0.25rem'],
+                lineCap: 'round',
+              },
+              color: '#000000',
+            }),
+          ).to.equal('5px dashed #000000');
+
+          expect(
+            borderTransform({
+              width: { value: 5, unit: 'px' },
+              style: {
+                dashArray: [
+                  { value: 0.5, unit: 'rem' },
+                  { value: 0.25, unit: 'rem' },
+                ],
+                lineCap: 'round',
+              },
+              color: '#000000',
+            }),
+          ).to.equal('5px dashed #000000');
+        });
+
         it.skip('supports specifying to what format the color prop should be stringified', () => {
           expect(
             transforms[borderCssShorthand].transform(
@@ -2053,6 +2096,7 @@ describe('common', () => {
         });
       });
 
+      // TODO: add support for duration type -> object value (unit + value)
       describe(transitionCssShorthand, () => {
         const transitionTransform = (value, platformConfig = {}) =>
           transforms[transitionCssShorthand].transform({ value }, platformConfig, {});
@@ -2165,6 +2209,39 @@ describe('common', () => {
               spread: '6px',
             }),
           ).to.equal('inset 4px 4px 12px 6px #00000080');
+        });
+
+        it('handles DTCG dimension object value for offsetX,Y, blur, spread props of shadows', () => {
+          expect(
+            shadowTransform([
+              {
+                color: 'rgba(0,0,0, 0.4)',
+                offsetX: { value: 2, unit: 'px' },
+                offsetY: { value: 2, unit: 'px' },
+                blur: { value: 4, unit: 'px' },
+                spread: { value: 6, unit: 'px' },
+              },
+            ]),
+          ).to.equal('2px 2px 4px 6px rgba(0,0,0, 0.4)');
+
+          expect(
+            shadowTransform([
+              {
+                type: 'inset',
+                color: '#000000',
+                offsetX: { value: 4, unit: 'px' },
+                offsetY: { value: 4, unit: 'px' },
+                blur: { value: 12, unit: 'px' },
+                spread: { value: 6, unit: 'px' },
+              },
+              {
+                color: 'rgba(0,0,0, 0.4)',
+                offsetX: { value: 2, unit: 'px' },
+                offsetY: { value: 2, unit: 'px' },
+                blur: { value: 4, unit: 'px' },
+              },
+            ]),
+          ).to.equal('inset 4px 4px 12px 6px #000000, 2px 2px 4px rgba(0,0,0, 0.4)');
         });
 
         // Probably we want to run transforms transitively on deep token props instead of specifying this via
@@ -2415,11 +2492,11 @@ describe('common', () => {
         ];
 
         allTokensDtcg.forEach((it, idx) => {
-          expect(getTokenDimensionValue(it, { usesDtcg: true })).to.deep.equal(expected[idx]);
+          expect(getTokenDimensionValue(it.$value)).to.deep.equal(expected[idx]);
         });
 
         allTokensNonDtcg.forEach((it, idx) => {
-          expect(getTokenDimensionValue(it)).to.deep.equal(expected[idx]);
+          expect(getTokenDimensionValue(it.value)).to.deep.equal(expected[idx]);
         });
       });
     });

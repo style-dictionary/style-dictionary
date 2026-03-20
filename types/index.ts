@@ -32,7 +32,7 @@ export type { Parser, ParserOptions } from './Parser.js';
 
 export type { Preprocessor } from './Preprocessor.js';
 
-export type { DimensionValue } from './TokenTypes.js';
+export type { TokenTypeDimension, TokenTypeDimensionUnit } from './TokenTypes.js';
 
 export type { Transform, NameTransform, AttributeTransform, ValueTransform } from './Transform.js';
 
