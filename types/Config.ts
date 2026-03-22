@@ -5,9 +5,8 @@ import type { Parser } from './Parser.js';
 import type { Preprocessor } from './Preprocessor.js';
 import type { Transform } from './Transform.js';
 import type { Format, OutputReferences } from './Format.js';
-import type { SortOption } from './Sort.js';
+import type { SortComparator, SortOption } from './Sort.js';
 import type { Action } from './Action.js';
-import type { Sort } from './Sort.js';
 import {
   logBrokenReferenceLevels,
   logWarningLevels,
@@ -27,7 +26,7 @@ export interface Hooks {
   fileHeaders?: Record<string, FileHeader>;
   filters?: Record<string, Filter['filter']>;
   actions?: Record<string, Omit<Action, 'name'>>;
-  sorts?: Record<string, Sort['sort']>;
+  sorts?: Record<string, SortComparator>;
 }
 
 // contains a few typed props of options that are commonly reused between multiple formats
