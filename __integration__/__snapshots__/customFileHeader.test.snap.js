@@ -111,3 +111,38 @@ module.exports = {
 `;
 /* end snapshot integration valid custom file headers platform options file header override should match snapshot */
 
+snapshots["integration formatting.fileHeader API should allow overriding commentStyle via formatting.fileHeader at file level"] = 
+`
+// Do not edit directly, this file was auto-generated.
+
+$color-red: #ff0000;
+`;
+/* end snapshot integration formatting.fileHeader API should allow overriding commentStyle via formatting.fileHeader at file level */
+
+snapshots["integration formatting.fileHeader API should allow overriding commentStyle via formatting.fileHeader at platform level"] = 
+`
+// Do not edit directly, this file was auto-generated.
+
+$color-red: #ff0000;
+`;
+/* end snapshot integration formatting.fileHeader API should allow overriding commentStyle via formatting.fileHeader at platform level */
+
+snapshots["integration formatting.fileHeader API should allow custom header/footer via formatting.fileHeader for legal comments"] = 
+`/*!
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-red: #ff0000;
+}
+`;
+/* end snapshot integration formatting.fileHeader API should allow custom header/footer via formatting.fileHeader for legal comments */
+
+snapshots["integration formatting.fileHeader API file-level formatting.fileHeader should override platform-level"] = 
+`
+// Do not edit directly, this file was auto-generated.
+
+$color-red: #ff0000;
+`;
+/* end snapshot integration formatting.fileHeader API file-level formatting.fileHeader should override platform-level */
+

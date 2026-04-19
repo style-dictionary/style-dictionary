@@ -4,10 +4,10 @@ import { fs } from 'style-dictionary/fs';
 import { resolve } from '../lib/resolve.js';
 import { buildPath } from './_constants.js';
 import { clearOutput } from '../__tests__/__helpers.js';
-import { formats, transformGroups } from '../lib/enums/index.js';
+import { formats, transformGroups, fileHeaderCommentStyles } from '../lib/enums/index.js';
 
-const { cssVariables, javascriptModule } = formats;
-const { css, js } = transformGroups;
+const { cssVariables, javascriptModule, scssVariables } = formats;
+const { css, js, scss } = transformGroups;
 
 describe(`integration`, async () => {
   before(async () => {
@@ -148,6 +148,197 @@ describe(`integration`, async () => {
         });
         await expect(output).to.matchSnapshot();
       });
+    });
+  });
+
+  describe(`formatting.fileHeader API`, async () => {
+    it(`should allow overriding commentStyle via formatting.fileHeader at file level`, async () => {
+      const sd = new StyleDictionary({
+        tokens: {
+          color: {
+            red: { value: '#ff0000' },
+          },
+        },
+        platforms: {
+          scss: {
+            transformGroup: scss,
+            buildPath,
+            files: [
+              {
+                destination: `fileHeaderCommentStyle.scss`,
+                format: scssVariables,
+                options: {
+                  formatting: {
+                    fileHeader: {
+                      commentStyle: fileHeaderCommentStyles.short,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      await sd.buildAllPlatforms();
+      const output = fs.readFileSync(resolve(`${buildPath}fileHeaderCommentStyle.scss`), {
+        encoding: 'UTF-8',
+      });
+      await expect(output).to.matchSnapshot();
+      clearOutput(buildPath);
+    });
+
+    it(`should allow overriding commentStyle via formatting.fileHeader at platform level`, async () => {
+      const sd = new StyleDictionary({
+        tokens: {
+          color: {
+            red: { value: '#ff0000' },
+          },
+        },
+        platforms: {
+          scss: {
+            transformGroup: scss,
+            buildPath,
+            options: {
+              formatting: {
+                fileHeader: {
+                  commentStyle: fileHeaderCommentStyles.short,
+                },
+              },
+            },
+            files: [
+              {
+                destination: `platformFileHeaderCommentStyle.scss`,
+                format: scssVariables,
+              },
+            ],
+          },
+        },
+      });
+
+      await sd.buildAllPlatforms();
+      const output = fs.readFileSync(resolve(`${buildPath}platformFileHeaderCommentStyle.scss`), {
+        encoding: 'UTF-8',
+      });
+      await expect(output).to.matchSnapshot();
+      clearOutput(buildPath);
+    });
+
+    it(`should allow custom header/footer via formatting.fileHeader for legal comments`, async () => {
+      const sd = new StyleDictionary({
+        tokens: {
+          color: {
+            red: { value: '#ff0000' },
+          },
+        },
+        platforms: {
+          css: {
+            transformGroup: css,
+            buildPath,
+            files: [
+              {
+                destination: `legalComment.css`,
+                format: cssVariables,
+                options: {
+                  formatting: {
+                    fileHeader: {
+                      header: '/*!\n',
+                      footer: '\n */\n\n',
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      await sd.buildAllPlatforms();
+      const output = fs.readFileSync(resolve(`${buildPath}legalComment.css`), {
+        encoding: 'UTF-8',
+      });
+      await expect(output).to.matchSnapshot();
+      clearOutput(buildPath);
+    });
+
+    it(`should allow timestamp via formatting.fileHeader.timestamp`, async () => {
+      const sd = new StyleDictionary({
+        tokens: {
+          color: {
+            red: { value: '#ff0000' },
+          },
+        },
+        platforms: {
+          css: {
+            transformGroup: css,
+            buildPath,
+            files: [
+              {
+                destination: `timestampHeader.css`,
+                format: cssVariables,
+                options: {
+                  formatting: {
+                    fileHeader: {
+                      timestamp: true,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      await sd.buildAllPlatforms();
+      const output = fs.readFileSync(resolve(`${buildPath}timestampHeader.css`), {
+        encoding: 'UTF-8',
+      });
+      // Check that the output contains "Generated on" timestamp line
+      expect(output).to.include('Generated on');
+      clearOutput(buildPath);
+    });
+
+    it(`file-level formatting.fileHeader should override platform-level`, async () => {
+      const sd = new StyleDictionary({
+        tokens: {
+          color: {
+            red: { value: '#ff0000' },
+          },
+        },
+        platforms: {
+          scss: {
+            transformGroup: scss,
+            buildPath,
+            options: {
+              formatting: {
+                fileHeader: {
+                  commentStyle: fileHeaderCommentStyles.long,
+                },
+              },
+            },
+            files: [
+              {
+                destination: `fileOverridesPlatform.scss`,
+                format: scssVariables,
+                options: {
+                  formatting: {
+                    fileHeader: {
+                      commentStyle: fileHeaderCommentStyles.short,
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      await sd.buildAllPlatforms();
+      const output = fs.readFileSync(resolve(`${buildPath}fileOverridesPlatform.scss`), {
+        encoding: 'UTF-8',
+      });
+      await expect(output).to.matchSnapshot();
+      clearOutput(buildPath);
     });
   });
 

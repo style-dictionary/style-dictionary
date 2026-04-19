@@ -1,6 +1,6 @@
 import StyleDictionary from 'style-dictionary';
 import { fileHeader } from 'style-dictionary/utils';
-import { commentStyles } from 'style-dictionary/enums';
+import { fileHeaderCommentStyles } from 'style-dictionary/enums';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import webScssTemplate from './templates/web-scss.template.js';
@@ -16,7 +16,7 @@ sd.registerFormat({
   name: 'custom/format/scss',
   format: async ({ dictionary, file, options }) => {
     const { allTokens } = dictionary;
-    const header = await fileHeader({ file, commentStyle: commentStyles.long });
+    const header = await fileHeader({ file, commentStyle: fileHeaderCommentStyles.long });
     return webScssTemplate({ allTokens, file, options, header });
   },
 });

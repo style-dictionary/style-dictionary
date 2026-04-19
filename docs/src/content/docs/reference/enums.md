@@ -85,25 +85,39 @@ export const commentPositions = {
 
 ### Comment Styles
 
+Used for **token property comments** (e.g., comments describing individual tokens in the output).
+Use with `formatting.commentStyle` option.
+
 ```javascript
 // enums/commentStyles.js
 export const commentStyles = {
-  short: 'short',
-  long: 'long',
-  none: 'none',
+  short: 'short', // Single-line: // comment
+  long: 'long', // Block: /** comment */
+  none: 'none', // No comments
 };
 ```
 
 ### File Header Comment Styles
 
+Used for **file header comments** (the comment block at the top of generated files).
+Use with `formatting.fileHeader.commentStyle` option or the `fileHeader()` format helper.
+
 ```javascript
 // enums/fileHeaderCommentStyles.js
 export const fileHeaderCommentStyles = {
-  short: 'short',
-  long: 'long',
-  xml: 'xml',
+  short: 'short', // Single-line: // comment
+  long: 'long', // Block: /** comment */
+  xml: 'xml', // XML: <!-- comment -->
 };
 ```
+
+:::note
+The key difference between `commentStyles` and `fileHeaderCommentStyles`:
+
+- `commentStyles` includes `'none'` (to disable token comments) but not `'xml'`
+- `fileHeaderCommentStyles` includes `'xml'` (for Android/iOS XML files) but not `'none'` (use `showFileHeader: false` to disable file headers)
+
+:::
 
 ### Formats
 
