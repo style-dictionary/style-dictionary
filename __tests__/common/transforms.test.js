@@ -1276,6 +1276,17 @@ describe('common', () => {
           });
         });
 
+        // Regression: 5.4.0 introduced an early `if (parsedVal === 0) return 0;` that
+        // bypassed the unit-preservation branch, so a string dimension value of `"0em"`
+        // (or any zero with a non-px unit) silently lost its unit and rendered as
+        // `undefined` once the number-typed `0` propagated through CSS variable
+        // serialization. The unit must be preserved when explicitly provided.
+        it('should preserve the unit when value is zero with a non-pixel unit', () => {
+          expect(runTransform(sizeRem, { value: '0em' })).to.equal('0em');
+          expect(runTransform(sizeRem, { value: '0rem' })).to.equal('0rem');
+          expect(runTransform(sizeRem, { value: { value: 0, unit: 'em' } })).to.equal('0em');
+        });
+
         it('should not change the unit to rem if the value already has a unit and it is not a pixel unit', () => {
           const value = runTransform(sizeRem, { value: '1em' });
           const nonUnitValue = runTransform(sizeRem, { value: '5lightyears' });
