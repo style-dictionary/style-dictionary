@@ -61,7 +61,6 @@
 - b5adbc0: Add support for DTCG v2025.10 structured color format in color transformers.
 
   **New features:**
-
   - All color transformers now support both legacy string format and DTCG object format with `colorSpace`, `components`, `alpha`, and optional `hex` fallback properties
   - Support for all 14 DTCG color spaces: `srgb`, `srgb-linear`, `display-p3`, `a98-rgb`, `prophoto-rgb`, `rec2020`, `xyz-d50`, `xyz-d65`, `lab`, `lch`, `oklab`, `oklch`, `hsl`, `hwb`
   - New `color/oklch` transformer - outputs modern CSS `oklch()` function
@@ -70,7 +69,6 @@
   - New `color/lch` transformer - outputs modern CSS `lch()` function
 
   **Types:**
-
   - Added `DTCGColorSpace` and `DTCGColorValue` TypeScript types
 
   **Hex fallback support:**
@@ -283,14 +281,12 @@
 - ccf27b7: Prevent duplicate redundant calls to StyleDictionary class methods by caching platform specific config & tokens results.
 
   Added reusable methods:
-
   - `getPlatformTokens()` -> grabs the `tokens`/`allTokens`(new! `exportPlatform` does not return this) for a specific platform, after running platform specific preprocessors and transforms. This replaces the old `exportPlatform` method which is now deprecated and will be removed in v6.
   - `getPlatformConfig()` -> grabs the processed/transformed `PlatformConfig` for a specific platform, replaces the now deprecated `getPlatform` method which will be removed in v6.
 
   The reasons for deprecating those methods and replacing them with new ones is to reduce method ambiguity and make them more pure.
 
   Add new options object to methods:
-
   - `getPlatformTokens`
   - `getPlatformConfig`
   - `exportPlatform` (deprecated, see above)
@@ -316,7 +312,6 @@
 - 2ec9a44: `size/rem` transform to leave 0 (string or number) values as is, since 0 doesn't need a unit.
 - f317430: Added link to logging documentation inside all of the warnings and errors that refer to verbosity.
 - 6275983: Respect `formatting` options in scss map-deep/map-flat formats, those that make sense:
-
   - `commentPosition`
   - `commentStyle`
   - `indentation`
@@ -343,13 +338,11 @@
 ### Major Changes
 
 - 6cc7f31: BREAKING:
-
   - `usesReference` util function is now `usesReferences` to be consistent plural form like the other reference util functions.
   - `getReferences` first and second parameters have been swapped to be consistent with `resolveReferences`, so value first, then the full token object (instead of the entire dictionary instance).
   - `getReferences` accepts a third options parameter which can be used to set reference Regex options as well as an unfilteredTokens object which can be used as a fallback when references are made to tokens that have been filtered out. There will be warnings logged for this.
   - `format.formatter` removed old function signature of `(dictionary, platform, file)` in favor of `({ dictionary, platform, options, file })`.
   - Types changes:
-
     - Style Dictionary is entirely strictly typed now, and there will be `.d.ts` files published next to every file, this means that if you import from one of Style Dictionary's entrypoints, you automatically get the types implicitly with it. This is a big win for people using TypeScript, as the majority of the codebase now has much better types, with much fewer `any`s.
     - There is no more hand-written Style Dictionary module `index.d.ts` anymore that exposes all type interfaces on itself. This means that you can no longer grab types that aren't members of the Style Dictionary class directly from the default export of the main entrypoint. External types such as `Parser`, `Transform`, `DesignTokens`, etc. can be imported from the newly added types entrypoint:
 
@@ -358,7 +351,6 @@
     ```
 
     Please raise an issue if you find anything missing or suddenly broken.
-
     - `Matcher`, `Transformer`, `Formatter`, etc. are still available, although no longer directly but rather as properties on their parents, so `Filter['matcher']`, `Transform['transformer']`, `Format['formatter']`
 
 - dcbe2fb: - The project has been fully converted to [ESM format](https://nodejs.org/api/esm.html), which is also the format that the browser uses.
@@ -419,7 +411,6 @@
   Log is now and object and the old "log" option is now "warnings".
 
   This configures whether the following five warnings will be thrown as errors instead of being logged as warnings:
-
   - Token value collisions (in the source)
   - Token name collisions (when exporting)
   - Missing "undo" function for Actions
@@ -427,7 +418,6 @@
   - Broken references in file when using outputReferences, but referring to a token that's been filtered out
 
   Verbosity configures whether the following warnings/errors should display in a verbose manner:
-
   - Token collisions of both types (value & name)
   - Broken references due to outputReferences & filters
   - Token reference errors
@@ -910,7 +900,6 @@
   The main reason for an initialize step after class instantiation is that async constructors are not a thing in JavaScript, and if you return a promise from a constructor to "hack it", TypeScript will eventually trip over it.
 
   Due to being able to dynamically (asynchronously) import ES Modules rather than synchronously require CommonJS modules, we had to make the APIs asynchronous, so the following methods are now async:
-
   - extend
   - exportPlatform
   - buildAllPlatforms & buildPlatform
@@ -959,7 +948,6 @@
 - bcb5ef3: Remove reliance on CTI token structure across transforms, actions and formats.
 
   Breaking changes:
-
   - Token type will now be determined by "type" (or "$type") property on the token, rather than by checking its CTI attributes. This change has been reflected in all of the format templates as well as transform "matcher" functions that were previously checking `attributes.category` as the token type indicator.
   - Types are mostly aligned with [DTCG spec types](https://design-tokens.github.io/community-group/format/#types), although a few additional ones have been added for compatibility reasons:
     - asset -> string type tokens where the value is a filepath to an asset
@@ -1054,7 +1042,6 @@
   Some minor grammatical improvements to some of the error logs were also done.
 
 - 8450a45: Some fixes for Expand utility:
-
   - Array values such as `dashArray` property of `strokeStyle` tokens no longer get expanded unintentionally, `typeof 'object'` check changed to `isPlainObject` check.
   - Nested object-value tokens (such as `style` property inside `border` tokens) will now also be expanded.
   - When references are involved during expansion, the resolved value is used when the property is an object, if not, then we keep the reference as is.
@@ -1073,7 +1060,6 @@
 - 3485467: Fix some inconsistencies in some of the templates, usually with regards to spaces/newlines
 - 606af51: Rename `typeW3CDelegate` utility function to `typeDtcgDelegate`, as using "W3C" is highly discouraged when the standard isn't a W3C standard yet.
 - 4225d78: Added the following transforms for CSS, and added them to the `scss`, `css` and `less` transformGroups:
-
   - `fontFamily/css` -> wraps font names with spaces in `'` quotes
   - `cubicBezier/css` -> array value, put inside `cubic-bezier()` CSS function
   - `strokeStyle/css/shorthand` -> object value, transform to CSS shorthand
@@ -1114,7 +1100,6 @@
 - 2da5130: Added `outputReferencesTransformed` utility function to pass into outputReferences option, which will not output references for values that have been transitively transformed.
 - 606af51: Support the use of "value"/"type"/"description" as token names or token group names, at the sacrifice of now no longer being able to combine non-DTCG and DTCG syntax within the same token dictionary.
 - 7418c97: Add a couple of utilities for converting a regular Style Dictionary tokens object/file(s) to DTCG formatted tokens:
-
   - `convertToDTCG`
   - `convertJSONToDTCG`
   - `convertZIPToDTCG`

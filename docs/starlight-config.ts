@@ -41,11 +41,11 @@ export default {
   sidebar: [
     {
       label: 'Getting Started',
-      autogenerate: { directory: 'getting-started' },
+      items: [{ autogenerate: { directory: 'getting-started' } }],
     },
     {
       label: 'More info',
-      autogenerate: { directory: 'info' },
+      items: [{ autogenerate: { directory: 'info' } }],
     },
     {
       label: 'Versions',
@@ -153,7 +153,7 @@ export default {
     },
     {
       label: 'Examples',
-      autogenerate: { directory: 'examples' },
+      items: [{ autogenerate: { directory: 'examples' } }],
     },
   ],
   head: [
