@@ -52,7 +52,7 @@ resolveReferences('solid {spacing.2} {colors.black}', sd.tokens, { usesDtcg: tru
 You can pass a third `options` argument where you can pass some configuration options for how references are resolved:
 
 - `usesDtcg` boolean, if set to true, the `resolveReferences` utility will assume DTCG syntax (`$value` props)
-- `warnImmediately` boolean, `true` by default. You should only set this to `false` if you know that this utility is used used inside of the Transform lifecycle hook of Style Dictionary, allowing the errors to be grouped and only thrown at the end of the transform step (end of [exportPlatform](/reference/api#exportplatform) method).
+- `warnImmediately` boolean, `true` by default. You should only set this to `false` if you know that this utility is used used inside of the Transform lifecycle hook of Style Dictionary, allowing the errors to be grouped and only thrown at the end of the transform step (end of [exportPlatform](/reference/api#exportplatform-) method).
 
 > Also supports passing a Token Map() data structure. This is more performant, and will become the standard in the next major version.
 
