@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.4.2
+
+### Patch Changes
+
+- 60d16e1: Fix sizeRem and sizePxToRem transform to keep the 0-valued tokens type number/string intact in the result (regression 5.4.0)
+
 ## 5.4.1
 
 ### Patch Changes
