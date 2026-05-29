@@ -1271,8 +1271,17 @@ describe('common', () => {
         });
 
         ['0', 0].forEach((value) => {
-          it('zero value is returned without a unit', () => {
-            expect(runTransform(sizeRem, { value })).to.equal(0);
+          it('zero value is returned without a unit and type remains the same', () => {
+            expect(runTransform(sizeRem, { value })).to.equal(value);
+          });
+        });
+
+        [
+          { unit: undefined, value: '0' },
+          { unit: undefined, value: 0 },
+        ].forEach((value) => {
+          it('zero value is returned without a unit and type remains the same', () => {
+            expect(runTransform(sizeRem, { value })).to.equal(value.value);
           });
         });
 
@@ -1610,15 +1619,23 @@ describe('common', () => {
           );
         });
 
-        ['0', '0px', '0rem', { value: 0, unit: 'px' }, { value: 0, unit: 'rem' }].forEach(
-          (value) => {
-            it(`zero value "${value}" is returned without a unit`, () => {
-              const val = runTransform(sizePxToRem, { value });
-
+        [
+          '0',
+          '0px',
+          '0rem',
+          { value: 0, unit: 'px' },
+          { value: 0, unit: 'rem' },
+          { value: '0', unit: 'rem' },
+        ].forEach((value) => {
+          it(`zero value "${value}" is returned without a unit`, () => {
+            const val = runTransform(sizePxToRem, { value });
+            if (typeof value === 'string' || typeof value.value === 'string') {
+              expect(val).to.equal('0');
+            } else {
               expect(val).to.equal(0);
-            });
-          },
-        );
+            }
+          });
+        });
 
         it('should throw an error if prop value is NaN', () => {
           expect(() => runTransform(sizePxToRem, { value: 'a' })).to.throw();
@@ -2488,15 +2505,15 @@ describe('common', () => {
         ];
 
         const expected = [
-          { value: 42, unit: 'px' },
-          { value: 42, unit: 'rem' },
-          { value: 42, unit: 'em' },
-          { value: 42, unit: 'unit' },
+          { value: '42', unit: 'px' },
+          { value: '42', unit: 'rem' },
+          { value: '42', unit: 'em' },
+          { value: '42', unit: 'unit' },
 
           { value: 42, unit: undefined },
           { value: 0.42, unit: undefined },
-          { value: 42, unit: undefined },
-          { value: 0.42, unit: undefined },
+          { value: '42', unit: undefined },
+          { value: '0.42', unit: undefined },
 
           { value: 42, unit: 'px' },
           { value: 42, unit: 'rem' },
