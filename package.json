@@ -112,7 +112,6 @@
   ],
   "homepage": "https://styledictionary.com",
   "overrides": {
-    "tmp": "0.2.5",
     "lodash": "4.17.23"
   },
   "dependencies": {
@@ -173,7 +172,7 @@
     "starlight-links-validator": "^0.24.0",
     "typescript": "^5.7.2",
     "unist-util-visit": "^5.0.0",
-    "uuid": "^9.0.1",
+    "uuid": "^14.0.0",
     "yaml": "^2.3.4"
   }
 }
