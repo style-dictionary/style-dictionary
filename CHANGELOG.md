@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.4.3
+
+### Patch Changes
+
+- 371dbcb: Get proper deepmerge types in, fix small potential bug for `StyleDictionary.extend()`, flagged by type safety improvement.
+
 ## 5.4.2
 
 ### Patch Changes
