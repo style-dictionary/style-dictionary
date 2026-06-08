@@ -94,5 +94,15 @@ describe('utils', () => {
         });
       });
     });
+
+    it('should not allow prototype pollution by converting to an object with a malicious token.key', () => {
+      // below key would cause prototype pollution via L40-L50 in convertTokenData.js
+      // this key would be dissected into essentially doing obj['__proto__']['a'] assignment
+      convertTokenData([{ key: '{__proto__.a}', value: 'b' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.a).to.be.undefined;
+    });
   });
 });
