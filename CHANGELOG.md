@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.4.4
+
+### Patch Changes
+
+- 23b5e8d: Fix prototype pollution vulnerability in the `convertTokenData` utility function, this was introduced in version `4.3.0`.
+  Any token key that includes `__proto__` will be ignored.
+  See [Security Advisory GHSA-vj5c-m527-mpff](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-vj5c-m527-mpff).
+
 ## 5.4.3
 
 ### Patch Changes
