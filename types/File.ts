@@ -37,5 +37,6 @@ export interface File {
   destination?: string;
   format?: string | FormatFn;
   filter?: string | Partial<TransformedToken> | Filter['filter'];
+  emitEmptyFiles?: boolean;
   options?: LocalOptions;
 }

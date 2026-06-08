@@ -903,6 +903,73 @@ Refer to: https://styledictionary.com/reference/logging/
         expect(property.value).to.equal('bango');
       });
     });
+
+    it('should not write an empty-token file by default', async () => {
+      const sd = new StyleDictionary({
+        ...dictionary,
+        hooks,
+        platforms: {
+          foo: {
+            buildPath: '__tests__/__output/',
+            files: [
+              {
+                destination: 'test.json',
+                filter: () => false,
+                format: 'foo',
+              },
+            ],
+          },
+        },
+      });
+      await sd.buildPlatform('foo');
+      expect(fileExists('__tests__/__output/test.json')).to.be.false;
+    });
+
+    it('should write an empty-token file when emitEmptyFiles is enabled on the file', async () => {
+      const sd = new StyleDictionary({
+        ...dictionary,
+        hooks,
+        platforms: {
+          foo: {
+            buildPath: '__tests__/__output/',
+            files: [
+              {
+                destination: 'test.json',
+                filter: () => false,
+                format: 'foo',
+                emitEmptyFiles: true,
+              },
+            ],
+          },
+        },
+      });
+      await sd.buildPlatform('foo');
+      expect(fileExists('__tests__/__output/test.json')).to.be.true;
+      expect(fs.readFileSync(resolve('__tests__/__output/test.json'), 'utf-8')).to.equal('{}');
+    });
+
+    it('should write an empty-token file when emitEmptyFiles is enabled on the platform', async () => {
+      const sd = new StyleDictionary({
+        ...dictionary,
+        hooks,
+        platforms: {
+          foo: {
+            buildPath: '__tests__/__output/',
+            emitEmptyFiles: true,
+            files: [
+              {
+                destination: 'test.json',
+                filter: () => false,
+                format: 'foo',
+              },
+            ],
+          },
+        },
+      });
+      await sd.buildPlatform('foo');
+      expect(fileExists('__tests__/__output/test.json')).to.be.true;
+      expect(fs.readFileSync(resolve('__tests__/__output/test.json'), 'utf-8')).to.equal('{}');
+    });
   });
 
   describe('formatFile', () => {
@@ -987,31 +1054,30 @@ Refer to: https://styledictionary.com/reference/logging/
     });
 
     const destEmptyTokens = '__tests__/__output/test.emptyTokens';
+    const emptyTokensDictionary = {
+      allTokens: [
+        {
+          name: 'someName',
+          type: 'color',
+          path: ['some', 'name', 'path1'],
+          value: 'value1',
+        },
+      ],
+    };
+    const emptyTokensFilter = function (token) {
+      return token.type === 'color2';
+    };
+
     it('should warn when a file is not created because of empty tokens', async () => {
-      const dictionary = {
-        allTokens: [
-          {
-            name: 'someName',
-            type: 'color',
-            path: ['some', 'name', 'path1'],
-            value: 'value1',
-          },
-        ],
-      };
-
-      const filter = function (token) {
-        return token.type === 'color2';
-      };
-
       const sd = new StyleDictionary();
       const { logs, output } = await sd.formatFile(
         {
           destination: destEmptyTokens,
           format,
-          filter,
+          filter: emptyTokensFilter,
         },
         {},
-        dictionary,
+        emptyTokensDictionary,
       );
 
       expect(output).to.be.undefined;
@@ -1021,17 +1087,6 @@ Refer to: https://styledictionary.com/reference/logging/
     });
 
     it('should warn when a file is not created because of empty tokens using async filters', async () => {
-      const dictionary = {
-        allTokens: [
-          {
-            name: 'someName',
-            type: 'color',
-            path: ['some', 'name', 'path1'],
-            value: 'value1',
-          },
-        ],
-      };
-
       const filter = async (token) => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         return token.type === 'color2';
@@ -1045,12 +1100,95 @@ Refer to: https://styledictionary.com/reference/logging/
           filter,
         },
         {},
-        dictionary,
+        emptyTokensDictionary,
       );
       expect(output).to.be.undefined;
 
       const warn = chalk.rgb(255, 140, 0)(`No tokens for ${destEmptyTokens}. File not created.`);
       expect(logs.warning[0]).to.equal(warn);
+    });
+
+    it('should throw when a file is not created because of empty tokens and warnings are errors', async () => {
+      const sd = new StyleDictionary();
+      await expect(
+        sd.formatFile(
+          {
+            destination: destEmptyTokens,
+            format,
+            filter: emptyTokensFilter,
+          },
+          { log: { warnings: errorLog } },
+          emptyTokensDictionary,
+        ),
+      ).to.eventually.rejectedWith(`No tokens for ${destEmptyTokens}. File not created.`);
+    });
+
+    it('should create file output when emitEmptyFiles is enabled on the file', async () => {
+      const sd = new StyleDictionary();
+      const { logs, output } = await sd.formatFile(
+        {
+          destination: destEmptyTokens,
+          format,
+          filter: emptyTokensFilter,
+          emitEmptyFiles: true,
+        },
+        {},
+        emptyTokensDictionary,
+      );
+
+      expect(output).to.equal('hi');
+      expect(logs.warning.length).to.equal(0);
+    });
+
+    it('should create file output when emitEmptyFiles is enabled on the platform', async () => {
+      const sd = new StyleDictionary();
+      const { logs, output } = await sd.formatFile(
+        {
+          destination: destEmptyTokens,
+          format,
+          filter: emptyTokensFilter,
+        },
+        { emitEmptyFiles: true },
+        emptyTokensDictionary,
+      );
+
+      expect(output).to.equal('hi');
+      expect(logs.warning.length).to.equal(0);
+    });
+
+    it('should prefer file-level emitEmptyFiles false over platform-level true', async () => {
+      const sd = new StyleDictionary();
+      const { logs, output } = await sd.formatFile(
+        {
+          destination: destEmptyTokens,
+          format,
+          filter: emptyTokensFilter,
+          emitEmptyFiles: false,
+        },
+        { emitEmptyFiles: true },
+        emptyTokensDictionary,
+      );
+
+      expect(output).to.be.undefined;
+      const warn = chalk.rgb(255, 140, 0)(`No tokens for ${destEmptyTokens}. File not created.`);
+      expect(logs.warning[0]).to.equal(warn);
+    });
+
+    it('should prefer file-level emitEmptyFiles true over platform-level false', async () => {
+      const sd = new StyleDictionary();
+      const { logs, output } = await sd.formatFile(
+        {
+          destination: destEmptyTokens,
+          format,
+          filter: emptyTokensFilter,
+          emitEmptyFiles: true,
+        },
+        { emitEmptyFiles: false },
+        emptyTokensDictionary,
+      );
+
+      expect(output).to.equal('hi');
+      expect(logs.warning.length).to.equal(0);
     });
 
     it('should create file output properly', async () => {
