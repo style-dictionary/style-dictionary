@@ -1039,6 +1039,10 @@ describe('common', () => {
           expect(remValue).to.equal('12.00sp');
         });
 
+        it('should preserve CSS function values', () => {
+          expect(runTransform(sizeSp, { value: 'calc(1rem + 2px)' })).to.equal('calc(1rem + 2px)');
+        });
+
         it('should throw an error if prop value is NaN', () => {
           expect(() => runTransform(sizeSp, { value: 'a' })).to.throw();
         });
@@ -1061,6 +1065,12 @@ describe('common', () => {
 
           expect(pxValue).to.equal('12.00dp');
           expect(remValue).to.equal('12.00dp');
+        });
+
+        it('should preserve CSS function values', () => {
+          expect(runTransform(sizeDp, { value: 'calc(100% - 20px)' })).to.equal(
+            'calc(100% - 20px)',
+          );
         });
 
         it('should throw an error if prop value is NaN', () => {
@@ -1136,6 +1146,12 @@ describe('common', () => {
           expect(remValue).to.equal('14.00sp');
         });
 
+        it('should preserve CSS function values', () => {
+          expect(runTransform(sizeRemToSp, { value: 'calc(1rem + 2px)' })).to.equal(
+            'calc(1rem + 2px)',
+          );
+        });
+
         it('should throw an error if prop value is NaN', () => {
           expect(() => runTransform(sizeRemToSp, { value: 'a' })).to.throw();
         });
@@ -1180,6 +1196,12 @@ describe('common', () => {
           expect(value).to.equal('224.00dp');
         });
 
+        it('should preserve CSS function values', () => {
+          expect(runTransform(sizeRemToDp, { value: 'calc(100% - 20px)' })).to.equal(
+            'calc(100% - 20px)',
+          );
+        });
+
         it('should throw an error if prop value is NaN', () => {
           expect(() => runTransform(sizeRemToDp, { value: 'a' }, {}, {})).to.throw();
         });
@@ -1220,6 +1242,12 @@ describe('common', () => {
 
           expect(pxValue).to.equal('-10px');
           expect(remValue).to.equal('-10px'); // value transformation doesn't make sense here
+        });
+
+        it('should preserve CSS function values', () => {
+          expect(runTransform(sizePx, { value: 'calc(1rem + 2px)', type: 'fontSize' })).to.equal(
+            'calc(1rem + 2px)',
+          );
         });
 
         it('should throw an error if prop value is NaN', () => {
@@ -1282,6 +1310,12 @@ describe('common', () => {
 
           expect(value).to.equal('1em');
           expect(nonUnitValue).to.equal('5lightyears');
+        });
+
+        it('should preserve CSS function values', () => {
+          expect(runTransform(sizeRem, { value: 'calc(1rem + 2px)', type: 'fontSize' })).to.equal(
+            'calc(1rem + 2px)',
+          );
         });
 
         it('should throw an error if prop value is NaN', () => {
@@ -1574,6 +1608,12 @@ describe('common', () => {
           expect(pxValue).to.equal('224px');
         });
 
+        it('should preserve CSS function values', () => {
+          expect(runTransform(sizeRemToPx, { value: 'calc(1rem + 2px)' })).to.equal(
+            'calc(1rem + 2px)',
+          );
+        });
+
         it('should throw an error if prop value is NaN', () => {
           expect(() => runTransform(sizeRemToPx, { value: 'a' })).to.throw();
         });
@@ -1608,6 +1648,12 @@ describe('common', () => {
             });
           },
         );
+
+        it('should preserve CSS function values', () => {
+          expect(runTransform(sizePxToRem, { value: 'calc(100% - 20px)' })).to.equal(
+            'calc(100% - 20px)',
+          );
+        });
 
         it('should throw an error if prop value is NaN', () => {
           expect(() => runTransform(sizePxToRem, { value: 'a' })).to.throw();
@@ -1960,6 +2006,15 @@ describe('common', () => {
               lineHeight: { value: 1, unit: 'rem' },
             }),
           ).to.equal('20px/1rem sans-serif');
+        });
+
+        it('should preserve CSS function dimension values', () => {
+          expect(
+            typographyTransform({
+              fontSize: 'calc(1rem + 2px)',
+              lineHeight: 'clamp(1.2rem, 2vw, 1.5rem)',
+            }),
+          ).to.equal('calc(1rem + 2px)/clamp(1.2rem, 2vw, 1.5rem) sans-serif');
         });
       });
 
@@ -2449,7 +2504,9 @@ describe('common', () => {
       it('should return token value', () => {
         const allTokensNonDtcg = [
           { value: '42px' },
+          { value: '16px' },
           { value: '42rem' },
+          { value: '1.5rem' },
           { value: '42em' },
           { value: '42unit' },
 
@@ -2461,7 +2518,9 @@ describe('common', () => {
         ];
         const allTokensDtcg = [
           { $value: '42px' },
+          { $value: '16px' },
           { $value: '42rem' },
+          { $value: '1.5rem' },
           { $value: '42em' },
           { $value: '42unit' },
 
@@ -2478,7 +2537,9 @@ describe('common', () => {
 
         const expected = [
           { value: 42, unit: 'px' },
+          { value: 16, unit: 'px' },
           { value: 42, unit: 'rem' },
+          { value: 1.5, unit: 'rem' },
           { value: 42, unit: 'em' },
           { value: 42, unit: 'unit' },
 
@@ -2498,6 +2559,19 @@ describe('common', () => {
         allTokensNonDtcg.forEach((it, idx) => {
           expect(getTokenDimensionValue(it.value)).to.deep.equal(expected[idx]);
         });
+      });
+
+      it('should preserve CSS function values', () => {
+        expect(getTokenDimensionValue('calc(100% - 20px)')).to.deep.equal({
+          value: 'calc(100% - 20px)',
+          unit: undefined,
+        });
+
+        ['min(1rem, 2vw)', 'max(1rem, 2vw)', 'clamp(1rem, 2vw, 2rem)', 'var(--size)'].forEach(
+          (value) => {
+            expect(getTokenDimensionValue(value)).to.deep.equal({ value, unit: undefined });
+          },
+        );
       });
     });
   });
