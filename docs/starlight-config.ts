@@ -1,9 +1,10 @@
 import type { StarlightUserConfig } from '@astrojs/starlight/types';
-import starlightLinksValidator from 'starlight-links-validator';
+// import starlightLinksValidator from 'starlight-links-validator';
 import { pluginLanguageClass } from './expressive-code-plugin-language-class.js';
 
 export default {
-  plugins: [starlightLinksValidator()],
+  // This is broken currently...
+  // plugins: [starlightLinksValidator()],
   expressiveCode: {
     plugins: [
       // Call the plugin initialization function inside the `plugins` array

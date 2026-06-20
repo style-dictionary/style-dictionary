@@ -1,8 +1,8 @@
 diff --git a/node_modules/@astrojs/starlight/utils/createTranslationSystem.ts b/node_modules/@astrojs/starlight/utils/createTranslationSystem.ts
-index 540b74b..7e8e38f 100644
+index 9ecf0dd..a51cbf8 100644
 --- a/node_modules/@astrojs/starlight/utils/createTranslationSystem.ts
 +++ b/node_modules/@astrojs/starlight/utils/createTranslationSystem.ts
-@@ -125,6 +125,7 @@ function buildResources<T extends Record<string, string | undefined>>(
+@@ -128,6 +128,7 @@ function buildResources<T extends i18nSchemaOutput>(
  // strings. We let TypeScript merge them into a single union type so that plugins with a TypeScript
  // configuration preventing `UserI18nKeys` to be properly inferred can still get auto-completion
  // for built-in UI strings.
@@ -11,16 +11,16 @@ index 540b74b..7e8e38f 100644
  
  export type I18nT = TFunction<'starlight', undefined> & {
 diff --git a/node_modules/@astrojs/starlight/utils/translations.ts b/node_modules/@astrojs/starlight/utils/translations.ts
-index 71ce6e7..6707e1e 100644
+index d4ffaca..e6d19fd 100644
 --- a/node_modules/@astrojs/starlight/utils/translations.ts
 +++ b/node_modules/@astrojs/starlight/utils/translations.ts
 @@ -1,6 +1,9 @@
  import { getCollection, type CollectionEntry, type DataCollectionKey } from 'astro:content';
-+// @ts-expect-error virtual module not found
++// @ts-expect-error virtual module import
  import config from 'virtual:starlight/user-config';
-+// @ts-expect-error virtual module not found
++// @ts-expect-error virtual module import
  import project from 'virtual:starlight/project-context';
-+// @ts-expect-error virtual module not found
++// @ts-expect-error virtual module import
  import pluginTranslations from 'virtual:starlight/plugin-translations';
  import type { i18nSchemaOutput } from '../schemas/i18n';
  import { createTranslationSystem } from './createTranslationSystem';

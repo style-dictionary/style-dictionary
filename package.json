@@ -45,7 +45,7 @@
   "scripts": {
     "build": "node scripts/inject-version.js && tsc --emitDeclarationOnly",
     "docs:start": "astro dev --root ./docs",
-    "docs:build": "astro check  --root ./docs && astro build --root ./docs",
+    "docs:build": "astro check --root ./docs && astro build --root ./docs",
     "docs:preview": "astro preview --root ./docs",
     "format": "run-p format:*",
     "format:eslint": "eslint --fix \"**/*.js\"",
@@ -112,7 +112,11 @@
   ],
   "homepage": "https://styledictionary.com",
   "overrides": {
-    "lodash": "4.17.23"
+    "esbuild": "^0.28.1",
+    "js-yaml": "^4.2.0",
+    "lodash": "^4.17.23",
+    "volar-service-yaml": "0.0.71",
+    "ws": "^8.21.0"
   },
   "dependencies": {
     "@bundled-es-modules/deepmerge": "^4.3.2",
@@ -148,7 +152,7 @@
     "@web/test-runner-commands": "^0.9.0",
     "@web/test-runner-playwright": "^0.11.0",
     "acorn": "^8.11.3",
-    "astro": "^6.3.3",
+    "astro": "^6.4.8",
     "chai": "^6.2.2",
     "eslint": "^9.19.0",
     "eslint-plugin-mocha": "^10.5.0",
