@@ -2527,6 +2527,18 @@ describe('common', () => {
           expect(getTokenDimensionValue(it.value)).to.deep.equal(expected[idx]);
         });
       });
+
+      it('should gracefully handle dimension values that cannot be parsed', () => {
+        expect(getTokenDimensionValue('something weird')).to.deep.equal({
+          value: 'something weird',
+          unit: undefined,
+        });
+
+        expect(getTokenDimensionValue('calc(100% - 20px)')).to.deep.equal({
+          value: 'calc(100% - 20px)',
+          unit: undefined,
+        });
+      });
     });
   });
 });
