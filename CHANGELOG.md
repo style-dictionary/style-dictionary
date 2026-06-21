@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.5.0
+
+### Minor Changes
+
+- b63dc05: Add `emitEmptyFiles` option to write output files even when no tokens match the file's filter, instead of skipping them.
+
+### Patch Changes
+
+- e319976: Fix regression to gracefully handle unparseable dimension tokens which is required to support custom dimension tokens from third party vendors like Tokens Studio.
+
 ## 5.4.4
 
 ### Patch Changes
