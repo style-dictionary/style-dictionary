@@ -15,12 +15,9 @@ const textFile = resolve(`${buildPath}text.txt`);
 
 // Tests all hooks async, into a single config
 describe('integration', async function () {
-  this.timeout(10000);
   before(async () => {
-    // so we don't accidentally create side-effects on the StyleDictionary class
-    // that will affect outputs of other tests.
+    clearOutput(buildPath);
     const SDExtension = class extends StyleDictionary {};
-
     SDExtension.registerParser({
       name: 'json-parser',
       pattern: /^.+\.json$/g,
@@ -118,11 +115,10 @@ describe('integration', async function () {
         },
       },
     });
-
     await sd.buildAllPlatforms();
   });
 
-  afterEach(() => {
+  after(() => {
     clearOutput(buildPath);
   });
 

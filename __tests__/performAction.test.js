@@ -53,11 +53,11 @@ describe('performAction', () => {
       sd.registerAction({
         name: 'test-async',
         do: async function () {
-          fs.promises.mkdir('__tests__/__output', { recursive: true });
-          fs.promises.writeFile('__tests__/__output/action.txt', 'hi', 'utf-8');
+          await fs.promises.mkdir('__tests__/__output', { recursive: true });
+          await fs.promises.writeFile('__tests__/__output/action.txt', 'hi', 'utf-8');
         },
         undo: async function () {
-          fs.promises.unlink('__tests__/__output/action.txt');
+          await fs.promises.unlink('__tests__/__output/action.txt');
         },
       });
       await sd.buildPlatform('android');

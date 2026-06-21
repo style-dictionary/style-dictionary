@@ -10,6 +10,7 @@ const { js } = transformGroups;
 
 describe('integration', async () => {
   before(async () => {
+    clearOutput(buildPath);
     const sd = new StyleDictionary({
       source: [`__integration__/tokens/size/padding.json`],
       // Adding formats directly to SD
@@ -75,11 +76,10 @@ describe('integration', async () => {
         return JSON.stringify(opts, null, 2);
       },
     });
-
     await sd.buildAllPlatforms();
   });
 
-  afterEach(() => {
+  after(() => {
     clearOutput(buildPath);
   });
 

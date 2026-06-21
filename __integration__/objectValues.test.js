@@ -12,6 +12,7 @@ const { value: transformTypeValue } = transformTypes;
 
 describe('integration', async () => {
   before(async () => {
+    clearOutput(buildPath);
     const options = {
       outputReferences: true,
     };
@@ -193,7 +194,7 @@ describe('integration', async () => {
     await sd.buildAllPlatforms();
   });
 
-  afterEach(() => {
+  after(() => {
     clearOutput(buildPath);
   });
 
