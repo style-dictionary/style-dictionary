@@ -8,6 +8,11 @@ export default defineConfig({
   integrations: [starlight(starlightConfig)],
   markdown: {
     remarkPlugins: [remarkPlayground],
+    // regression https://github.com/withastro/astro/issues/16971
+    // https://github.com/withastro/starlight/issues/3934
+    // consider using Satteri processor, which is opt-in
+    // https://github.com/withastro/starlight/pull/3923/changes#diff-131521e4d59a89ebd853d4ce25c99d67b2cf362b9318c5b89b60883a52d50ebaR7
+    gfm: true,
   },
   site: 'https://styledictionary.com/',
   vite: {
