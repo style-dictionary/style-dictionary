@@ -96,6 +96,7 @@ export interface PlatformConfig {
   preprocessors?: string[];
   prefix?: string;
   buildPath?: string;
+  emitEmptyFiles?: boolean;
   files?: File[];
   actions?: string[] | Omit<Action, 'name'>[];
   options?: LocalOptions;

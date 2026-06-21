@@ -37,8 +37,8 @@ export const fileToJSON = (_path, _fs = fs) => {
 
 export const clearOutput = (outputFolder = '__tests__/__output', _fs = fs) => {
   try {
-    _fs.rmdirSync(outputFolder);
-  } catch {
+    _fs.rmSync(outputFolder, { force: true, recursive: true });
+  } catch (_e) {
     //
   }
 };

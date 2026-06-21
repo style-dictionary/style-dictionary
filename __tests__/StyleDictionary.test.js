@@ -21,6 +21,10 @@ const { console: logToConsole } = logBrokenReferenceLevels;
 const { silent, verbose } = logVerbosityLevels;
 const { error: errorLog, warn } = logWarningLevels;
 
+const testOutputFolder = '__tests__/__output';
+const testConfigsFolder = '__tests__/__configs';
+const testTokensFolder = '__tests__/__tokens';
+
 function traverseObj(obj, fn) {
   for (let key in obj) {
     fn.apply(this, [obj, key, obj[key]]);
@@ -42,21 +46,21 @@ const test_props = {
 describe('StyleDictionary class', () => {
   beforeEach(() => {
     restore();
-    clearOutput();
+    clearOutput(testOutputFolder);
   });
 
   afterEach(() => {
-    clearOutput();
+    clearOutput(testOutputFolder);
   });
 
   it('should accept a string as a path to a JSON5 file', async () => {
-    const StyleDictionaryExtended = new StyleDictionary('__tests__/__configs/test.json5');
+    const StyleDictionaryExtended = new StyleDictionary(`${testConfigsFolder}/test.json5`);
     await StyleDictionaryExtended.hasInitialized;
     expect(StyleDictionaryExtended).to.have.nested.property('platforms.web');
   });
 
   it('should accept a string as a path to a JSONC file', async () => {
-    const StyleDictionaryExtended = new StyleDictionary('__tests__/__configs/test.jsonc');
+    const StyleDictionaryExtended = new StyleDictionary(`${testConfigsFolder}/test.jsonc`);
     await StyleDictionaryExtended.hasInitialized;
     expect(StyleDictionaryExtended).to.have.nested.property('platforms.web');
   });
@@ -115,13 +119,13 @@ describe('StyleDictionary class', () => {
 
   describe('method signature', () => {
     it('should accept a string as a path to a JSON file', async () => {
-      const StyleDictionaryExtended = new StyleDictionary('__tests__/__configs/test.json');
+      const StyleDictionaryExtended = new StyleDictionary(`${testConfigsFolder}/test.json`);
       await StyleDictionaryExtended.hasInitialized;
       expect(StyleDictionaryExtended).to.have.nested.property('platforms.web');
     });
 
     it('should accept an object as options', () => {
-      const config = fileToJSON('__tests__/__configs/test.json');
+      const config = fileToJSON(`${testConfigsFolder}/test.json`);
       const StyleDictionaryExtended = new StyleDictionary(config);
       expect(StyleDictionaryExtended).to.have.nested.property('platforms.web');
     });
@@ -151,7 +155,7 @@ describe('StyleDictionary class', () => {
 
     it('should properly glob paths', async () => {
       const StyleDictionaryExtended = new StyleDictionary({
-        include: ['__tests__/__tokens/*.json'],
+        include: [`${testTokensFolder}/*.json`],
       });
       await StyleDictionaryExtended.hasInitialized;
       expect(typeof StyleDictionaryExtended.tokens.size.padding.tiny).to.equal('object');
@@ -159,12 +163,12 @@ describe('StyleDictionary class', () => {
 
     it('should build the tokens object if an include is given', async () => {
       const StyleDictionaryExtended = new StyleDictionary({
-        include: ['__tests__/__tokens/paddings.json'],
+        include: [`${testTokensFolder}/paddings.json`],
       });
-      const output = fileToJSON('__tests__/__tokens/paddings.json');
+      const output = fileToJSON(`${testTokensFolder}/paddings.json`);
       traverseObj(output, (obj) => {
         if (Object.hasOwn(obj, 'value') && !obj.filePath) {
-          obj.filePath = '__tests__/__tokens/paddings.json';
+          obj.filePath = `${testTokensFolder}/paddings.json`;
           obj.isSource = false;
         }
       });
@@ -175,12 +179,12 @@ describe('StyleDictionary class', () => {
     it('should override existing tokens if include is given', async () => {
       const StyleDictionaryExtended = new StyleDictionary({
         tokens: test_props,
-        include: ['__tests__/__tokens/paddings.json'],
+        include: [`${testTokensFolder}/paddings.json`],
       });
-      const output = fileToJSON('__tests__/__tokens/paddings.json');
+      const output = fileToJSON(`${testTokensFolder}/paddings.json`);
       traverseObj(output, (obj) => {
         if (Object.hasOwn(obj, 'value') && !obj.filePath) {
-          obj.filePath = '__tests__/__tokens/paddings.json';
+          obj.filePath = `${testTokensFolder}/paddings.json`;
           obj.isSource = false;
         }
       });
@@ -190,7 +194,7 @@ describe('StyleDictionary class', () => {
 
     it('should update tokens if there are includes', async () => {
       const StyleDictionaryExtended = new StyleDictionary({
-        include: ['__tests__/__configs/include.json'],
+        include: [`${testConfigsFolder}/include.json`],
       });
       await StyleDictionaryExtended.hasInitialized;
       expect(typeof StyleDictionaryExtended.tokens.size.padding.tiny).to.equal('object');
@@ -199,7 +203,7 @@ describe('StyleDictionary class', () => {
     it('should override existing tokens if there are includes', async () => {
       const StyleDictionaryExtended = new StyleDictionary({
         tokens: test_props,
-        include: ['__tests__/__configs/include.json'],
+        include: [`${testConfigsFolder}/include.json`],
       });
       await StyleDictionaryExtended.hasInitialized;
       expect(StyleDictionaryExtended).to.have.nested.property(
@@ -225,12 +229,12 @@ describe('StyleDictionary class', () => {
 
     it('should build the tokens object if a source is given', async () => {
       const StyleDictionaryExtended = new StyleDictionary({
-        source: ['__tests__/__tokens/paddings.json'],
+        source: [`${testTokensFolder}/paddings.json`],
       });
-      const output = fileToJSON('__tests__/__tokens/paddings.json');
+      const output = fileToJSON(`${testTokensFolder}/paddings.json`);
       traverseObj(output, (obj) => {
         if (Object.hasOwn(obj, 'value') && !obj.filePath) {
-          obj.filePath = '__tests__/__tokens/paddings.json';
+          obj.filePath = `${testTokensFolder}/paddings.json`;
           obj.isSource = true;
         }
       });
@@ -239,11 +243,11 @@ describe('StyleDictionary class', () => {
     });
 
     it('should use relative filePaths for the filePath property', async () => {
-      const filePath = '__tests__/__tokens/paddings.json';
+      const filePath = `${testTokensFolder}/paddings.json`;
       const StyleDictionaryExtended = new StyleDictionary({
         source: [filePath],
       });
-      const output = fileToJSON('__tests__/__tokens/paddings.json');
+      const output = fileToJSON(`${testTokensFolder}/paddings.json`);
       traverseObj(output, (obj) => {
         if (Object.hasOwn(obj, 'value') && !obj.filePath) {
           obj.filePath = filePath;
@@ -257,12 +261,12 @@ describe('StyleDictionary class', () => {
     it('should override existing tokens source is given', async () => {
       const StyleDictionaryExtended = new StyleDictionary({
         tokens: test_props,
-        source: ['__tests__/__tokens/paddings.json'],
+        source: [`${testTokensFolder}/paddings.json`],
       });
-      const output = fileToJSON('__tests__/__tokens/paddings.json');
+      const output = fileToJSON(`${testTokensFolder}/paddings.json`);
       traverseObj(output, (obj) => {
         if (Object.hasOwn(obj, 'value') && !obj.filePath) {
-          obj.filePath = '__tests__/__tokens/paddings.json';
+          obj.filePath = `${testTokensFolder}/paddings.json`;
           obj.isSource = true;
         }
       });
@@ -274,14 +278,14 @@ describe('StyleDictionary class', () => {
   describe('collisions', () => {
     it('should not throw a collision error if a source file collides with an include', async () => {
       const StyleDictionaryExtended = new StyleDictionary({
-        include: ['__tests__/__tokens/paddings.json'],
-        source: ['__tests__/__tokens/paddings.json'],
+        include: [`${testTokensFolder}/paddings.json`],
+        source: [`${testTokensFolder}/paddings.json`],
         log: errorLog,
       });
-      const output = fileToJSON('__tests__/__tokens/paddings.json');
+      const output = fileToJSON(`${testTokensFolder}/paddings.json`);
       traverseObj(output, (obj) => {
         if (Object.hasOwn(obj, 'value') && !obj.filePath) {
-          obj.filePath = '__tests__/__tokens/paddings.json';
+          obj.filePath = `${testTokensFolder}/paddings.json`;
           obj.isSource = true;
         }
       });
@@ -292,7 +296,7 @@ describe('StyleDictionary class', () => {
     it('should throw an error if the collision is in source files and log is set to error', async () => {
       const sd = new StyleDictionary(
         {
-          source: ['__tests__/__tokens/paddings.json', '__tests__/__tokens/_paddings.json'],
+          source: [`${testTokensFolder}/paddings.json`, `${testTokensFolder}/_paddings.json`],
           log: { warnings: errorLog, verbosity: verbose },
         },
         { init: false },
@@ -309,7 +313,7 @@ describe('StyleDictionary class', () => {
     it('should throw a brief error if the collision is in source files and log is set to error and verbosity default', async () => {
       const sd = new StyleDictionary(
         {
-          source: ['__tests__/__tokens/paddings.json', '__tests__/__tokens/_paddings.json'],
+          source: [`${testTokensFolder}/paddings.json`, `${testTokensFolder}/_paddings.json`],
           log: { warnings: errorLog },
         },
         { init: false },
@@ -326,7 +330,7 @@ describe('StyleDictionary class', () => {
     it('should throw a warning if the collision is in source files and log is set to warn', async () => {
       const sd = new StyleDictionary(
         {
-          source: ['__tests__/__tokens/paddings.json', '__tests__/__tokens/paddings.json'],
+          source: [`${testTokensFolder}/paddings.json`, `${testTokensFolder}/paddings.json`],
           log: warn,
         },
         { init: false },
@@ -796,14 +800,14 @@ Refer to: https://styledictionary.com/reference/logging/
     const platform = {
       files: [
         {
-          destination: '__tests__/__output/test.json',
+          destination: `${testOutputFolder}/test.json`,
           format: 'foo',
         },
       ],
     };
 
     const platformWithBuildPath = {
-      buildPath: '__tests__/__output/',
+      buildPath: testOutputFolder,
       files: [
         {
           destination: 'test.json',
@@ -813,7 +817,7 @@ Refer to: https://styledictionary.com/reference/logging/
     };
 
     const platformWithFilter = {
-      buildPath: '__tests__/__output/',
+      buildPath: testOutputFolder,
       files: [
         {
           destination: 'test.json',
@@ -826,7 +830,7 @@ Refer to: https://styledictionary.com/reference/logging/
     };
 
     const platformWithoutFormat = {
-      buildPath: '__tests__/__output/',
+      buildPath: testOutputFolder,
       files: [
         {
           destination: 'test.json',
@@ -835,7 +839,7 @@ Refer to: https://styledictionary.com/reference/logging/
     };
 
     const platformWithoutFiles = {
-      buildPath: '__tests__/__output/',
+      buildPath: testOutputFolder,
     };
 
     it('should throw if there is no files property', async () => {
@@ -871,7 +875,7 @@ Refer to: https://styledictionary.com/reference/logging/
         },
       });
       await sd.buildPlatform('foo');
-      expect(fileExists('__tests__/__output/test.json')).to.be.true;
+      expect(fileExists(`${testOutputFolder}/test.json`)).to.be.true;
     });
 
     it('should work with buildPath', async () => {
@@ -883,7 +887,7 @@ Refer to: https://styledictionary.com/reference/logging/
         },
       });
       await sd.buildPlatform('foo');
-      expect(fileExists('__tests__/__output/test.json')).to.be.true;
+      expect(fileExists(`${testOutputFolder}/test.json`)).to.be.true;
     });
 
     it('should work with a filter', async () => {
@@ -895,13 +899,80 @@ Refer to: https://styledictionary.com/reference/logging/
         },
       });
       await sd.buildPlatform('foo');
-      expect(fileExists('__tests__/__output/test.json')).to.be.true;
-      const output = JSON.parse(fs.readFileSync(resolve('__tests__/__output/test.json')));
+      expect(fileExists(`${testOutputFolder}/test.json`)).to.be.true;
+      const output = JSON.parse(fs.readFileSync(resolve(`${testOutputFolder}/test.json`)));
       expect(output).to.have.property('bingo');
       expect(output).to.not.have.property('foo');
       Object.values(output).forEach((property) => {
         expect(property.value).to.equal('bango');
       });
+    });
+
+    it('should not write an empty-token file by default', async () => {
+      const sd = new StyleDictionary({
+        ...dictionary,
+        hooks,
+        platforms: {
+          foo: {
+            buildPath: testOutputFolder,
+            files: [
+              {
+                destination: 'test.json',
+                filter: () => false,
+                format: 'foo',
+              },
+            ],
+          },
+        },
+      });
+      await sd.buildPlatform('foo');
+      expect(fileExists(`${testOutputFolder}/test.json`)).to.be.false;
+    });
+
+    it('should write an empty-token file when emitEmptyFiles is enabled on the file', async () => {
+      const sd = new StyleDictionary({
+        ...dictionary,
+        hooks,
+        platforms: {
+          foo: {
+            buildPath: testOutputFolder,
+            files: [
+              {
+                destination: 'test.json',
+                filter: () => false,
+                format: 'foo',
+                emitEmptyFiles: true,
+              },
+            ],
+          },
+        },
+      });
+      await sd.buildPlatform('foo');
+      expect(fileExists(`${testOutputFolder}/test.json`)).to.be.true;
+      expect(fs.readFileSync(resolve(`${testOutputFolder}/test.json`), 'utf-8')).to.equal('{}');
+    });
+
+    it('should write an empty-token file when emitEmptyFiles is enabled on the platform', async () => {
+      const sd = new StyleDictionary({
+        ...dictionary,
+        hooks,
+        platforms: {
+          foo: {
+            buildPath: testOutputFolder,
+            emitEmptyFiles: true,
+            files: [
+              {
+                destination: 'test.json',
+                filter: () => false,
+                format: 'foo',
+              },
+            ],
+          },
+        },
+      });
+      await sd.buildPlatform('foo');
+      expect(fileExists(`${testOutputFolder}/test.json`)).to.be.true;
+      expect(fs.readFileSync(resolve(`${testOutputFolder}/test.json`), 'utf-8')).to.equal('{}');
     });
   });
 
@@ -929,7 +1000,7 @@ Refer to: https://styledictionary.com/reference/logging/
         sd.formatFile({ destination: '__tests__output/test.txt', format: {} }, {}, {}),
       ).to.eventually.rejectedWith('Please enter a valid file format');
       await expect(
-        sd.formatFile({ destination: '__tests__/__output/test.txt', format: [] }, {}, {}),
+        sd.formatFile({ destination: `${testOutputFolder}/test.txt`, format: [] }, {}, {}),
       ).to.eventually.rejectedWith('Please enter a valid file format');
     });
 
@@ -948,7 +1019,7 @@ Refer to: https://styledictionary.com/reference/logging/
     });
 
     describe('name collisions', () => {
-      const destination = '__tests__/__output/test.collisions';
+      const destination = `${testOutputFolder}/test.collisions`;
       const PROPERTY_NAME_COLLISION_WARNINGS = `${GroupMessages.GROUP.PropertyNameCollisionWarnings}:${destination}`;
       const name = 'someName';
       const dictionary = {
@@ -986,32 +1057,31 @@ Refer to: https://styledictionary.com/reference/logging/
       });
     });
 
-    const destEmptyTokens = '__tests__/__output/test.emptyTokens';
+    const destEmptyTokens = `${testOutputFolder}/test.emptyTokens`;
+    const emptyTokensDictionary = {
+      allTokens: [
+        {
+          name: 'someName',
+          type: 'color',
+          path: ['some', 'name', 'path1'],
+          value: 'value1',
+        },
+      ],
+    };
+    const emptyTokensFilter = function (token) {
+      return token.type === 'color2';
+    };
+
     it('should warn when a file is not created because of empty tokens', async () => {
-      const dictionary = {
-        allTokens: [
-          {
-            name: 'someName',
-            type: 'color',
-            path: ['some', 'name', 'path1'],
-            value: 'value1',
-          },
-        ],
-      };
-
-      const filter = function (token) {
-        return token.type === 'color2';
-      };
-
       const sd = new StyleDictionary();
       const { logs, output } = await sd.formatFile(
         {
           destination: destEmptyTokens,
           format,
-          filter,
+          filter: emptyTokensFilter,
         },
         {},
-        dictionary,
+        emptyTokensDictionary,
       );
 
       expect(output).to.be.undefined;
@@ -1021,17 +1091,6 @@ Refer to: https://styledictionary.com/reference/logging/
     });
 
     it('should warn when a file is not created because of empty tokens using async filters', async () => {
-      const dictionary = {
-        allTokens: [
-          {
-            name: 'someName',
-            type: 'color',
-            path: ['some', 'name', 'path1'],
-            value: 'value1',
-          },
-        ],
-      };
-
       const filter = async (token) => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         return token.type === 'color2';
@@ -1045,12 +1104,95 @@ Refer to: https://styledictionary.com/reference/logging/
           filter,
         },
         {},
-        dictionary,
+        emptyTokensDictionary,
       );
       expect(output).to.be.undefined;
 
       const warn = chalk.rgb(255, 140, 0)(`No tokens for ${destEmptyTokens}. File not created.`);
       expect(logs.warning[0]).to.equal(warn);
+    });
+
+    it('should throw when a file is not created because of empty tokens and warnings are errors', async () => {
+      const sd = new StyleDictionary();
+      await expect(
+        sd.formatFile(
+          {
+            destination: destEmptyTokens,
+            format,
+            filter: emptyTokensFilter,
+          },
+          { log: { warnings: errorLog } },
+          emptyTokensDictionary,
+        ),
+      ).to.eventually.rejectedWith(`No tokens for ${destEmptyTokens}. File not created.`);
+    });
+
+    it('should create file output when emitEmptyFiles is enabled on the file', async () => {
+      const sd = new StyleDictionary();
+      const { logs, output } = await sd.formatFile(
+        {
+          destination: destEmptyTokens,
+          format,
+          filter: emptyTokensFilter,
+          emitEmptyFiles: true,
+        },
+        {},
+        emptyTokensDictionary,
+      );
+
+      expect(output).to.equal('hi');
+      expect(logs.warning.length).to.equal(0);
+    });
+
+    it('should create file output when emitEmptyFiles is enabled on the platform', async () => {
+      const sd = new StyleDictionary();
+      const { logs, output } = await sd.formatFile(
+        {
+          destination: destEmptyTokens,
+          format,
+          filter: emptyTokensFilter,
+        },
+        { emitEmptyFiles: true },
+        emptyTokensDictionary,
+      );
+
+      expect(output).to.equal('hi');
+      expect(logs.warning.length).to.equal(0);
+    });
+
+    it('should prefer file-level emitEmptyFiles false over platform-level true', async () => {
+      const sd = new StyleDictionary();
+      const { logs, output } = await sd.formatFile(
+        {
+          destination: destEmptyTokens,
+          format,
+          filter: emptyTokensFilter,
+          emitEmptyFiles: false,
+        },
+        { emitEmptyFiles: true },
+        emptyTokensDictionary,
+      );
+
+      expect(output).to.be.undefined;
+      const warn = chalk.rgb(255, 140, 0)(`No tokens for ${destEmptyTokens}. File not created.`);
+      expect(logs.warning[0]).to.equal(warn);
+    });
+
+    it('should prefer file-level emitEmptyFiles true over platform-level false', async () => {
+      const sd = new StyleDictionary();
+      const { logs, output } = await sd.formatFile(
+        {
+          destination: destEmptyTokens,
+          format,
+          filter: emptyTokensFilter,
+          emitEmptyFiles: true,
+        },
+        { emitEmptyFiles: false },
+        emptyTokensDictionary,
+      );
+
+      expect(output).to.equal('hi');
+      expect(logs.warning.length).to.equal(0);
     });
 
     it('should create file output properly', async () => {
@@ -1061,7 +1203,7 @@ Refer to: https://styledictionary.com/reference/logging/
           format,
         },
         {
-          buildPath: '__tests__/__output/',
+          buildPath: testOutputFolder,
         },
         {},
       );
@@ -1127,7 +1269,7 @@ ${dictionary.allTokens.map((tok) => `  ${tok.name}: "${tok.value}";`).join('\n')
           format: customCSSFormat,
         },
         {
-          buildPath: '__tests__/__output/',
+          buildPath: testOutputFolder,
         },
         {
           tokens: tokens,
@@ -1163,7 +1305,7 @@ ${dictionary.allTokens.map((tok) => `  ${tok.name}: "${tok.value}";`).join('\n')
           },
         },
         {
-          buildPath: '__tests__/__output/',
+          buildPath: testOutputFolder,
         },
         dictionary,
       );

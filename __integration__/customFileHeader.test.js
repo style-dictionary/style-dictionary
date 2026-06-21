@@ -11,6 +11,7 @@ const { css, js } = transformGroups;
 
 describe(`integration`, async () => {
   before(async () => {
+    clearOutput(buildPath);
     // Adding a custom file header with the `.registerFileHeader`
     StyleDictionary.registerFileHeader({
       name: `valid custom file headers test fileHeader`,
@@ -95,11 +96,10 @@ describe(`integration`, async () => {
         },
       },
     });
-
     await sd.buildAllPlatforms();
   });
 
-  afterEach(() => {
+  after(() => {
     clearOutput(buildPath);
   });
 

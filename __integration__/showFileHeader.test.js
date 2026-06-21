@@ -11,6 +11,7 @@ const { css } = transformGroups;
 
 describe('integration', async () => {
   before(async () => {
+    clearOutput(buildPath);
     const sd = new StyleDictionary({
       // we are only testing showFileHeader options so we don't need
       // the full source.
@@ -58,7 +59,7 @@ describe('integration', async () => {
     await sd.buildAllPlatforms();
   });
 
-  afterEach(() => {
+  after(() => {
     clearOutput(buildPath);
   });
 

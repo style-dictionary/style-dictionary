@@ -11,6 +11,7 @@ const { flutter, flutterSeparate } = transformGroups;
 
 describe('integration', async () => {
   before(async () => {
+    clearOutput(buildPath);
     const sd = new StyleDictionary({
       source: [`__integration__/tokens/**/[!_]*.json?(c)`],
       platforms: {
@@ -68,7 +69,7 @@ describe('integration', async () => {
     await sd.buildAllPlatforms();
   });
 
-  afterEach(() => {
+  after(() => {
     clearOutput(buildPath);
   });
 
