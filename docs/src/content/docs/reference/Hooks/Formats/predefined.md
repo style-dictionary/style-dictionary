@@ -674,6 +674,78 @@ object StyleDictionary {
 
 ---
 
+### xaml/resourceDictionary
+
+Creates a .NET MAUI XAML `ResourceDictionary` file with typed resources.
+
+This format is intended for .NET MAUI XAML consumption. It emits concrete resources such as `Color`, `x:String`, `x:Boolean`, and numeric `x:*` values, plus optional `SolidColorBrush` resources keyed with `brushSuffix`.
+
+Compatible primitive coercions are preserved when you override resource types: `Color` accepts common tinycolor-compatible strings and `{ hex }` objects, numeric `x:*` resources accept numbers or numeric strings (including an optional trailing `f`), and `x:Boolean` accepts booleans or `"true"` / `"false"` strings.
+
+When `outputReferences` is enabled, token aliases are emitted as `StaticResource` entries so the dictionary still contains concrete values. `DynamicResource` remains supported for generated brush references, but it is not valid for emitted alias resources in a MAUI `ResourceDictionary`, so `outputReferences: true` combined with `resourceReferenceType: 'DynamicResource'` throws as soon as an alias token is encountered.
+
+For MAUI-friendly output, it is recommended to use PascalCase names and transform sizes into unitless numeric values. For example:
+
+```js title="config.js"
+import { formats, transforms } from 'style-dictionary/enums';
+
+export default {
+  platforms: {
+    xaml: {
+      transforms: [
+        transforms.attributeCti,
+        transforms.namePascal,
+        transforms.colorHex8android,
+        transforms.sizeRemToFloat,
+      ],
+      buildPath: 'build/xaml/',
+      files: [
+        {
+          destination: 'Tokens.xaml',
+          format: formats.xamlResourceDictionary,
+          options: {
+            outputColorBrushes: true,
+          },
+        },
+      ],
+    },
+  },
+};
+```
+
+| Param                           | Type                                    | Description                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `options`                       | `Object`                                |                                                                                                                                                                                                                                                                                                                                                                                      |
+| `options.className`             | `string`                                | Optional `x:Class` value for the generated `ResourceDictionary`.                                                                                                                                                                                                                                                                                                                     |
+| `options.showFileHeader`        | `boolean`                               | Whether or not to include a comment that has the build date. Defaults to `true`.                                                                                                                                                                                                                                                                                                     |
+| `options.outputReferences`      | `boolean \| OutputReferencesFunction`   | Whether or not to keep token aliases as XAML resource aliases when the original token value is a single reference. Defaults to `false`. Aliases are emitted with `StaticResource`, and using this with `resourceReferenceType: 'DynamicResource'` throws when an alias token is encountered. Also allows passing a function to conditionally output references on a per token basis. |
+| `options.resourceReferenceType` | `'StaticResource' \| 'DynamicResource'` | Markup extension used for generated brush references, and for emitted aliases when set to `'StaticResource'`. Defaults to `'StaticResource'`. `DynamicResource` is not supported for emitted alias resources in a MAUI `ResourceDictionary`.                                                                                                                                         |
+| `options.resourceType`          | `string`                                | Forces all tokens in the file to use the same XAML resource element, such as `Color` or `x:String`.                                                                                                                                                                                                                                                                                  |
+| `options.resourceTypeMap`       | `Record<string, string>`                | Maps token types to XAML resource elements. Defaults to `color => Color`, `dimension/fontSize/number => x:Double`, `string/content => x:String`, and `boolean => x:Boolean`.                                                                                                                                                                                                         |
+| `options.outputColorBrushes`    | `boolean`                               | Whether or not to emit `SolidColorBrush` resources for color tokens. Defaults to `false`.                                                                                                                                                                                                                                                                                            |
+| `options.brushSuffix`           | `string`                                | Suffix appended to generated brush resource keys. Defaults to `'Brush'`.                                                                                                                                                                                                                                                                                                             |
+
+Example:
+
+```xaml title="Tokens.xaml"
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Do not edit directly, this file was auto-generated.
+-->
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+  <!-- Brand primary color -->
+  <Color x:Key="ColorBrandPrimary">#FF0B8599</Color>
+  <x:Double x:Key="SizeCornerRadiusMedium">8</x:Double>
+  <SolidColorBrush x:Key="ColorBrandPrimaryBrush" Color="{StaticResource ColorBrandPrimary}" />
+</ResourceDictionary>
+```
+
+Complex object-value tokens such as typography, border, shadow, and transition tokens are not emitted by this format unless they are first transformed into a compatible primitive representation.
+
+---
+
 ### ios/macros
 
 Creates an Objective-C header file with macros for design tokens

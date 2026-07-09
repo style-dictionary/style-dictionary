@@ -151,6 +151,7 @@ export const formats = {
   stylusVariables: 'stylus/variables',
   typescriptEs6Declarations: 'typescript/es6-declarations',
   typescriptModuleDeclarations: 'typescript/module-declarations',
+  xamlResourceDictionary: 'xaml/resourceDictionary',
 };
 ```
 
