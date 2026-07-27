@@ -381,6 +381,56 @@ describe('utils', () => {
           expect(convertTokenData(expanded, { output: 'object' })).to.eql(onlyBorder);
         });
 
+        it('should not expand nested composite tokens excluded by type', () => {
+          const expanded = expandTokens(
+            convertTokenData(
+              {
+                border: {
+                  $type: 'border',
+                  $value: {
+                    color: {
+                      colorSpace: 'lab',
+                      components: [60.17, 90, -60.5],
+                    },
+                    width: '4px',
+                    style: 'solid',
+                  },
+                },
+              },
+              { output: 'map', usesDtcg: true },
+            ),
+            {
+              expand: {
+                include: ['border'],
+              },
+              usesDtcg: true,
+            },
+          );
+
+          expect(convertTokenData(expanded, { output: 'object', usesDtcg: true })).to.eql({
+            border: {
+              color: {
+                key: '{border.color}',
+                $type: 'color',
+                $value: {
+                  colorSpace: 'lab',
+                  components: [60.17, 90, -60.5],
+                },
+              },
+              style: {
+                key: '{border.style}',
+                $type: 'strokeStyle',
+                $value: 'solid',
+              },
+              width: {
+                key: '{border.width}',
+                $type: 'dimension',
+                $value: '4px',
+              },
+            },
+          });
+        });
+
         it('should allow conditionally expanding tokens by type using exclude', () => {
           const expanded = expandTokens(
             convertTokenData({ ...borderInput, ...typographyInput }, { output: 'map' }),
