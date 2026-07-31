@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { expect } from 'chai';
 import { remarkEnums } from '../docs/src/remark-enums.js';
 
@@ -55,5 +56,22 @@ describe('remarkEnums', () => {
     await remarkEnums()(tree);
 
     expect(tree).to.deep.equal(expected);
+  });
+
+  it('throws when the enum directory has no module exports', async () => {
+    const tree = {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [{ type: 'text', value: '~ sd-enums' }],
+        },
+      ],
+    };
+    const enumDirectory = fileURLToPath(new URL('__fixtures__/empty-enums', import.meta.url));
+
+    await expect(remarkEnums({ enumDirectory })(tree)).to.eventually.be.rejectedWith(
+      'No enum modules were exported from lib/enums/index.js',
+    );
   });
 });

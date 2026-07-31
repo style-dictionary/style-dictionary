@@ -3,7 +3,7 @@ import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { visit } from 'unist-util-visit';
 
-const defaultRoot = fileURLToPath(new URL('../..', import.meta.url));
+const defaultEnumDirectory = fileURLToPath(new URL('../../lib/enums', import.meta.url));
 const marker = '~ sd-enums';
 const exportPattern = /export\s+\{[^}]+\}\s+from\s+'\.\/([^']+\.js)';/g;
 
@@ -13,8 +13,7 @@ function titleFromPath(filePath) {
     .replace(/^./, (letter) => letter.toUpperCase());
 }
 
-async function enumNodes(root) {
-  const enumDirectory = join(root, 'lib', 'enums');
+async function enumNodes(enumDirectory) {
   const indexSource = await readFile(join(enumDirectory, 'index.js'), 'utf8');
   const sourcePaths = [...indexSource.matchAll(exportPattern)].map((match) => match[1]);
   const uniquePaths = [...new Set(sourcePaths)];
@@ -44,7 +43,7 @@ async function enumNodes(root) {
   ]);
 }
 
-export function remarkEnums({ root = defaultRoot } = {}) {
+export function remarkEnums({ enumDirectory = defaultEnumDirectory } = {}) {
   return async function transformer(tree) {
     const targets = [];
 
@@ -64,7 +63,7 @@ export function remarkEnums({ root = defaultRoot } = {}) {
       return tree;
     }
 
-    const nodes = await enumNodes(root);
+    const nodes = await enumNodes(enumDirectory);
 
     for (const { index, parent } of targets.reverse()) {
       parent.children.splice(index, 1, ...structuredClone(nodes));
