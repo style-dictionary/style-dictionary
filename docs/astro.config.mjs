@@ -1,13 +1,14 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { remarkPlayground } from './src/remark-playground';
+import { remarkTypes } from './src/remark-types.js';
 import starlightConfig from './starlight-config';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [starlight(starlightConfig)],
   markdown: {
-    remarkPlugins: [remarkPlayground],
+    remarkPlugins: [remarkTypes, remarkPlayground],
     // regression https://github.com/withastro/astro/issues/16971
     // https://github.com/withastro/starlight/issues/3934
     // consider using Satteri processor, which is opt-in
