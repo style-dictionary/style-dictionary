@@ -103,6 +103,17 @@ describe('utils', () => {
         usesDtcg: false,
       });
       expect({}.a).to.be.undefined;
+      convertTokenData([{ key: '{constructor.prototype.a}', value: 'b' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.a).to.be.undefined;
+
+      convertTokenData([{ key: '{prototype.a}', value: 'b' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.a).to.be.undefined;
     });
   });
 });
