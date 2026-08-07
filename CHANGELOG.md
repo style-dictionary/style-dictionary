@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.5.1
+
+### Patch Changes
+
+- ef1dbc8: Add better prototype pollution mitigation for convertTokenData utility.
+  See [GitHub Advisory GHSA-xmr7-549p-98w3](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-xmr7-549p-98w3)
+
 ## 5.5.0
 
 ### Minor Changes
