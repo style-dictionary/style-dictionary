@@ -1,10 +1,12 @@
 import { expect } from 'chai';
-import createPropertyFormatter from '../../../lib/common/formatHelpers/createPropertyFormatter.js';
+import createPropertyFormatter, {
+  addComment,
+} from '../../../lib/common/formatHelpers/createPropertyFormatter.js';
 import { convertTokenData } from '../../../lib/utils/convertTokenData.js';
 import { outputReferencesFilter } from '../../../lib/utils/references/outputReferencesFilter.js';
 import { commentStyles, commentPositions, propertyFormatNames } from '../../../lib/enums/index.js';
 
-const { short, long } = commentStyles;
+const { short, long, none } = commentStyles;
 const { above } = commentPositions;
 const { css, sass } = propertyFormatNames;
 
@@ -488,6 +490,23 @@ describe('common', () => {
 
           await expect(cssRed).to.matchSnapshot(1);
           await expect(sassRed).to.matchSnapshot(2);
+        });
+
+        it('should suppress comments when commentStyle is none', () => {
+          const cssFormatter = createPropertyFormatter({
+            format: css,
+            dictionary: { tokens: commentDictionary },
+            formatting: {
+              commentStyle: none,
+            },
+          });
+
+          const output = cssFormatter(commentDictionary.color.red);
+
+          expect(output).to.equal('  --color-red: #FF0000;');
+          expect(
+            addComment('--color-red: #FF0000;', 'Foo bar qux', { commentStyle: none }),
+          ).to.equal('--color-red: #FF0000;');
         });
       });
 
