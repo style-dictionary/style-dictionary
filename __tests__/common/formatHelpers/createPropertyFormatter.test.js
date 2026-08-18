@@ -507,6 +507,9 @@ describe('common', () => {
           expect(
             addComment('--color-red: #FF0000;', 'Foo bar qux', { commentStyle: none }),
           ).to.equal('--color-red: #FF0000;');
+          expect(addComment('--color-red: #FF0000;', undefined, { commentStyle: short })).to.equal(
+            '--color-red: #FF0000;',
+          );
         });
       });
 
