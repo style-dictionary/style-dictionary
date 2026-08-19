@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.5.2
+
+### Patch Changes
+
+- b65ea0b: Disallow output literal "undefined" for tokens with descriptions when commentStyle is set to none.
+
 ## 5.5.1
 
 ### Patch Changes
