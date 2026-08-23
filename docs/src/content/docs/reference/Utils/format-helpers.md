@@ -14,7 +14,7 @@ import { propertyFormatNames } from 'style-dictionary/enums';
 StyleDictionary.registerFormat({
   name: 'myCustomFormat',
   format: async ({ dictionary, file, options }) => {
-    const { outputReferences, sort } = options;
+    const { outputReferences, sort, hooks } = options;
     const header = await fileHeader({ file });
     return (
       header +
@@ -23,7 +23,8 @@ StyleDictionary.registerFormat({
         format: propertyFormatNames.css,
         dictionary,
         outputReferences,
-        sort, // 'name' | ['name'] | [customFn, 'name'] | (a, b) => number
+        sort, // 'name' | 'registered-sort-name' | [customFn, 'name'] | (a, b) => number
+        hooks, // pass hooks to enable registered sorts
       }) +
       '\n}\n'
     );
@@ -118,19 +119,20 @@ and not wanting to create redundant git diffs just because of the timestamp chan
 
 This is used to create lists of variables like Sass variables or CSS custom properties
 
-| Param                                 | Type                                  | Description                                                                                                                                                                                                    |
-| ------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `options`                             | `Object`                              |                                                                                                                                                                                                                |
-| `options.format`                      | `string`                              | What type of variables to output. Options are: `'css'`, `'sass'`, `'less'`, and `'stylus'`.                                                                                                                    |
-| `options.dictionary`                  | `Dictionary`                          | Transformed Dictionary object containing `allTokens`, `tokens` and `unfilteredTokens`.                                                                                                                         |
-| `options.dictionary.allTokens`        | `TransformedToken[]`                  | Flattened array of all tokens, easiest to loop over and export to a flat format.                                                                                                                               |
-| `options.dictionary.tokens`           | `TransformedTokens`                   | All tokens, still in unflattened object format.                                                                                                                                                                |
-| `options.dictionary.unfilteredTokens` | `TransformedTokens`                   | All tokens, still in unflattened object format, including tokens that were filtered out by filters.                                                                                                            |
-| `options.outputReferences`            | `boolean \| OutputReferencesFunction` | Whether or not to output references. You will want to pass this from the `options` object sent to the format function. Also allows passing a function to conditionally output references on a per token basis. |
-| `options.formatting`                  | `Object`                              | Custom formatting properties that define parts of a comment in code. The configurable strings are: `prefix`, `lineSeparator`, `header`, and `footer`.                                                          |
-| `options.themeable`                   | `boolean`                             | Whether tokens should default to being themeable. Defaults to `false`.                                                                                                                                         |
-| `options.usesDtcg`                    | `boolean`                             | Whether tokens use the DTCG standard. Defaults to `false`                                                                                                                                                      |
-| `options.sort`                        | `SortOption`                          | Optional sorting strategy. Use `'name'` to sort alphabetically by token name or a custom comparator function `(a: Token, b: Token) => -1                                                                       | 1   | 0`. You can chain multiple sorters with an array of sorters (e.g., `[customFn, 'name']`). When `outputReferences`is`true`, reference-safe ordering is automatically enforced first, and your sort acts as a tie-breaker. Defaults to no sorting. |
+| Param                                 | Type                                  | Description                                                                                                                                                                                                          |
+| ------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `options`                             | `Object`                              |                                                                                                                                                                                                                      |
+| `options.format`                      | `string`                              | What type of variables to output. Options are: `'css'`, `'sass'`, `'less'`, and `'stylus'`.                                                                                                                          |
+| `options.dictionary`                  | `Dictionary`                          | Transformed Dictionary object containing `allTokens`, `tokens` and `unfilteredTokens`.                                                                                                                               |
+| `options.dictionary.allTokens`        | `TransformedToken[]`                  | Flattened array of all tokens, easiest to loop over and export to a flat format.                                                                                                                                     |
+| `options.dictionary.tokens`           | `TransformedTokens`                   | All tokens, still in unflattened object format.                                                                                                                                                                      |
+| `options.dictionary.unfilteredTokens` | `TransformedTokens`                   | All tokens, still in unflattened object format, including tokens that were filtered out by filters.                                                                                                                  |
+| `options.outputReferences`            | `boolean \| OutputReferencesFunction` | Whether or not to output references. You will want to pass this from the `options` object sent to the format function. Also allows passing a function to conditionally output references on a per token basis.       |
+| `options.formatting`                  | `Object`                              | Custom formatting properties that define parts of a comment in code. The configurable strings are: `prefix`, `lineSeparator`, `header`, and `footer`.                                                                |
+| `options.themeable`                   | `boolean`                             | Whether tokens should default to being themeable. Defaults to `false`.                                                                                                                                               |
+| `options.usesDtcg`                    | `boolean`                             | Whether tokens use the DTCG standard. Defaults to `false`                                                                                                                                                            |
+| `options.sort`                        | `SortOption`                          | Optional sorting strategy. Use `'name'` to sort alphabetically by token name or a custom comparator function `(a: Token, b: Token) => -1                                                                             | 1   | 0`. You can chain multiple sorters with an array of sorters (e.g., `[customFn, 'name']`). When `outputReferences`is`true`, reference-safe ordering is automatically enforced first, and your sort acts as a tie-breaker. Defaults to no sorting. |
+| `options.hooks`                       | `Hooks`                               | Hooks object containing registered sorts. Pass `options.hooks` from the format function to enable registered sorts. Style Dictionary automatically provides this in the `options` object passed to format functions. |
 
 Example:
 
@@ -145,9 +147,51 @@ StyleDictionary.registerFormat({
       dictionary,
       outputReferences: options.outputReferences,
       sort: options.sort,
+      hooks: options.hooks, // pass hooks to enable registered sorts
     });
   },
 });
+```
+
+Using a registered sort:
+
+When you have registered a sort (either via `StyleDictionary.registerSort()` or in your config's `hooks.sorts`), you can use it by name in `formattedVariables`:
+
+```js title="build-tokens.js"
+import { formattedVariables } from 'style-dictionary/utils';
+import { propertyFormatNames } from 'style-dictionary/enums';
+
+StyleDictionary.registerFormat({
+  name: 'myCustomFormat',
+  format: function ({ dictionary, options }) {
+    // The sort name (e.g., 'by-type') comes from options.sort
+    // The sort must be registered in hooks.sorts
+    // (either via registerSort() or in config)
+    return formattedVariables({
+      format: propertyFormatNames.css,
+      dictionary,
+      sort: options.sort, // Can be 'name', registered sort name, function, or array
+      hooks: options.hooks, // pass hooks to enable registered sorts
+    });
+  },
+});
+```
+
+The sort can be registered in your config file, and then used via `options.sort`:
+
+```js title="sd.config.js"
+export default {
+  hooks: {
+    sorts: {
+      'by-type': (a, b) => {
+        const typeCompare = (a.type || '').localeCompare(b.type || '');
+        if (typeCompare !== 0) return typeCompare;
+        return a.name.localeCompare(b.name);
+      },
+    },
+  },
+  // ... rest of config
+};
 ```
 
 ---
