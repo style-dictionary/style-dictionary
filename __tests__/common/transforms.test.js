@@ -826,6 +826,29 @@ describe('common', () => {
           );
           expect(value).to.equal('rgba(170, 170, 170, 0.6)');
         });
+
+        it('should preserve legacy alpha precision', () => {
+          const value = transforms[colorCss].transform(
+            {
+              value: 'rgba(0, 0, 0, 0.0625)',
+            },
+            {},
+            {},
+          );
+          expect(value).to.equal('rgba(0, 0, 0, 0.0625)');
+        });
+
+        it('should preserve DTCG alpha precision', () => {
+          const value = transforms[colorCss].transform(
+            {
+              $value: { colorSpace: 'srgb', components: [0, 0, 0], alpha: 0.0625 },
+              $type: 'color',
+            },
+            {},
+            { usesDtcg: true },
+          );
+          expect(value).to.equal('rgba(0, 0, 0, 0.0625)');
+        });
       });
 
       describe(colorSketch, () => {
