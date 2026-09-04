@@ -816,6 +816,17 @@ describe('common', () => {
           expect(value).to.equal('#aaaaaa');
         });
 
+        it('should output hex for colors with an alpha of 1', () => {
+          const value = transforms[colorCss].transform(
+            {
+              value: 'rgba(170, 170, 170, 1)',
+            },
+            {},
+            {},
+          );
+          expect(value).to.equal('#aaaaaa');
+        });
+
         it('should handle colors with transparency', () => {
           const value = transforms[colorCss].transform(
             {
