@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.5.3
+
+### Patch Changes
+
+- 863685d: Limit nested composite token expansion to the configured type filters.
+- 2aced93: Preserve alpha precision in the `color/css` transform.
+
 ## 5.5.2
 
 ### Patch Changes
