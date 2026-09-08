@@ -301,11 +301,11 @@ These files can be viewed in the live demo above by clicking the output dropdown
 
 Pretty nifty! This shows a few things happening:
 
-1. The build system does a deep merge of all the token JSON files defined in the `source` attribute of `config.json`. This allows you to split up the token JSON files however you want. There are 2 JSON files with `color` as the top level key, but they get merged properly.
-2. The build system resolves references to other design tokens. `{size.font.medium}` gets resolved properly.
-3. The build system handles references to token values in other files as well as you can see in `tokens/color/font.json`.
+1. The build system does a deep merge of all the token JSON files defined in the `source` attribute of `config.json`. This allows you to split up the token JSON files however you want.
+2. The build system resolves references to other design tokens. `{dimensions.4}` gets resolved properly.
+3. The build system handles references to token values in other files as well as you can see in `tokens/object-values.json`, which references tokens from `tokens/colors.json` and `tokens/dimensions.json`.
 
-Now let's make a change and see how that affects things. Open up `tokens/color/base.json` and change `"#111111"` to `"#000000"`. After you make that change, save the file and re-run the build command `style-dictionary build`. Open up the build files and take a look.
+Now let's make a change and see how that affects things. Open up `tokens/colors.json` and change `"#000000"` to `"#111111"`. After you make that change, save the file and re-run the build command `style-dictionary build`. Open up the build files and take a look.
 
 **Huzzah!**
 
