@@ -120,7 +120,7 @@
   },
   "dependencies": {
     "@bundled-es-modules/deepmerge": "^4.3.2",
-    "@bundled-es-modules/glob": "^13.0.6",
+    "@bundled-es-modules/glob": "^13.0.6-hotfix.0",
     "@bundled-es-modules/memfs": "^4.17.0",
     "@zip.js/zip.js": "^2.7.44",
     "chalk": "^5.3.0",
