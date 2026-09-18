@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { unified } from '@astrojs/markdown-remark';
 import { remarkEnums } from './src/remark-enums.js';
 import { remarkPlayground } from './src/remark-playground';
 import starlightConfig from './starlight-config';
@@ -8,12 +9,15 @@ import starlightConfig from './starlight-config';
 export default defineConfig({
   integrations: [starlight(starlightConfig)],
   markdown: {
-    remarkPlugins: [remarkEnums, remarkPlayground],
-    // regression https://github.com/withastro/astro/issues/16971
-    // https://github.com/withastro/starlight/issues/3934
-    // consider using Satteri processor, which is opt-in
-    // https://github.com/withastro/starlight/pull/3923/changes#diff-131521e4d59a89ebd853d4ce25c99d67b2cf362b9318c5b89b60883a52d50ebaR7
-    gfm: true,
+    // TODO: stop using remark, migrate to Satteri and its MDAST/HAST plugins
+    processor: unified({
+      remarkPlugins: [remarkEnums, remarkPlayground],
+      // regression https://github.com/withastro/astro/issues/16971
+      // https://github.com/withastro/starlight/issues/3934
+      // consider using Satteri processor, which is opt-in
+      // https://github.com/withastro/starlight/pull/3923/changes#diff-131521e4d59a89ebd853d4ce25c99d67b2cf362b9318c5b89b60883a52d50ebaR7
+      gfm: true,
+    }),
   },
   site: 'https://styledictionary.com/',
   vite: {
@@ -26,10 +30,6 @@ export default defineConfig({
       force: true,
       // due to WASM bindings
       exclude: ['@rollup/browser'],
-      esbuildOptions: {
-        // to support top-level-await
-        target: 'esnext',
-      },
     },
   },
 });

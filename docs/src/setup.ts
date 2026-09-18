@@ -1,5 +1,5 @@
-import dark from '@shoelace-style/shoelace/dist/themes/dark.css?raw' assert { type: 'css' };
-import light from '@shoelace-style/shoelace/dist/themes/light.css?raw' assert { type: 'css' };
+import dark from '@shoelace-style/shoelace/dist/themes/dark.css?raw' with { type: 'css' };
+import light from '@shoelace-style/shoelace/dist/themes/light.css?raw' with { type: 'css' };
 import mermaid from 'mermaid';
 import { registeredComponents } from './components/sd-playground.js';
 
