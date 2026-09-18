@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.5.4
+
+### Patch Changes
+
+- 0170a9a: Patch @bundled-es-modules/glob which fixes a transitive dependency vulnerability (glob->url->qs).
+
 ## 5.5.3
 
 ### Patch Changes
