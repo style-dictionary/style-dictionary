@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- bc51123: Fix prototype pollution [GHSA-cr3w-v879-f973](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-cr3w-v879-f973) for nested objects created by the `convertTokenData` utility in "object" output mode.
+- bc51123: Fix prototype pollution [GHSA-cr3w-v879-f973](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-cr3w-v879-f973) and [GHSA-5pgh-4v89-hfqj](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-5pgh-4v89-hfqj) for nested objects created by the `convertTokenData` utility in "object" output mode.
 
 ## 5.5.4
 
