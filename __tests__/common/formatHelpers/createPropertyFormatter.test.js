@@ -6,7 +6,7 @@ import { convertTokenData } from '../../../lib/utils/convertTokenData.js';
 import { outputReferencesFilter } from '../../../lib/utils/references/outputReferencesFilter.js';
 import { commentStyles, commentPositions, propertyFormatNames } from '../../../lib/enums/index.js';
 
-const { short, long, none } = commentStyles;
+const { sassdoc, short, long, none } = commentStyles;
 const { above } = commentPositions;
 const { css, sass } = propertyFormatNames;
 
@@ -481,6 +481,33 @@ describe('common', () => {
             dictionary: { tokens: commentDictionary },
             formatting: {
               commentStyle: short,
+              commentPosition: above,
+            },
+          });
+
+          const cssRed = cssFormatter(commentDictionary.color.green);
+          const sassRed = sassFormatter(commentDictionary.color.green);
+
+          await expect(cssRed).to.matchSnapshot(1);
+          await expect(sassRed).to.matchSnapshot(2);
+        });
+
+        it('allows the sassdoc commentStyle', async () => {
+          // long commentStyle
+          const cssFormatter = createPropertyFormatter({
+            format: css,
+            dictionary: { tokens: commentDictionary },
+            formatting: {
+              commentStyle: sassdoc,
+              commentPosition: above,
+            },
+          });
+          // short commentStyle
+          const sassFormatter = createPropertyFormatter({
+            format: sass,
+            dictionary: { tokens: commentDictionary },
+            formatting: {
+              commentStyle: sassdoc,
               commentPosition: above,
             },
           });
