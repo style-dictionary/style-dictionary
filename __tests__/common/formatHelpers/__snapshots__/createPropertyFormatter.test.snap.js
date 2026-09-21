@@ -98,3 +98,13 @@ snapshots["common formatHelpers createPropertyFormatter DTCG supports DTCG spec 
   --color-ref: var(--color-red);`;
 /* end snapshot common formatHelpers createPropertyFormatter DTCG supports DTCG spec $value for outputReferences */
 
+snapshots["common formatHelpers createPropertyFormatter commentStyle allows the sassdoc commentStyle 1"] = 
+`  /// Foo bar qux
+  --color-green: #00FF00;`;
+/* end snapshot common formatHelpers createPropertyFormatter commentStyle allows the sassdoc commentStyle 1 */
+
+snapshots["common formatHelpers createPropertyFormatter commentStyle allows the sassdoc commentStyle 2"] = 
+`/// Foo bar qux
+$color-green: #00FF00;`;
+/* end snapshot common formatHelpers createPropertyFormatter commentStyle allows the sassdoc commentStyle 2 */
+
