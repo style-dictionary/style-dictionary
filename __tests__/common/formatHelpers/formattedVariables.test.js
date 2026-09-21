@@ -314,6 +314,33 @@ describe('formatHelpers', () => {
       expect(String(error)).to.include('Invalid "sort" option type');
     });
 
+    it('should throw when config hooks try to override the reserved built-in "name" sort', () => {
+      const dictionary = {
+        tokens,
+        allTokens: convertTokenData(tokens, { output: 'array' }),
+        unfilteredTokens: tokens,
+      };
+
+      let error;
+      try {
+        formattedVariables({
+          format: css,
+          dictionary,
+          sort: 'name',
+          hooks: {
+            sorts: {
+              name: (a, b) => b.name.localeCompare(a.name),
+            },
+          },
+        });
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error, 'Expected formattedVariables() to throw').to.exist;
+      expect(String(error)).to.include('"name" is a reserved built-in sort name');
+    });
+
     it('should use custom lineSeparator from formatting options', () => {
       const dictionary = {
         tokens,

@@ -494,6 +494,33 @@ StyleDictionary.registerFilter({
 
 ---
 
+### registerSort
+
+> `StyleDictionary.registerSort(sort) ⇒ StyleDictionary`
+
+Add a custom [sort](/reference/hooks/sorts) to the Style Dictionary.
+
+| Param     | Type       | Description                                                                                                                     |
+| --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Sort      | `Object`   |                                                                                                                                 |
+| Sort.name | `string`   | Name of the sort to be referenced in format options                                                                             |
+| Sort.sort | `function` | Comparator function that takes two tokens and returns a number. Follows the standard JavaScript `Array.sort` comparator pattern |
+
+Example:
+
+```js
+StyleDictionary.registerSort({
+  name: 'by-type',
+  sort: (a, b) => {
+    const typeCompare = (a.type || '').localeCompare(b.type || '');
+    if (typeCompare !== 0) return typeCompare;
+    return a.name.localeCompare(b.name);
+  },
+});
+```
+
+---
+
 ### registerFormat
 
 > `StyleDictionary.registerFormat(format) ⇒ StyleDictionary`

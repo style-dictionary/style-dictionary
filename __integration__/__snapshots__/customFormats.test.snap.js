@@ -1034,7 +1034,8 @@ snapshots["integration custom formats inline custom with new args should match s
       "actions": {
         "android/copyImages": {},
         "copy_assets": {}
-      }
+      },
+      "sorts": {}
     },
     "source": [
       "__integration__/tokens/size/padding.json"
@@ -2123,7 +2124,8 @@ snapshots["integration custom formats register custom format with new args shoul
       "actions": {
         "android/copyImages": {},
         "copy_assets": {}
-      }
+      },
+      "sorts": {}
     },
     "source": [
       "__integration__/tokens/size/padding.json"
