@@ -407,6 +407,44 @@ describe('common', () => {
         });
       });
 
+      describe('DTCG $root references', () => {
+        // DTCG's $root token nests other tokens under a group and is referenced e.g. as
+        // "{group.$root}". "$" is a RegExp special character, so the reference-matching
+        // RegExp must escape it or the resolved reference substitution silently fails,
+        // leaking the raw "{group.$root}" placeholder into the output.
+        const dtcgRootDictionary = {
+          group: {
+            $root: {
+              name: 'group-root',
+              $value: '5px',
+              original: {
+                $value: '5px',
+              },
+              path: ['group', '$root'],
+            },
+          },
+          ref: {
+            name: 'ref',
+            $value: '5px',
+            original: {
+              $value: '{group.$root}',
+            },
+            path: ['ref'],
+          },
+        };
+
+        it('should support outputReferences for a $root token reference', () => {
+          const propFormatter = createPropertyFormatter({
+            outputReferences: true,
+            dictionary: { tokens: dtcgRootDictionary },
+            format: css,
+            usesDtcg: true,
+          });
+          expect(propFormatter(dtcgRootDictionary.group.$root)).to.equal('  --group-root: 5px;');
+          expect(propFormatter(dtcgRootDictionary.ref)).to.equal('  --ref: var(--group-root);');
+        });
+      });
+
       describe('commentStyle', () => {
         const commentDictionary = {
           color: {
