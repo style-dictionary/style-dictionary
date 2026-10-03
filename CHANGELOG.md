@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.6.0
+
+### Minor Changes
+
+- 2f28731: Add "sassdoc" comment style (a triple-slash short comment)
+
+### Patch Changes
+
+- 76074dc: Fix `outputReferences` leaking a raw `{group.$root}` placeholder into formatted output instead of resolving it, when a reference path segment (e.g. a DTCG `$root` token) contains a RegExp special character.
+
 ## 5.5.5
 
 ### Patch Changes
