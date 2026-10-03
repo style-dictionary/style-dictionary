@@ -23,6 +23,7 @@ const {
   shadowCssShorthand,
   cubicBezierCss,
   transitionCssShorthand,
+  timeSeconds,
 } = transforms;
 const { value: transformTypeValue } = transformTypes;
 
@@ -644,6 +645,61 @@ Use log.verbosity "verbose" or use CLI option --verbose for more details.
 
         const transformed = await sd.exportPlatform('css');
         expect(transformed.foo.value).to.equal('200ms cubic-bezier(0.5, 0, 1, 1) 0ms');
+      });
+
+      it('should properly transform transition tokens that reference duration tokens', async () => {
+        const sd = new StyleDictionary({
+          tokens: {
+            fast: {
+              $value: { value: 200, unit: 'ms' },
+              $type: 'duration',
+            },
+            none: {
+              $value: { value: 0, unit: 'ms' },
+              $type: 'duration',
+            },
+            foo: {
+              $value: {
+                duration: '{fast}',
+                delay: '{none}',
+                timingFunction: 'ease-in-out',
+              },
+              $type: 'transition',
+            },
+          },
+          platforms: {
+            css: {
+              transforms: [timeSeconds, cubicBezierCss, transitionCssShorthand],
+            },
+          },
+        });
+
+        const transformed = await sd.exportPlatform('css');
+        expect(transformed.fast.$value).to.equal('200ms');
+        expect(transformed.foo.$value).to.equal('200ms ease-in-out 0ms');
+      });
+
+      it('should properly transform duration tokens that reference other duration tokens', async () => {
+        const sd = new StyleDictionary({
+          tokens: {
+            base: {
+              $value: { value: 200, unit: 'ms' },
+              $type: 'duration',
+            },
+            alias: {
+              $value: '{base}',
+              $type: 'duration',
+            },
+          },
+          platforms: {
+            css: {
+              transforms: [timeSeconds],
+            },
+          },
+        });
+
+        const transformed = await sd.exportPlatform('css');
+        expect(transformed.alias.$value).to.equal('200ms');
       });
     });
 

@@ -3,6 +3,7 @@ import Color from 'tinycolor2';
 import transforms, {
   isColor,
   getTokenDimensionValue,
+  getTokenDurationValue,
   isDTCGColorObject,
 } from '../../lib/common/transforms.js';
 import { transforms as transformNames } from '../../lib/enums/index.js';
@@ -1816,6 +1817,61 @@ describe('common', () => {
           );
           expect(value).to.equal('1.00s');
         });
+
+        it('should convert unitless and millisecond time values to seconds', () => {
+          expect(runTransform(timeSeconds, { value: 500, type: 'time' })).to.equal('0.50s');
+          expect(runTransform(timeSeconds, { value: '500ms', type: 'time' })).to.equal('0.50s');
+        });
+
+        it('should not convert time values that are already in seconds', () => {
+          expect(runTransform(timeSeconds, { value: '0.36s', type: 'time' })).to.equal('0.36s');
+        });
+
+        it('should keep the authored unit of DTCG duration object values', () => {
+          expect(
+            runTransform(
+              timeSeconds,
+              { $value: { value: 200, unit: 'ms' }, $type: 'duration' },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('200ms');
+
+          expect(
+            runTransform(
+              timeSeconds,
+              { $value: { value: 0.2, unit: 's' }, $type: 'duration' },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.2s');
+        });
+
+        it('should not lose precision for sub-10ms duration tokens', () => {
+          expect(
+            runTransform(
+              timeSeconds,
+              { $value: { value: 1, unit: 'ms' }, $type: 'duration' },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('1ms');
+        });
+
+        it('should handle duration tokens that use string or unitless values', () => {
+          expect(runTransform(timeSeconds, { value: '200ms', type: 'duration' })).to.equal('200ms');
+          expect(runTransform(timeSeconds, { value: 200, type: 'duration' })).to.equal('200ms');
+        });
+
+        it('should match both time and duration tokens', () => {
+          const { filter } = transforms[timeSeconds];
+          expect(filter({ value: 200, type: 'time' }, {})).to.be.true;
+          expect(filter({ value: 200, type: 'duration' }, {})).to.be.true;
+          expect(
+            filter({ $value: { value: 200, unit: 'ms' }, $type: 'duration' }, { usesDtcg: true }),
+          ).to.be.true;
+          expect(filter({ value: 200, type: 'number' }, {})).to.be.false;
+        });
       });
 
       // FIXME: find a browser/node cross compatible way to transform local path
@@ -2158,7 +2214,6 @@ describe('common', () => {
         });
       });
 
-      // TODO: add support for duration type -> object value (unit + value)
       describe(transitionCssShorthand, () => {
         const transitionTransform = (value, platformConfig = {}) =>
           transforms[transitionCssShorthand].transform({ value }, platformConfig, {});
@@ -2181,6 +2236,48 @@ describe('common', () => {
           ).to.equal('200ms ease-in-out 0ms');
 
           expect(transitionTransform('200ms linear 50ms')).to.equal('200ms linear 50ms');
+        });
+
+        it('transforms DTCG duration object values inside transition tokens', () => {
+          expect(
+            transforms[transitionCssShorthand].transform(
+              {
+                $value: {
+                  duration: { value: 200, unit: 'ms' },
+                  delay: { value: 0, unit: 'ms' },
+                  timingFunction: 'ease-in-out',
+                },
+                $type: 'transition',
+              },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('200ms ease-in-out 0ms');
+
+          expect(
+            transforms[transitionCssShorthand].transform(
+              {
+                $value: {
+                  duration: { value: 0.2, unit: 's' },
+                  delay: { value: 50, unit: 'ms' },
+                  timingFunction: 'linear',
+                },
+                $type: 'transition',
+              },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.2s linear 50ms');
+        });
+
+        it('treats unitless transition durations as milliseconds', () => {
+          expect(
+            transitionTransform({
+              duration: 200,
+              delay: 0,
+              timingFunction: 'linear',
+            }),
+          ).to.equal('200ms linear 0ms');
         });
       });
 
@@ -2570,6 +2667,57 @@ describe('common', () => {
 
         expect(getTokenDimensionValue('calc(100% - 20px)')).to.deep.equal({
           value: 'calc(100% - 20px)',
+          unit: undefined,
+        });
+      });
+    });
+
+    describe('function getTokenDurationValue', () => {
+      it('should return token value', () => {
+        const allTokensNonDtcg = [
+          { value: '200ms' },
+          { value: '0.2s' },
+
+          // unitless values, which used to be the only way to define a time token
+          { value: 200 },
+          { value: '200' },
+        ];
+
+        const allTokensDtcg = [
+          { $value: '200ms' },
+          { $value: '0.2s' },
+
+          { $value: 200 },
+          { $value: '200' },
+
+          // new DTCG duration syntax
+          { $value: { value: 200, unit: 'ms' } },
+          { $value: { value: 0.2, unit: 's' } },
+        ];
+
+        const expected = [
+          { value: '200', unit: 'ms' },
+          { value: '0.2', unit: 's' },
+
+          { value: 200, unit: undefined },
+          { value: '200', unit: undefined },
+
+          { value: 200, unit: 'ms' },
+          { value: 0.2, unit: 's' },
+        ];
+
+        allTokensDtcg.forEach((it, idx) => {
+          expect(getTokenDurationValue(it.$value)).to.deep.equal(expected[idx]);
+        });
+
+        allTokensNonDtcg.forEach((it, idx) => {
+          expect(getTokenDurationValue(it.value)).to.deep.equal(expected[idx]);
+        });
+      });
+
+      it('should gracefully handle duration values that cannot be parsed', () => {
+        expect(getTokenDurationValue('something weird')).to.deep.equal({
+          value: 'something weird',
           unit: undefined,
         });
       });

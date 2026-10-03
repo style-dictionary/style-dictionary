@@ -574,12 +574,21 @@ Wraps the value in a double-quoted string to make a string literal.
 
 ### time/seconds
 
-Assumes a time in miliseconds and transforms it into a decimal
+Turns `time` and `duration` type tokens into valid CSS time values.
+
+Style Dictionary specific `time` tokens are assumed to be milliseconds and are converted into seconds.
+A `time` token that already declares seconds, e.g. `"0.36s"`, is kept as is rather than divided again.
+
+DTCG `duration` tokens keep the unit they were authored with, because converting them to seconds
+would lose precision for sub-10ms durations. Duration values may be written as a
+[DTCG object](https://www.designtokens.org/tr/2025.10/format/#duration) `{ "value": 200, "unit": "ms" }`,
+as a string such as `"200ms"`, or as a unitless number, which is interpreted as milliseconds.
 
 ```js
-// Matches: token.type === 'time'
+// Matches: token.type === 'time' || token.type === 'duration'
 // Returns:
-'0.5s';
+'0.50s'; // time token, value 500
+'200ms'; // duration token, value { value: 200, unit: 'ms' }
 ```
 
 ---
@@ -681,6 +690,8 @@ Transforms `typography` type object-value token into a CSS string, using the CSS
 ### transition/css/shorthand
 
 Transforms `transition` type object-value token into a CSS string, using the CSS `transition` shorthand notation.
+The `duration` and `delay` properties may be duration values or references to `duration` tokens, and are
+stringified with their unit, so `{ "value": 200, "unit": "ms" }` becomes `200ms`.
 
 [DTCG definition](https://design-tokens.github.io/community-group/format/#transition)
 
