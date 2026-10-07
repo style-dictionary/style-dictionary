@@ -1,6 +1,6 @@
 {
   "name": "style-dictionary",
-  "version": "5.5.0",
+  "version": "5.6.0",
   "description": "Style once, use everywhere. A build system for creating cross-platform styles.",
   "keywords": [
     "style dictionary",
@@ -120,7 +120,7 @@
   },
   "dependencies": {
     "@bundled-es-modules/deepmerge": "^4.3.2",
-    "@bundled-es-modules/glob": "^13.0.6",
+    "@bundled-es-modules/glob": "^13.0.6-hotfix.0",
     "@bundled-es-modules/memfs": "^4.17.0",
     "@zip.js/zip.js": "^2.7.44",
     "chalk": "^5.3.0",
@@ -134,8 +134,9 @@
     "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
-    "@astrojs/starlight": "^0.39.2",
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/markdown-remark": "^7.3.1",
+    "@astrojs/starlight": "^0.42.1",
     "@changesets/cli": "^2.27.1",
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
@@ -148,11 +149,11 @@
     "@types/tinycolor2": "^1.4.6",
     "@types/uuid": "^9.0.8",
     "@typescript-eslint/parser": "^8.22.0",
-    "@web/test-runner": "^0.18.2",
-    "@web/test-runner-commands": "^0.9.0",
+    "@web/test-runner": "^1.0.0",
+    "@web/test-runner-commands": "^1.0.1",
     "@web/test-runner-playwright": "^0.11.0",
     "acorn": "^8.11.3",
-    "astro": "^6.4.8",
+    "astro": "^7.3.3",
     "chai": "^6.2.2",
     "eslint": "^9.19.0",
     "eslint-plugin-mocha": "^10.5.0",
@@ -172,7 +173,7 @@
     "patch-package": "^8.0.1",
     "sass": "^1.69.5",
     "semver": "^7.6.3",
-    "sharp": "^0.32.5",
+    "sharp": "^0.35.3",
     "starlight-links-validator": "^0.24.0",
     "typescript": "^5.7.2",
     "unist-util-visit": "^5.0.0",

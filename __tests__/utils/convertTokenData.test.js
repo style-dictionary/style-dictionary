@@ -103,6 +103,35 @@ describe('utils', () => {
         usesDtcg: false,
       });
       expect({}.a).to.be.undefined;
+      convertTokenData([{ key: '{constructor.prototype.a}', value: 'b' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.a).to.be.undefined;
+
+      convertTokenData([{ key: '{prototype.a}', value: 'b' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.a).to.be.undefined;
+
+      convertTokenData([{ key: '{nested.object.constructor.prototype.a}', value: 'b' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.a).to.be.undefined;
+
+      convertTokenData([{ key: '{nested.object.prototype.a}', value: 'b' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.a).to.be.undefined;
+
+      convertTokenData([{ key: '{nested.object.__proto__.a}', value: 'b' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.a).to.be.undefined;
     });
   });
 });

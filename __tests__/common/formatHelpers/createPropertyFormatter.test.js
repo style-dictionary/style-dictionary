@@ -1,10 +1,12 @@
 import { expect } from 'chai';
-import createPropertyFormatter from '../../../lib/common/formatHelpers/createPropertyFormatter.js';
+import createPropertyFormatter, {
+  addComment,
+} from '../../../lib/common/formatHelpers/createPropertyFormatter.js';
 import { convertTokenData } from '../../../lib/utils/convertTokenData.js';
 import { outputReferencesFilter } from '../../../lib/utils/references/outputReferencesFilter.js';
 import { commentStyles, commentPositions, propertyFormatNames } from '../../../lib/enums/index.js';
 
-const { short, long } = commentStyles;
+const { sassdoc, short, long, none } = commentStyles;
 const { above } = commentPositions;
 const { css, sass } = propertyFormatNames;
 
@@ -405,6 +407,44 @@ describe('common', () => {
         });
       });
 
+      describe('DTCG $root references', () => {
+        // DTCG's $root token nests other tokens under a group and is referenced e.g. as
+        // "{group.$root}". "$" is a RegExp special character, so the reference-matching
+        // RegExp must escape it or the resolved reference substitution silently fails,
+        // leaking the raw "{group.$root}" placeholder into the output.
+        const dtcgRootDictionary = {
+          group: {
+            $root: {
+              name: 'group-root',
+              $value: '5px',
+              original: {
+                $value: '5px',
+              },
+              path: ['group', '$root'],
+            },
+          },
+          ref: {
+            name: 'ref',
+            $value: '5px',
+            original: {
+              $value: '{group.$root}',
+            },
+            path: ['ref'],
+          },
+        };
+
+        it('should support outputReferences for a $root token reference', () => {
+          const propFormatter = createPropertyFormatter({
+            outputReferences: true,
+            dictionary: { tokens: dtcgRootDictionary },
+            format: css,
+            usesDtcg: true,
+          });
+          expect(propFormatter(dtcgRootDictionary.group.$root)).to.equal('  --group-root: 5px;');
+          expect(propFormatter(dtcgRootDictionary.ref)).to.equal('  --ref: var(--group-root);');
+        });
+      });
+
       describe('commentStyle', () => {
         const commentDictionary = {
           color: {
@@ -488,6 +528,53 @@ describe('common', () => {
 
           await expect(cssRed).to.matchSnapshot(1);
           await expect(sassRed).to.matchSnapshot(2);
+        });
+
+        it('allows the sassdoc commentStyle', async () => {
+          // long commentStyle
+          const cssFormatter = createPropertyFormatter({
+            format: css,
+            dictionary: { tokens: commentDictionary },
+            formatting: {
+              commentStyle: sassdoc,
+              commentPosition: above,
+            },
+          });
+          // short commentStyle
+          const sassFormatter = createPropertyFormatter({
+            format: sass,
+            dictionary: { tokens: commentDictionary },
+            formatting: {
+              commentStyle: sassdoc,
+              commentPosition: above,
+            },
+          });
+
+          const cssRed = cssFormatter(commentDictionary.color.green);
+          const sassRed = sassFormatter(commentDictionary.color.green);
+
+          await expect(cssRed).to.matchSnapshot(1);
+          await expect(sassRed).to.matchSnapshot(2);
+        });
+
+        it('should suppress comments when commentStyle is none', () => {
+          const cssFormatter = createPropertyFormatter({
+            format: css,
+            dictionary: { tokens: commentDictionary },
+            formatting: {
+              commentStyle: none,
+            },
+          });
+
+          const output = cssFormatter(commentDictionary.color.red);
+
+          expect(output).to.equal('  --color-red: #FF0000;');
+          expect(
+            addComment('--color-red: #FF0000;', 'Foo bar qux', { commentStyle: none }),
+          ).to.equal('--color-red: #FF0000;');
+          expect(addComment('--color-red: #FF0000;', undefined, { commentStyle: short })).to.equal(
+            '--color-red: #FF0000;',
+          );
         });
       });
 

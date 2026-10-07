@@ -64,7 +64,7 @@ Running `style-dictionary build` for the first time to generate build artifacts.
 
 
 css
-✔︎  build/scss/_variables.css
+✔︎  build/css/_variables.css
 
 android
 ✔︎  build/android/font_dimens.xml
@@ -95,11 +95,10 @@ Pat yourself on the back, you built your first style dictionary! Take a look at 
 - README.md
 - config.json
 - tokens
-  - color
-    - base.json
-    - font.json
-  - size
-    - font.json
+  - colors.json
+  - dimensions.json
+  - object-values.json
+  - text.json
 - build
   - android
     - font_dimens.xml
@@ -121,31 +120,32 @@ Pat yourself on the back, you built your first style dictionary! Take a look at 
 
 </FileTree>
 
-If you open `config.json` you will see there are 3 platforms defined: css, android, ios. Each platform has a transformGroup, buildPath, and files defined. The buildPath and files of the platform should match up to the files what were built. Those files should look like these:
+If you open `config.json` you will see there are 6 platforms defined: css, android, compose, ios, ios-swift, and ios-swift-separate-enums. Each platform has a transformGroup, buildPath, and files defined. The buildPath and files of the platform should match up to the files what were built. Those files should look like these:
 
 **Android**
 
 ```xml
 <!-- font_dimens.xml -->
 <resources>
-  <dimen name="size_font_small">12.00sp</dimen>
-  <dimen name="size_font_medium">16.00sp</dimen>
-  <dimen name="size_font_large">32.00sp</dimen>
-  <dimen name="size_font_base">16.00sp</dimen>
+  <dimen name="text_sizes_heading">448.00dp</dimen>
+  <dimen name="text_sizes_body">256.00dp</dimen>
 </resources>
 ```
 
 ```xml
 <!-- colors.xml -->
 <resources>
-  <color name="color_base_gray_light">#ffcccccc</color>
-  <color name="color_base_gray_medium">#ff999999</color>
-  <color name="color_base_gray_dark">#ff111111</color>
-  <color name="color_base_red">#ffff0000</color>
-  <color name="color_base_green">#ff00ff00</color>
-  <color name="color_font_base">#ff111111</color>
-  <color name="color_font_secondary">#ff999999</color>
-  <color name="color_font_tertiary">#ffcccccc</color>
+  <color name="colors_black">#ff000000</color>
+  <color name="colors_white">#ffffffff</color>
+  <color name="colors_orange_100">#fffffaf0</color>
+  <color name="colors_orange_200">#fffeebc8</color>
+  <color name="colors_orange_300">#fffbd38d</color>
+  <color name="colors_orange_400">#fff6ad55</color>
+  <color name="colors_orange_500">#ffed8936</color>
+  <color name="colors_orange_600">#ffdd6b20</color>
+  <color name="colors_orange_700">#ffc05621</color>
+  <color name="colors_orange_800">#ff9c4221</color>
+  <color name="colors_orange_900">#ff7b341e</color>
 </resources>
 ```
 
@@ -153,27 +153,39 @@ If you open `config.json` you will see there are 3 platforms defined: css, andro
 
 ```kotlin title="StyleDictionaryColor.kt"
 object StyleDictionaryColor {
-  val colorBaseGrayDark = Color(0xff111111)
-  val colorBaseGrayLight = Color(0xffcccccc)
-  val colorBaseGrayMedium = Color(0xff999999)
-  val colorBaseGreen = Color(0xff00ff00)
-  val colorBaseRed = Color(0xffff0000)
-  val colorFontBase = Color(0xffff0000)
-  val colorFontSecondary = Color(0xff00ff00)
-  val colorFontTertiary = Color(0xffcccccc)
+  val colorsBlack = Color(0xff000000)
+  val colorsOrange100 = Color(0xfffffaf0)
+  val colorsOrange200 = Color(0xfffeebc8)
+  val colorsOrange300 = Color(0xfffbd38d)
+  val colorsOrange400 = Color(0xfff6ad55)
+  val colorsOrange500 = Color(0xffed8936)
+  val colorsOrange600 = Color(0xffdd6b20)
+  val colorsOrange700 = Color(0xffc05621)
+  val colorsOrange800 = Color(0xff9c4221)
+  val colorsOrange900 = Color(0xff7b341e)
+  val colorsWhite = Color(0xffffffff)
 }
 ```
 
 ```kotlin title="StyleDictionarySize.kt"
 object StyleDictionarySize {
-  /** the base size of the font */
-  val sizeFontBase = 16.00.sp
-  /** the large size of the font */
-  val sizeFontLarge = 32.00.sp
-  /** the medium size of the font */
-  val sizeFontMedium = 16.00.sp
-  /** the small size of the font */
-  val sizeFontSmall = 12.00.sp
+  val dimensions0 = 0.00.dp
+  val dimensions1 = 64.00.dp
+  val dimensions2 = 128.00.dp
+  val dimensions3 = 192.00.dp
+  val dimensions4 = 256.00.dp
+  val dimensions5 = 320.00.dp
+  val dimensions6 = 384.00.dp
+  val dimensions7 = 448.00.dp
+  val dimensions8 = 512.00.dp
+  val dimensions9 = 576.00.dp
+  val dimensions10 = 640.00.dp
+  val dimensions11 = 704.00.dp
+  val dimensions12 = 768.00.dp
+  val dimensions13 = 832.00.dp
+  val dimensions14 = 896.00.dp
+  val dimensions15 = 960.00.dp
+  val dimensionsMax = 159984.00.dp
 }
 ```
 
@@ -181,24 +193,47 @@ object StyleDictionarySize {
 
 ```css title="_variables.css"
 :root {
-  --color-base-gray-light: #cccccc;
-  --color-base-gray-medium: #999999;
-  --color-base-gray-dark: #111111;
-  --color-base-red: #ff0000;
-  --color-base-green: #00ff00;
-  --color-font-base: #ff0000;
-  --color-font-secondary: #00ff00;
-  --color-font-tertiary: #cccccc;
-  --size-font-small: 0.75rem;
-  --size-font-medium: 1rem;
-  --size-font-large: 2rem;
-  --size-font-base: 1rem;
+  --colors-black: #000000;
+  --colors-white: #ffffff;
+  --colors-orange-100: #fffaf0;
+  --colors-orange-200: #feebc8;
+  --colors-orange-300: #fbd38d;
+  --colors-orange-400: #f6ad55;
+  --colors-orange-500: #ed8936;
+  --colors-orange-600: #dd6b20;
+  --colors-orange-700: #c05621;
+  --colors-orange-800: #9c4221;
+  --colors-orange-900: #7b341e;
+  --dimensions-0: 0px;
+  --dimensions-1: 4px;
+  /* ...additional dimension, typography, transition, border, shadow, and text tokens... */
 }
 ```
 
 **iOS**
 
-```swift title="StyleDictionaryColor.h"
+```objc title="StyleDictionaryColor.h"
+typedef NS_ENUM(NSInteger, StyleDictionaryColorName) {
+ColorsBlack,
+ColorsWhite,
+ColorsOrange100,
+ColorsOrange200,
+ColorsOrange300,
+ColorsOrange400,
+ColorsOrange500,
+ColorsOrange600,
+ColorsOrange700,
+ColorsOrange800,
+ColorsOrange900
+};
+
+@interface StyleDictionaryColor : NSObject
++ (NSArray *)values;
++ (UIColor *)color:(StyleDictionaryColorName)color;
+@end
+```
+
+```objc title="StyleDictionaryColor.m"
 #import "StyleDictionaryColor.h"
 
 @implementation StyleDictionaryColor
@@ -213,14 +248,17 @@ object StyleDictionarySize {
 
   dispatch_once(&onceToken, ^{
     colorArray = @[
-[UIColor colorWithRed:0.800f green:0.800f blue:0.800f alpha:1.000f],
-[UIColor colorWithRed:0.600f green:0.600f blue:0.600f alpha:1.000f],
-[UIColor colorWithRed:0.067f green:0.067f blue:0.067f alpha:1.000f],
-[UIColor colorWithRed:1.000f green:0.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:0.000f green:1.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:1.000f green:0.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:0.000f green:1.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:0.800f green:0.800f blue:0.800f alpha:1.000f]
+[UIColor colorWithRed:0.000f green:0.000f blue:0.000f alpha:1.000f],
+[UIColor colorWithRed:1.000f green:1.000f blue:1.000f alpha:1.000f],
+[UIColor colorWithRed:1.000f green:0.980f blue:0.941f alpha:1.000f],
+[UIColor colorWithRed:0.996f green:0.922f blue:0.784f alpha:1.000f],
+[UIColor colorWithRed:0.984f green:0.827f blue:0.553f alpha:1.000f],
+[UIColor colorWithRed:0.965f green:0.678f blue:0.333f alpha:1.000f],
+[UIColor colorWithRed:0.929f green:0.537f blue:0.212f alpha:1.000f],
+[UIColor colorWithRed:0.867f green:0.420f blue:0.125f alpha:1.000f],
+[UIColor colorWithRed:0.753f green:0.337f blue:0.129f alpha:1.000f],
+[UIColor colorWithRed:0.612f green:0.259f blue:0.129f alpha:1.000f],
+[UIColor colorWithRed:0.482f green:0.204f blue:0.118f alpha:1.000f]
     ];
   });
 
@@ -232,66 +270,80 @@ object StyleDictionarySize {
 
 Pretty nifty! This shows a few things happening:
 
-1. The build system does a deep merge of all the design token files defined in the `source` attribute of `config.json`. This allows you to split up the design token files however you want. There are 2 JSON files with `color` as the top level key, but they get merged properly.
-1. The build system resolves references to other design tokens. `{size.font.medium}` is resolved properly.
-1. The build system handles references to design token values in other files as well (as you can see in `tokens/color/font.json`).
+1. The build system does a deep merge of all the design token files defined in the `source` attribute of `config.json`. This allows you to split up the design token files however you want.
+1. The build system resolves references to other design tokens. `{dimensions.4}` is resolved properly.
+1. The build system handles references to design token values in other files as well (as you can see in `tokens/object-values.json`, which references tokens from `tokens/colors.json` and `tokens/dimensions.json`).
 1. Values are transformed specifically for each platform.
 
 ## Making a change
 
-Now let's make a change and see how that affects things. Open up `tokens/color/base.json` and change `"#111111"` to `"#000000"`. After you make that change, save the file and re-run the build command `style-dictionary build`. Open up the build files and take a look. Now:
+Now let's make a change and see how that affects things. Open up `tokens/colors.json` and change `"#000000"` to `"#111111"`. After you make that change, save the file and re-run the build command `style-dictionary build`. Open up the build files and take a look. Now:
 
 **Android**
 
 ```xml
 <!-- colors.xml -->
 <resources>
-  <color name="color_base_gray_light">#ffcccccc</color>
-  <color name="color_base_gray_medium">#ff999999</color>
-  <color name="color_base_gray_dark">#ff000000</color>
-  <color name="color_base_red">#ffff0000</color>
-  <color name="color_base_green">#ff00ff00</color>
-  <color name="color_font_base">#ffff0000</color>
-  <color name="color_font_secondary">#ff00ff00</color>
-  <color name="color_font_tertiary">#ffcccccc</color>
+  <color name="colors_black">#ff111111</color>
+  <color name="colors_white">#ffffffff</color>
+  <color name="colors_orange_100">#fffffaf0</color>
+  <color name="colors_orange_200">#fffeebc8</color>
+  <color name="colors_orange_300">#fffbd38d</color>
+  <color name="colors_orange_400">#fff6ad55</color>
+  <color name="colors_orange_500">#ffed8936</color>
+  <color name="colors_orange_600">#ffdd6b20</color>
+  <color name="colors_orange_700">#ffc05621</color>
+  <color name="colors_orange_800">#ff9c4221</color>
+  <color name="colors_orange_900">#ff7b341e</color>
 </resources>
 ```
 
 ```kotlin title="StyleDictionaryColor.kt"
 object StyleDictionaryColor {
-  val colorBaseGrayDark = Color(0xff000000)
-  val colorBaseGrayLight = Color(0xffcccccc)
-  val colorBaseGrayMedium = Color(0xff999999)
-  val colorBaseGreen = Color(0xff00ff00)
-  val colorBaseRed = Color(0xffff0000)
-  val colorFontBase = Color(0xffff0000)
-  val colorFontSecondary = Color(0xff00ff00)
-  val colorFontTertiary = Color(0xffcccccc)
+  val colorsBlack = Color(0xff111111)
+  val colorsOrange100 = Color(0xfffffaf0)
+  val colorsOrange200 = Color(0xfffeebc8)
+  val colorsOrange300 = Color(0xfffbd38d)
+  val colorsOrange400 = Color(0xfff6ad55)
+  val colorsOrange500 = Color(0xffed8936)
+  val colorsOrange600 = Color(0xffdd6b20)
+  val colorsOrange700 = Color(0xffc05621)
+  val colorsOrange800 = Color(0xff9c4221)
+  val colorsOrange900 = Color(0xff7b341e)
+  val colorsWhite = Color(0xffffffff)
 }
 ```
 
 ```css title="_variables.css"
 :root {
-  --color-base-gray-light: #cccccc;
-  --color-base-gray-medium: #999999;
-  --color-base-gray-dark: #000000;
-  --color-base-red: #ff0000;
-  --color-base-green: #00ff00;
-  --color-font-base: #ff0000;
-  --color-font-secondary: #00ff00;
-  --color-font-tertiary: #cccccc;
+  --colors-black: #111111;
+  --colors-white: #ffffff;
+  --colors-orange-100: #fffaf0;
+  --colors-orange-200: #feebc8;
+  --colors-orange-300: #fbd38d;
+  --colors-orange-400: #f6ad55;
+  --colors-orange-500: #ed8936;
+  --colors-orange-600: #dd6b20;
+  --colors-orange-700: #c05621;
+  --colors-orange-800: #9c4221;
+  --colors-orange-900: #7b341e;
 }
 ```
 
-```swift title="StyleDictionaryColor.h"
-[UIColor colorWithRed:0.800f green:0.800f blue:0.800f alpha:1.000f],
-[UIColor colorWithRed:0.600f green:0.600f blue:0.600f alpha:1.000f],
-[UIColor colorWithRed:0.000f green:0.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:1.000f green:0.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:0.000f green:1.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:1.000f green:0.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:0.000f green:1.000f blue:0.000f alpha:1.000f],
-[UIColor colorWithRed:0.800f green:0.800f blue:0.800f alpha:1.000f]
+```objc title="StyleDictionaryColor.m"
+    colorArray = @[
+[UIColor colorWithRed:0.067f green:0.067f blue:0.067f alpha:1.000f],
+[UIColor colorWithRed:1.000f green:1.000f blue:1.000f alpha:1.000f],
+[UIColor colorWithRed:1.000f green:0.980f blue:0.941f alpha:1.000f],
+[UIColor colorWithRed:0.996f green:0.922f blue:0.784f alpha:1.000f],
+[UIColor colorWithRed:0.984f green:0.827f blue:0.553f alpha:1.000f],
+[UIColor colorWithRed:0.965f green:0.678f blue:0.333f alpha:1.000f],
+[UIColor colorWithRed:0.929f green:0.537f blue:0.212f alpha:1.000f],
+[UIColor colorWithRed:0.867f green:0.420f blue:0.125f alpha:1.000f],
+[UIColor colorWithRed:0.753f green:0.337f blue:0.129f alpha:1.000f],
+[UIColor colorWithRed:0.612f green:0.259f blue:0.129f alpha:1.000f],
+[UIColor colorWithRed:0.482f green:0.204f blue:0.118f alpha:1.000f]
+    ];
 ```
 
 That's it! There is a lot more you can do with your style dictionary than generating files with color values. Take a look

@@ -1,5 +1,47 @@
 # Changelog
 
+## 5.6.0
+
+### Minor Changes
+
+- 2f28731: Add "sassdoc" comment style (a triple-slash short comment)
+
+### Patch Changes
+
+- 76074dc: Fix `outputReferences` leaking a raw `{group.$root}` placeholder into formatted output instead of resolving it, when a reference path segment (e.g. a DTCG `$root` token) contains a RegExp special character.
+
+## 5.5.5
+
+### Patch Changes
+
+- bc51123: Fix prototype pollution [GHSA-cr3w-v879-f973](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-cr3w-v879-f973) and [GHSA-5pgh-4v89-hfqj](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-5pgh-4v89-hfqj) for nested objects created by the `convertTokenData` utility in "object" output mode.
+
+## 5.5.4
+
+### Patch Changes
+
+- 0170a9a: Patch @bundled-es-modules/glob which fixes a transitive dependency vulnerability (glob->url->qs).
+
+## 5.5.3
+
+### Patch Changes
+
+- 863685d: Limit nested composite token expansion to the configured type filters.
+- 2aced93: Preserve alpha precision in the `color/css` transform.
+
+## 5.5.2
+
+### Patch Changes
+
+- b65ea0b: Disallow output literal "undefined" for tokens with descriptions when commentStyle is set to none.
+
+## 5.5.1
+
+### Patch Changes
+
+- ef1dbc8: Add better prototype pollution mitigation for convertTokenData utility.
+  See [GitHub Advisory GHSA-xmr7-549p-98w3](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-xmr7-549p-98w3)
+
 ## 5.5.0
 
 ### Minor Changes
