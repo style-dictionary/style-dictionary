@@ -3,6 +3,7 @@ import starlight from '@astrojs/starlight';
 import { unified } from '@astrojs/markdown-remark';
 import { remarkEnums } from './src/remark-enums.js';
 import { remarkPlayground } from './src/remark-playground';
+import { remarkTypes } from './src/remark-types.js';
 import starlightConfig from './starlight-config';
 
 // https://astro.build/config
@@ -11,7 +12,7 @@ export default defineConfig({
   markdown: {
     // TODO: stop using remark, migrate to Satteri and its MDAST/HAST plugins
     processor: unified({
-      remarkPlugins: [remarkEnums, remarkPlayground],
+      remarkPlugins: [remarkEnums, remarkTypes, remarkPlayground],
       // regression https://github.com/withastro/astro/issues/16971
       // https://github.com/withastro/starlight/issues/3934
       // consider using Satteri processor, which is opt-in
