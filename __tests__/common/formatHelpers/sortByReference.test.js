@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import sortByReference from '../../../lib/common/formatHelpers/sortByReference.js';
+import GroupMessages from '../../../lib/utils/groupMessages.js';
 
 const TRANSFORMED_TOKENS = (usesDtcg) => {
   const valueKey = usesDtcg ? '$value' : 'value';
@@ -111,6 +112,52 @@ describe('common', () => {
           tokensWithUndefinedValue.color.red,
           tokensWithUndefinedValue.color.primary,
         ]);
+      });
+
+      describe('filtered tokens', () => {
+        const FILTER_WARNINGS = GroupMessages.GROUP.FilteredOutputReferences;
+        const token = (name, value) => ({
+          name,
+          value,
+          original: { value },
+        });
+        const unfilteredTokens = {
+          base: { red: token('base-red', '#FF0000'), blue: token('base-blue', '#0000FF') },
+          mid: {
+            danger: token('mid-danger', '{base.red}'),
+            info: token('mid-info', '{base.blue}'),
+          },
+          semantic: {
+            error: token('semantic-error', '{mid.danger}'),
+            notice: token('semantic-notice', '{mid.info}'),
+          },
+        };
+        const tokens = { semantic: unfilteredTokens.semantic };
+
+        afterEach(() => {
+          GroupMessages.clear(FILTER_WARNINGS);
+        });
+
+        it('should not collect filtered out reference warnings while sorting', () => {
+          const allTokens = [tokens.semantic.notice, tokens.semantic.error];
+
+          [...allTokens].sort(sortByReference(tokens, { unfilteredTokens }));
+
+          expect(GroupMessages.fetchMessages(FILTER_WARNINGS)).to.eql([]);
+        });
+
+        it('should still sort by references that resolve to filtered out tokens', () => {
+          const filtered = {
+            mid: { danger: unfilteredTokens.mid.danger },
+            semantic: unfilteredTokens.semantic,
+          };
+          const allTokens = [filtered.semantic.error, filtered.mid.danger];
+
+          const sorted = [...allTokens].sort(sortByReference(filtered, { unfilteredTokens }));
+
+          expect(sorted).to.eql([filtered.mid.danger, filtered.semantic.error]);
+          expect(GroupMessages.fetchMessages(FILTER_WARNINGS)).to.eql([]);
+        });
       });
 
       describe('tokens with "value" in their name', () => {
