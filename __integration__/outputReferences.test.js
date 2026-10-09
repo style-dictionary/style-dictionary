@@ -190,6 +190,46 @@ describe('integration', async () => {
       ).to.matchSnapshot();
     });
 
+    it('should not warn about references of filtered out tokens when using outputReferencesFilter with multiple levels of references', async () => {
+      const sd = new StyleDictionary({
+        log: { verbosity: verbose },
+        tokens: {
+          base: {
+            red: { value: '#ff0000', type: 'color' },
+            blue: { value: '#0000ff', type: 'color' },
+          },
+          mid: {
+            danger: { value: '{base.red}', type: 'color' },
+            info: { value: '{base.blue}', type: 'color' },
+          },
+          semantic: {
+            error: { value: '{mid.danger}', type: 'color' },
+            notice: { value: '{mid.info}', type: 'color' },
+          },
+        },
+        platforms: {
+          css: {
+            transformGroup: css,
+            buildPath,
+            files: [
+              {
+                destination: 'filteredMultiLevel.css',
+                format: cssVariables,
+                filter: (token) => token.path[0] === 'semantic',
+                options: {
+                  outputReferences: outputReferencesFilter,
+                },
+              },
+            ],
+          },
+        },
+      });
+      await sd.buildAllPlatforms();
+      const output = [...stub.calls].map((cal) => cal.args.map(cleanConsoleOutput)).join('\n');
+      expect(output).to.not.include('filtered out token references were found');
+      expect(output).to.include('✔︎');
+    });
+
     it('should warn the user if filters out references with a detailed message when using verbose logging', async () => {
       const sd = new StyleDictionary({
         log: { verbosity: verbose },
