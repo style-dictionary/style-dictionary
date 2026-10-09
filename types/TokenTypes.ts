@@ -1,10 +1,17 @@
 // TODO: add type for token types
 // TODO: add types for token type -> values
 
-import { dimensionUnit } from '../lib/enums/index.js';
+import { dimensionUnit, durationUnit } from '../lib/enums/index.js';
 export type TokenTypeDimensionUnit = (typeof dimensionUnit)[keyof typeof dimensionUnit];
 
 export interface TokenTypeDimension {
   value: number;
   unit: TokenTypeDimensionUnit;
+}
+
+export type TokenTypeDurationUnit = (typeof durationUnit)[keyof typeof durationUnit];
+
+export interface TokenTypeDuration {
+  value: number;
+  unit: TokenTypeDurationUnit;
 }
