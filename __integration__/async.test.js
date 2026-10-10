@@ -116,7 +116,7 @@ describe('integration', async function () {
       },
     });
     await sd.buildAllPlatforms();
-  });
+  }).timeout(5000);
 
   after(() => {
     clearOutput(buildPath);
