@@ -62,13 +62,13 @@ npx style-dictionary build
 {
   "source": ["tokens.json"],
   "platforms": {
-    "scss": {
-      "transformGroup": "scss",
-      "buildPath": "build/scss/",
+    "css": {
+      "transformGroup": "css",
+      "buildPath": "build/css/",
       "files": [
         {
-          "destination": "_variables.scss",
-          "format": "scss/variables"
+          "destination": "_variables.css",
+          "format": "css/variables"
         }
       ]
     },
@@ -234,29 +234,31 @@ You will need NodeJS and NPM installed, Node v18 minimum being required.
 You should see something like this output in the console:
 
 ```
-scss
-✔︎  build/scss/_variables.scss
+css
+✔︎ build/css/_variables.css
 
 android
-✔︎  build/android/font_dimens.xml
-✔︎  build/android/colors.xml
+✔︎ build/android/font_dimens.xml
+✔︎ build/android/colors.xml
 
 compose
 ✔︎ build/compose/StyleDictionaryColor.kt
 ✔︎ build/compose/StyleDictionarySize.kt
 
 ios
-✔︎  build/ios/StyleDictionaryColor.h
-✔︎  build/ios/StyleDictionaryColor.m
-✔︎  build/ios/StyleDictionarySize.h
-✔︎  build/ios/StyleDictionarySize.m
+✔︎ build/ios/StyleDictionaryColor.h
+✔︎ build/ios/StyleDictionaryColor.m
+✔︎ build/ios/StyleDictionarySize.h
+✔︎ build/ios/StyleDictionarySize.m
 
 ios-swift
-✔︎  build/ios-swift/StyleDictionary.swift
+✔︎ build/ios-swift/StyleDictionary+Class.swift
+✔︎ build/ios-swift/StyleDictionary+Enum.swift
+✔︎ build/ios-swift/StyleDictionary+Struct.swift
 
 ios-swift-separate-enums
-✔︎  build/ios-swift/StyleDictionaryColor.swift
-✔︎  build/ios-swift/StyleDictionarySize.swift
+✔︎ build/ios-swift/StyleDictionaryColor.swift
+✔︎ build/ios-swift/StyleDictionarySize.swift
 ```
 
 Good for you! You have now built your first Style Dictionary!
@@ -274,27 +276,30 @@ Moving on, take a look at what we have built. This should have created a build d
   - compose/
     - StyleDictionaryColor.kt
     - StyleDictionarySize.kt
-  - scss/
-    - \_variables.scss
+  - css/
+    - \_variables.css
   - ios/
     - StyleDictionaryColor.h
     - StyleDictionaryColor.m
     - StyleDictionarySize.h
     - StyleDictionarySize.m
   - ios-swift/
-    - StyleDictionary.swift
+    - StyleDictionary+Class.swift
+    - StyleDictionary+Enum.swift
+    - StyleDictionary+Struct.swift
     - StyleDictionaryColor.swift
     - StyleDictionarySize.swift
 
 </FileTree>
 
-If you open `config.json` you will see there are 5 platforms defined:
+If you open `config.json` you will see there are 6 platforms defined:
 
-- `scss`
+- `css`
 - `android`
 - `compose`
 - `ios`
 - `ios-swift`
+- `ios-swift-separate-enums`
 
 Each platform has a `transformGroup`, `buildPath`, and `files`. The `buildPath` and `files` of the platform should match up to the files what were built.
 These files can be viewed in the live demo above by clicking the output dropdown button.
