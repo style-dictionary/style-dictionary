@@ -255,5 +255,47 @@ describe('integration', async () => {
       });
       await expect(output).to.matchSnapshot();
     });
+
+    it('should name and reference DTCG $root tokens after their group', async () => {
+      const sd = new StyleDictionary({
+        tokens: {
+          color: {
+            text: {
+              warning: {
+                $root: { $value: '#f5a623', $type: 'color' },
+                subtle: { $value: '#fde7c2', $type: 'color' },
+              },
+            },
+            alias: { $value: '{color.text.warning.$root}', $type: 'color' },
+            border: { $value: '1px solid {color.text.warning.$root}', $type: 'border' },
+          },
+        },
+        platforms: {
+          css: {
+            transformGroup: css,
+            buildPath,
+            files: [
+              {
+                destination: 'dtcgRootOutputRef.css',
+                format: cssVariables,
+                options: {
+                  outputReferences: true,
+                },
+              },
+            ],
+          },
+        },
+      });
+      await sd.buildAllPlatforms();
+      const output = fs.readFileSync(resolve(`${buildPath}dtcgRootOutputRef.css`), {
+        encoding: 'UTF-8',
+      });
+      expect(output).to.include('--color-text-warning: #f5a623;');
+      expect(output).to.include('--color-text-warning-subtle: #fde7c2;');
+      expect(output).to.include('--color-alias: var(--color-text-warning);');
+      expect(output).to.include('--color-border: 1px solid var(--color-text-warning);');
+      expect(output).not.to.include('-root');
+      expect(output).not.to.include('$root');
+    });
   });
 });

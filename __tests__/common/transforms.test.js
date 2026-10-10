@@ -12,6 +12,7 @@ const {
   nameKebab,
   nameSnake,
   nameConstant,
+  namePascal,
   attributeColor,
   attributeCti,
   colorHex,
@@ -172,6 +173,44 @@ describe('common', () => {
               {},
             ),
           ).to.equal('ONE_TWO_THREE');
+        });
+      });
+
+      describe('DTCG $root tokens', () => {
+        const expected = {
+          [nameCamel]: ['prefixColorAccent', 'prefixColorAccentLight', 'prefixColorRootAccent'],
+          [nameKebab]: [
+            'prefix-color-accent',
+            'prefix-color-accent-light',
+            'prefix-color-root-accent',
+          ],
+          [nameSnake]: [
+            'prefix_color_accent',
+            'prefix_color_accent_light',
+            'prefix_color_root_accent',
+          ],
+          [nameConstant]: [
+            'PREFIX_COLOR_ACCENT',
+            'PREFIX_COLOR_ACCENT_LIGHT',
+            'PREFIX_COLOR_ROOT_ACCENT',
+          ],
+          [namePascal]: ['PrefixColorAccent', 'PrefixColorAccentLight', 'PrefixColorRootAccent'],
+        };
+
+        Object.entries(expected).forEach(([name, [root, sibling, nonTrailing]]) => {
+          it(`${name} should ignore a trailing $root segment`, () => {
+            const config = { prefix: 'prefix' };
+            expect(runTransform(name, { path: ['color', 'accent', '$root'] }, config)).to.equal(
+              root,
+            );
+            expect(runTransform(name, { path: ['color', 'accent', 'light'] }, config)).to.equal(
+              sibling,
+            );
+            // only a trailing $root is a root token
+            expect(runTransform(name, { path: ['color', '$root', 'accent'] }, config)).to.equal(
+              nonTrailing,
+            );
+          });
         });
       });
     });
