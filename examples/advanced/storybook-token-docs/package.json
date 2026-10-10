@@ -1,0 +1,21 @@
+{
+  "name": "storybook-token-docs",
+  "version": "1.0.0",
+  "description": "Builds a Storybook stories file that documents design tokens",
+  "type": "module",
+  "scripts": {
+    "build-tokens": "style-dictionary build --config ./config.js",
+    "storybook": "npm run build-tokens && storybook dev -p 6006",
+    "build-storybook": "npm run build-tokens && storybook build",
+    "test": "mocha 'config/**/*.test.js'"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@storybook/html-vite": "^10.6.1",
+    "chai": "^6.2.2",
+    "mocha": "^11.0.0",
+    "storybook": "^10.6.1",
+    "style-dictionary": "^5.0.0",
+    "vite": "^7.0.0"
+  }
+}
