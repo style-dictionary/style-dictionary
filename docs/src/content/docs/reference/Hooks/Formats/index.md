@@ -177,6 +177,7 @@ Not all formats use the `outputReferences` option because that file format might
 - [less/variables](/reference/hooks/formats/predefined/#lessvariables)
 - [android/resources](/reference/hooks/formats/predefined/#androidresources)
 - [compose/object](/reference/hooks/formats/predefined/#composeobject)
+- [xaml/resourceDictionary](/reference/hooks/formats/predefined/#xamlresourcedictionary)
 - [ios-swift/class.swift](/reference/hooks/formats/predefined/#ios-swiftclassswift)
 - [flutter/class.dart](/reference/hooks/formats/predefined/#flutterclassdart)
 
