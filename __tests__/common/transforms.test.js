@@ -873,6 +873,31 @@ describe('common', () => {
           expect(value).to.equal('rgba(170, 170, 170, 0.6)');
         });
 
+        it('should output the shortest alpha that maps back to the same hex alpha', () => {
+          /** @param {string} value */
+          const transform = (value) => transforms[colorCss].transform({ value }, {}, {});
+          // 0x14 = 20/255 = 0.0784..., and 0.08 maps back to 0x14
+          expect(transform('#00000014')).to.equal('rgba(0, 0, 0, 0.08)');
+          // 0xec = 236/255, no two decimal value maps back to 0xec
+          expect(transform('#000000ec')).to.equal('rgba(0, 0, 0, 0.925)');
+          expect(transform('#00000001')).to.equal('rgba(0, 0, 0, 0.004)');
+          expect(transform('#00000080')).to.equal('rgba(0, 0, 0, 0.5)');
+          expect(transform('#00000000')).to.equal('rgba(0, 0, 0, 0)');
+          // 4 digit hex, 0x88 = 136/255
+          expect(transform('#0008')).to.equal('rgba(0, 0, 0, 0.533)');
+          expect(transform('#000c')).to.equal('rgba(0, 0, 0, 0.8)');
+        });
+
+        it('should keep every hex alpha at 3 decimals or less without changing its value', () => {
+          for (let i = 0; i < 255; i++) {
+            const hex = `#000000${i.toString(16).padStart(2, '0')}`;
+            const value = transforms[colorCss].transform({ value: hex }, {}, {});
+            const alpha = value.slice('rgba(0, 0, 0, '.length, -1);
+            expect(alpha, hex).to.match(/^(0|0\.\d{1,3})$/);
+            expect(Math.round(Number(alpha) * 255), hex).to.equal(i);
+          }
+        });
+
         it('should preserve legacy alpha precision', () => {
           const value = transforms[colorCss].transform(
             {
