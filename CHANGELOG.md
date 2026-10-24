@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.7.1
+
+### Patch Changes
+
+- c3c37e1: Protect convertTokenData to output 'object' from another [prototype pollution vulnerability (GHSA-m4pr-rgwp)](https://github.com/style-dictionary/style-dictionary/security/advisories/GHSA-m4pr-rgwp-x36r). In this case, the attack vector was by placing 2 tokens and letting the 2nd descend into the 1st one, and then polluting the object prototype in that descension.
+
 ## 5.7.0
 
 ### Minor Changes
