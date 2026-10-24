@@ -47,6 +47,16 @@ describe('exportPlatform', () => {
     );
   });
 
+  it('should throw with the token path if a token has an empty name', async () => {
+    const sd = new StyleDictionary({
+      tokens: { color: { brand: { '': { value: '#ff0000', type: 'color' } } } },
+      platforms: { css: { transformGroup: css } },
+    });
+    await expect(sd.exportPlatform('css')).to.eventually.be.rejectedWith(
+      'Token name must be a string, received "" for token "color.brand."',
+    );
+  });
+
   it('should not throw if given a proper platform', async () => {
     await expect(styleDictionary.exportPlatform('web')).to.eventually.be.fulfilled;
   });
