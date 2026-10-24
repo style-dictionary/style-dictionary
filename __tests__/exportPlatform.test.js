@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { stubMethod, restore } from 'hanbi';
 import StyleDictionary from 'style-dictionary';
-import { usesReferences } from 'style-dictionary/utils';
+import { usesReferences, StopTransformError } from 'style-dictionary/utils';
 import { fileToJSON, cleanConsoleOutput } from './__helpers.js';
 import {
   logWarningLevels,
@@ -180,6 +180,50 @@ describe('exportPlatform', () => {
       const dictionary = await StyleDictionaryExtended.exportPlatform('test');
       expect(dictionary.b.value).to.equal('#000');
     });
+  });
+
+  it('should skip the remaining transforms for a token when a transform throws a StopTransformError', async () => {
+    const logStub = stubMethod(console, 'log');
+    const sd = new StyleDictionary({
+      hooks: {
+        transforms: {
+          'dimension/validate': {
+            type: transformTypeValue,
+            filter: (token) => token.type === 'dimension',
+            transform: (token) => {
+              if (typeof token.value === 'number') {
+                throw new StopTransformError('Dimension tokens need a unit');
+              }
+              return token.value;
+            },
+          },
+          'dimension/rem': {
+            type: transformTypeValue,
+            filter: (token) => token.type === 'dimension',
+            transform: (token) => `${parseFloat(token.value) / 16}rem`,
+          },
+        },
+      },
+      tokens: {
+        spacing: {
+          valid: { value: '16px', type: 'dimension' },
+          invalid: { value: 16, type: 'dimension' },
+        },
+      },
+      platforms: {
+        test: {
+          transforms: ['dimension/validate', 'dimension/rem'],
+        },
+      },
+    });
+    const dictionary = await sd.exportPlatform('test');
+    expect(dictionary.spacing.valid.value).to.equal('1rem');
+    expect(dictionary.spacing.invalid.value).to.equal(16);
+    expect(cleanConsoleOutput(logStub.firstCall.args[0])).to.equal(`
+Some token transformations (1) could not be applied correctly.
+Use log.verbosity "verbose" or use CLI option --verbose for more details.
+Refer to: https://styledictionary.com/reference/logging/
+`);
   });
 
   it('should not have mutated the original tokens', async () => {
