@@ -132,6 +132,22 @@ describe('utils', () => {
         usesDtcg: false,
       });
       expect({}.a).to.be.undefined;
+
+      convertTokenData([{ key: '{a}' }, { key: '{a.__proto__.polluted}', value: 'malicious' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.polluted).to.be.undefined;
+      convertTokenData([{ key: '{a}' }, { key: '{a.prototype.polluted}', value: 'malicious' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.polluted).to.be.undefined;
+      convertTokenData([{ key: '{a}' }, { key: '{a.constructor.polluted}', value: 'malicious' }], {
+        output: 'object',
+        usesDtcg: false,
+      });
+      expect({}.polluted).to.be.undefined;
     });
   });
 });
