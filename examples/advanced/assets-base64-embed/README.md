@@ -29,7 +29,7 @@ will be rendered as:
 and in **Sass** this code:
 
 ```
-background-image: url('data:image/png;base64,$asset-image-logo');
+background-image: url('data:image/png;base64,#{$asset-image-logo}');
 ```
 
 will be rendered as:
@@ -72,7 +72,9 @@ where the value of the `alert-circle` token is a path that points to the `alert-
 Now, `build` the dictionary and open the generated file `build/scss/assets_icons.scss`, and you will see this result:
 
 ```
-$asset-icon-alert-circle: "PHN2ZyB4bWxucz0iaHR0...
+$asset-icon-alert-circle: PHN2ZyB4bWxucz0iaHR0...;
 ```
 
 As you can see, the asset has been converted to a base64 string and its value associated to a design token.
+
+Note that the value is not wrapped in quotes: since v4, Style Dictionary no longer quotes `asset` tokens in formats. Interpolate the variable into a quoted string where you use it (as in the Sass snippet above), or register a custom transform that wraps the value in quotes if your output needs it.
