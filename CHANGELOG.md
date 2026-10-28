@@ -1,5 +1,19 @@
 # Changelog
 
+## 5.8.0
+
+### Minor Changes
+
+- 73acfe2: Add `StopTransformError` to `style-dictionary/utils`. A transform can throw it to skip the remaining transforms for that token, which keeps the changes made by the transforms that ran before. It is still reported as a transform error.
+
+### Patch Changes
+
+- 52d9d7d: Fix cleaning the `copy_assets` action on Node.js 25 and later. It removed the assets directory with `fs.rmdir()` and its `recursive` option, which Node.js 25 removed, so cleaning threw `ERR_INVALID_ARG_VALUE`. It now uses `fs.rm()`.
+- ce0a390: When a token in `source` overrides a token from `include` (or from the inline `tokens` option), it now replaces that token instead of being merged into it, the same as when two `source` files or two `include` files define the same token. Properties that only the overridden token had, such as `$extensions` or `comment`, are no longer carried over.
+- d87ca0b: Round alpha values that come from 8 or 4 digit hex colors in the `color/css` transform to the shortest value that maps back to the same hex alpha (two decimals, or three when two do not round-trip), the same as browsers do. For example `#00000014` becomes `rgba(0, 0, 0, 0.08)` again instead of `rgba(0, 0, 0, 0.0784313725490196)`. Alpha values written as decimals are still kept as they are.
+- f82e7aa: **BREAKING**: the `sketch/palette` format is registered under its documented name again. Since the enums were introduced in v4.3.0 the format was accidentally registered as `sketchPalette`, which made `format: 'sketch/palette'` throw "Can't find format". The `formats.sketchPalette` enum now resolves to `'sketch/palette'`, and the accidental `'sketchPalette'` string name is no longer accepted. If you used `format: 'sketchPalette'`, switch to `format: 'sketch/palette'` or use `formats.sketchPalette` from `style-dictionary/enums`.
+- 5a2e3d2: Include the token path, and the token's `filePath` when it has one, in the "Token name must be a string" error, so a token with an empty name (e.g. an empty `""` key) is easier to find.
+
 ## 5.7.1
 
 ### Patch Changes
