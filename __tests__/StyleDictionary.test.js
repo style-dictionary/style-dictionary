@@ -4,7 +4,6 @@ import { fs } from 'style-dictionary/fs';
 import chalk from 'chalk';
 import { fileToJSON, clearOutput, fileExists, clearSDMeta } from './__helpers.js';
 import { resolve } from '../lib/resolve.js';
-import GroupMessages from '../lib/utils/groupMessages.js';
 import { convertTokenData } from '../lib/utils/convertTokenData.js';
 import { stripMeta } from '../lib/utils/stripMeta.js';
 import formats from '../lib/common/formats.js';
@@ -1020,7 +1019,6 @@ Refer to: https://styledictionary.com/reference/logging/
 
     describe('name collisions', () => {
       const destination = `${testOutputFolder}/test.collisions`;
-      const PROPERTY_NAME_COLLISION_WARNINGS = `${GroupMessages.GROUP.PropertyNameCollisionWarnings}:${destination}`;
       const name = 'someName';
       const dictionary = {
         allTokens: [
@@ -1038,7 +1036,6 @@ Refer to: https://styledictionary.com/reference/logging/
       };
 
       it('should generate warning messages for output name collisions', async () => {
-        GroupMessages.clear(PROPERTY_NAME_COLLISION_WARNINGS);
         const sd = new StyleDictionary();
         const { logs } = await sd.formatFile(
           { destination, format },
