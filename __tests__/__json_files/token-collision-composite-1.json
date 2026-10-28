@@ -1,0 +1,17 @@
+{
+  "shadow": {
+    "value": [
+      { "offsetX": "0px", "offsetY": "1px", "blur": "2px", "spread": "0px", "color": "#00000014" },
+      { "offsetX": "0px", "offsetY": "4px", "blur": "8px", "spread": "0px", "color": "#0000001f" }
+    ],
+    "type": "shadow"
+  },
+  "typography": {
+    "value": { "fontFamily": "Arial", "fontSize": "16px", "fontWeight": 700 },
+    "type": "typography"
+  },
+  "color": {
+    "value": "#ffffff",
+    "type": "color"
+  }
+}

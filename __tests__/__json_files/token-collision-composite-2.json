@@ -1,0 +1,12 @@
+{
+  "shadow": {
+    "value": [
+      { "offsetX": "0px", "offsetY": "2px", "blur": "4px", "spread": "0px", "color": "#0000001a" }
+    ],
+    "type": "shadow"
+  },
+  "typography": {
+    "value": { "fontFamily": "Helvetica", "fontSize": "14px" },
+    "type": "typography"
+  }
+}
