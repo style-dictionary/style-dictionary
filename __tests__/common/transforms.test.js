@@ -630,6 +630,31 @@ describe('common', () => {
           );
           expect(value).to.equal('rgba(170, 170, 170, 0.6)');
         });
+
+        it('should output the shortest alpha that maps back to the same hex alpha', () => {
+          /** @param {string} value */
+          const transform = (value) => transforms[colorRgb].transform({ value }, {}, {});
+          expect(transform('#00000001')).to.equal('rgba(0, 0, 0, 0.004)');
+          expect(transform('#00000014')).to.equal('rgba(0, 0, 0, 0.08)');
+          expect(transform('#000000ec')).to.equal('rgba(0, 0, 0, 0.925)');
+          expect(transform('#000000fe')).to.equal('rgba(0, 0, 0, 0.996)');
+          expect(transform('#00000080')).to.equal('rgba(0, 0, 0, 0.5)');
+          expect(transform('#0008')).to.equal('rgba(0, 0, 0, 0.533)');
+        });
+
+        it('should keep an alpha written as a decimal as it is', () => {
+          const legacy = transforms[colorRgb].transform({ value: 'rgba(0, 0, 0, 0.0625)' }, {}, {});
+          expect(legacy).to.equal('rgba(0, 0, 0, 0.0625)');
+          const dtcg = transforms[colorRgb].transform(
+            {
+              $value: { colorSpace: 'srgb', components: [0, 0, 0], alpha: 0.0625 },
+              $type: 'color',
+            },
+            {},
+            { usesDtcg: true },
+          );
+          expect(dtcg).to.equal('rgba(0, 0, 0, 0.0625)');
+        });
       });
 
       describe(colorHsl4, () => {
@@ -654,6 +679,35 @@ describe('common', () => {
           );
           expect(value).to.equal('hsl(174 100% 29% / 0.6)');
         });
+
+        it('should output the shortest alpha that maps back to the same hex alpha', () => {
+          /** @param {string} value */
+          const transform = (value) => transforms[colorHsl4].transform({ value }, {}, {});
+          expect(transform('#00000001')).to.equal('hsl(0 0% 0% / 0.004)');
+          expect(transform('#00000014')).to.equal('hsl(0 0% 0% / 0.08)');
+          expect(transform('#000000ec')).to.equal('hsl(0 0% 0% / 0.925)');
+          expect(transform('#000000fe')).to.equal('hsl(0 0% 0% / 0.996)');
+          expect(transform('#00000080')).to.equal('hsl(0 0% 0% / 0.5)');
+          expect(transform('#0008')).to.equal('hsl(0 0% 0% / 0.533)');
+        });
+
+        it('should keep an alpha written as a decimal as it is', () => {
+          const legacy = transforms[colorHsl4].transform(
+            { value: 'rgba(0, 0, 0, 0.0625)' },
+            {},
+            {},
+          );
+          expect(legacy).to.equal('hsl(0 0% 0% / 0.0625)');
+          const dtcg = transforms[colorHsl4].transform(
+            {
+              $value: { colorSpace: 'srgb', components: [0, 0, 0], alpha: 0.0625 },
+              $type: 'color',
+            },
+            {},
+            { usesDtcg: true },
+          );
+          expect(dtcg).to.equal('hsl(0 0% 0% / 0.0625)');
+        });
       });
 
       describe(colorHsl, () => {
@@ -677,6 +731,31 @@ describe('common', () => {
             {},
           );
           expect(value).to.equal('hsla(174, 100%, 29%, 0.6)');
+        });
+
+        it('should output the shortest alpha that maps back to the same hex alpha', () => {
+          /** @param {string} value */
+          const transform = (value) => transforms[colorHsl].transform({ value }, {}, {});
+          expect(transform('#00000001')).to.equal('hsla(0, 0%, 0%, 0.004)');
+          expect(transform('#00000014')).to.equal('hsla(0, 0%, 0%, 0.08)');
+          expect(transform('#000000ec')).to.equal('hsla(0, 0%, 0%, 0.925)');
+          expect(transform('#000000fe')).to.equal('hsla(0, 0%, 0%, 0.996)');
+          expect(transform('#00000080')).to.equal('hsla(0, 0%, 0%, 0.5)');
+          expect(transform('#0008')).to.equal('hsla(0, 0%, 0%, 0.533)');
+        });
+
+        it('should keep an alpha written as a decimal as it is', () => {
+          const legacy = transforms[colorHsl].transform({ value: 'rgba(0, 0, 0, 0.0625)' }, {}, {});
+          expect(legacy).to.equal('hsla(0, 0%, 0%, 0.0625)');
+          const dtcg = transforms[colorHsl].transform(
+            {
+              $value: { colorSpace: 'srgb', components: [0, 0, 0], alpha: 0.0625 },
+              $type: 'color',
+            },
+            {},
+            { usesDtcg: true },
+          );
+          expect(dtcg).to.equal('hsla(0, 0%, 0%, 0.0625)');
         });
       });
 
