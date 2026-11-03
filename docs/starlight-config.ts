@@ -143,6 +143,7 @@ export default {
             { label: 'References', link: '/reference/utils/references' },
             { label: 'Tokens', link: '/reference/utils/tokens' },
             { label: 'Format Helpers', link: '/reference/utils/format-helpers' },
+            { label: 'Transform Utils', link: '/reference/utils/transform-utils' },
             { label: 'Design Token Community Group', link: '/reference/utils/dtcg' },
           ],
         },

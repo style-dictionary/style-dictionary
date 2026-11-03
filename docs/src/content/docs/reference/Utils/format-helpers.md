@@ -60,6 +60,7 @@ which uses: prefix, indentation, separator, suffix, and commentStyle.
 Example:
 
 ```javascript title="build-tokens.js"
+import { createPropertyFormatter } from 'style-dictionary/utils';
 import { propertyFormatNames } from 'style-dictionary/enums';
 
 StyleDictionary.registerFormat({
@@ -95,6 +96,7 @@ default file header.
 Example:
 
 ```js title="build-tokens.js"
+import { fileHeader } from 'style-dictionary/utils';
 import { commentStyles } from 'style-dictionary/enums';
 
 StyleDictionary.registerFormat({
@@ -135,6 +137,7 @@ This is used to create lists of variables like Sass variables or CSS custom prop
 Example:
 
 ```js title="build-tokens.js"
+import { formattedVariables } from 'style-dictionary/utils';
 import { propertyFormatNames } from 'style-dictionary/enums';
 
 StyleDictionary.registerFormat({
@@ -168,6 +171,8 @@ Returns: `string` - A valid name for a TypeScript type.
 Example:
 
 ```javascript title="build-tokens.js"
+import { getTypeScriptType } from 'style-dictionary/utils';
+
 StyleDictionary.registerFormat({
   name: 'myCustomFormat',
   format: function ({ dictionary, options }) {
@@ -200,6 +205,8 @@ a unicode character.
 Example:
 
 ```js title="build-tokens.js"
+import { iconsWithPrefix } from 'style-dictionary/utils';
+
 StyleDictionary.registerFormat({
   name: 'myCustomFormat',
   format: function ({ dictionary, options }) {
@@ -221,6 +228,8 @@ Outputs an object stripping out everything except values
 Example:
 
 ```js title="build-tokens.js"
+import { minifyDictionary } from 'style-dictionary/utils';
+
 StyleDictionary.registerFormat({
   name: 'myCustomFormat',
   format: function ({ dictionary }) {
@@ -268,6 +277,8 @@ a format.
 Example:
 
 ```javascript title="build-tokens.js"
+import { sortByName } from 'style-dictionary/utils';
+
 StyleDictionary.registerFormat({
   name: 'myCustomFormat',
   format: function ({ dictionary, options }) {
@@ -298,5 +309,59 @@ defined.
 Example:
 
 ```javascript title="build-tokens.js"
+import { sortByReference } from 'style-dictionary/utils';
+
 dictionary.allTokens.sort(sortByReference(dictionary));
+```
+
+### formatJS
+
+A utility which formats any JS content as a string, using Prettier.
+Uses default Prettier settings, currently with no way to pass a config.
+PRs for that feature are welcome.
+
+| Param     | Type      | Description                                                |
+| --------- | --------- | ---------------------------------------------------------- |
+| `content` | `string`  | JS content as a string.                                    |
+| `ts`      | `boolean` | Whether JS content is using TypeScript. `false` by default |
+
+Example:
+
+```javascript title="build-tokens.js"
+import { formatJS } from 'style-dictionary/utils';
+const formattedJSContent = formatJS(`const a = 'foobar';`);
+const formattedTSContent = formatJS(`const a: string = 'foobar';`, true);
+```
+
+### stripMetaProps
+
+A helper, very similar to [stripMeta](/reference/utils/tokens#stripmeta), that removes meta props that Style Dictionary has added during parsing, preprocessing and transforming the tokens.
+The main difference with stripMeta is that this one acts as a wrapper and sets default properties to strip away.
+By default, those properties are: `['attributes', 'filePath', 'name', 'path', 'comment']`.
+
+Note that in order for this utility to do anything at all, `options.stripMeta` has to be set. If it is undefined or `false`, nothing happens.
+This is because of how it is used in some formats, where stripping must be an explicit opt-in.
+
+You can pass some options to customize the properties to keep, strip, or whether to use DTCG syntax or not.
+Be careful if you use the keep option, any property that's not in this array will get stripped.
+
+| Param                     | Type                                                                        | Description                                                                          |
+| ------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `tokens`                  | `TransformedTokens`                                                         | Transformed Dictionary object. Does not yet support Token Map or Array (PR welcome). |
+| `options`                 | `{ stripMeta?: { strip?: string[], keep?: string[] }, usesDtcg?: boolean }` | Options object for the stripMetaProps utility.                                       |
+| `options.usesDtcg`        | `boolean`                                                                   | Whether or not to use DTCG format. `false` by default.                               |
+| `options.stripMeta`       | `{ strip?: string[], keep?: string[] }`                                     | stripMeta object.                                                                    |
+| `options.stripMeta.strip` | `string[]`                                                                  | List of property keys to strip from the token object.                                |
+| `options.stripMeta.keep`  | `string[]`                                                                  | List of property keys to keep in the token.                                          |
+
+Example:
+
+```javascript title="build-tokens.js"
+import { stripMetaProps } from 'style-dictionary/utils';
+
+const tokens = stripMetaProps(dictionary.tokens, { usesDtcg: true, stripMeta: true });
+const tokens2 = stripMetaProps(dictionary.tokens, {
+  usesDtcg: true,
+  stripMeta: { keep: ['$value'] },
+});
 ```
