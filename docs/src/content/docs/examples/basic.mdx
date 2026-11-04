@@ -11,47 +11,274 @@ Under the hood of this interactive demo, we run Style Dictionary through the Nod
 npx style-dictionary build
 ```
 
+The tokens use the [DTCG format](/info/dtcg/): `$value` holds a token value, and a group's `$type` applies to the tokens inside it. The output filters below match that `$type`.
+
 ~ sd-playground
 
 ```json tokens
 {
   "colors": {
-    "base": {
-      "gray": {
-        "light": { "value": "#CCCCCC", "type": "color" },
-        "medium": { "value": "#999999", "type": "color" },
-        "dark": { "value": "#111111", "type": "color" }
-      },
-      "red": { "value": "#FF0000", "type": "color" },
-      "green": { "value": "#00FF00", "type": "color" }
+    "$type": "color",
+    "black": {
+      "$value": "#000000"
     },
-    "font": {
-      "base": { "value": "{colors.base.red}", "type": "color" },
-      "secondary": { "value": "{colors.base.green}", "type": "color" },
-      "tertiary": { "value": "{colors.base.gray.light}", "type": "color" }
+    "white": {
+      "$value": "#ffffff"
+    },
+    "orange": {
+      "100": {
+        "$value": "#fffaf0"
+      },
+      "200": {
+        "$value": "#feebc8"
+      },
+      "300": {
+        "$value": "#fbd38d"
+      },
+      "400": {
+        "$value": "#f6ad55"
+      },
+      "500": {
+        "$value": "#ed8936"
+      },
+      "600": {
+        "$value": "#dd6b20"
+      },
+      "700": {
+        "$value": "#c05621"
+      },
+      "800": {
+        "$value": "#9c4221"
+      },
+      "900": {
+        "$value": "#7b341e"
+      }
     }
   },
-  "size": {
-    "font": {
-      "small": {
-        "value": "0.75",
-        "type": "fontSize",
-        "comment": "the small size of the font"
+  "dimensions": {
+    "$type": "dimension",
+    "0": {
+      "$value": "0px"
+    },
+    "1": {
+      "$value": "4px"
+    },
+    "2": {
+      "$value": "8px"
+    },
+    "3": {
+      "$value": "12px"
+    },
+    "4": {
+      "$value": "16px"
+    },
+    "5": {
+      "$value": "20px"
+    },
+    "6": {
+      "$value": "24px"
+    },
+    "7": {
+      "$value": "28px"
+    },
+    "8": {
+      "$value": "32px"
+    },
+    "9": {
+      "$value": "36px"
+    },
+    "10": {
+      "$value": "40px"
+    },
+    "11": {
+      "$value": "44px"
+    },
+    "12": {
+      "$value": "48px"
+    },
+    "13": {
+      "$value": "52px"
+    },
+    "14": {
+      "$value": "56px"
+    },
+    "15": {
+      "$value": "60px"
+    },
+    "max": {
+      "$value": "9999px"
+    }
+  },
+  "composite-examples": {
+    "typography": {
+      "$type": "typography",
+      "heading": {
+        "$value": {
+          "fontFamily": "{text.fonts.sans}",
+          "fontWeight": "{text.weights.bold}",
+          "fontSize": "{dimensions.7}",
+          "lineHeight": "{text.lineHeights.large}"
+        }
+      },
+      "body": {
+        "$value": {
+          "fontFamily": "{text.fonts.serif}",
+          "fontWeight": "{text.weights.regular}",
+          "fontSize": "{dimensions.4}",
+          "lineHeight": "{text.lineHeights.normal}"
+        }
+      }
+    }
+  },
+  "transitions": {
+    "$type": "transition",
+    "emphasis": {
+      "$value": {
+        "duration": "{transitions.durations.medium}",
+        "delay": "{transitions.durations.instant}",
+        "timingFunction": "{transitions.easingFunctions.accelerate}"
+      }
+    },
+    "fade": {
+      "$value": {
+        "duration": "{transitions.durations.long}",
+        "delay": "{transitions.durations.instant}",
+        "timingFunction": "{transitions.easingFunctions.decelerate}"
+      }
+    },
+    "easingFunctions": {
+      "$type": "cubicBezier",
+      "accelerate": {
+        "$value": [0.5, 0, 1, 1]
+      },
+      "decelerate": {
+        "$value": [0, 0, 0.5, 1]
+      }
+    },
+    "durations": {
+      "$type": "duration",
+      "instant": {
+        "$value": "0ms"
+      },
+      "short": {
+        "$value": "100ms"
       },
       "medium": {
-        "value": "1",
-        "type": "fontSize",
-        "comment": "the medium size of the font"
+        "$value": "300ms"
+      },
+      "long": {
+        "$value": "600ms"
+      }
+    }
+  },
+  "borders": {
+    "$type": "border",
+    "heavy": {
+      "$value": {
+        "color": "{colors.black}",
+        "width": "{dimensions.1}",
+        "style": "{borders.styles.solid}"
+      }
+    },
+    "wireframe": {
+      "$value": {
+        "color": "{colors.orange.600}",
+        "width": "{dimensions.2}",
+        "style": "{borders.styles.dashed}"
+      }
+    },
+    "styles": {
+      "$type": "strokeStyle",
+      "solid": {
+        "$value": "solid"
+      },
+      "dashed": {
+        "$value": {
+          "dashArray": ["0.5rem", "0.25rem"],
+          "lineCap": "round"
+        }
+      }
+    }
+  },
+  "shadows": {
+    "$type": "shadow",
+    "sm": {
+      "$value": {
+        "color": "{colors.black}",
+        "offsetX": "{dimensions.0}",
+        "offsetY": "{dimensions.1}",
+        "blur": "{dimensions.3}"
+      }
+    },
+    "lg": {
+      "$value": {
+        "color": "{colors.black}",
+        "offsetX": "{dimensions.0}",
+        "offsetY": "{dimensions.2}",
+        "blur": "{dimensions.4}"
+      }
+    },
+    "multi": {
+      "$value": ["{shadows.sm}", "{shadows.lg}"]
+    }
+  },
+  "text": {
+    "fonts": {
+      "$type": "fontFamily",
+      "serif": {
+        "$value": "Times New Roman, serif"
+      },
+      "sans": {
+        "$value": "Open Sans, sans-serif"
+      }
+    },
+    "sizes": {
+      "$type": "fontSize",
+      "heading": {
+        "$value": "{dimensions.7}"
+      },
+      "body": {
+        "$value": "{dimensions.4}"
+      }
+    },
+    "weights": {
+      "$type": "fontWeight",
+      "light": {
+        "$value": "thin"
+      },
+      "regular": {
+        "$value": "regular"
+      },
+      "bold": {
+        "$value": "extra-bold"
+      }
+    },
+    "lineHeights": {
+      "$type": "number",
+      "normal": {
+        "$value": 1.2
       },
       "large": {
-        "value": "2",
-        "type": "fontSize",
-        "comment": "the large size of the font"
+        "$value": 1.8
+      }
+    },
+    "typography": {
+      "$type": "typography",
+      "heading": {
+        "$value": {
+          "fontFamily": "{text.fonts.sans}",
+          "fontWeight": "{text.weights.bold}",
+          "fontSize": "{text.sizes.heading}",
+          "lineHeight": "{text.lineHeights.large}"
+        }
       },
-      "base": {
-        "value": "{size.font.medium}",
-        "type": "fontSize",
-        "comment": "the base size of the font"
+      "body": {
+        "$value": {
+          "fontFamily": "{text.fonts.serif}",
+          "fontWeight": "{text.weights.regular}",
+          "fontSize": "{text.sizes.body}",
+          "lineHeight": "{text.lineHeights.normal}"
+        }
       }
     }
   }
@@ -98,7 +325,7 @@ npx style-dictionary build
             "packageName": "StyleDictionaryColor"
           },
           "filter": {
-            "type": "color"
+            "$type": "color"
           }
         },
         {
@@ -110,7 +337,7 @@ npx style-dictionary build
             "type": "float"
           },
           "filter": {
-            "type": "fontSize"
+            "$type": "dimension"
           }
         }
       ]
@@ -127,7 +354,7 @@ npx style-dictionary build
             "type": "StyleDictionaryColorName"
           },
           "filter": {
-            "type": "color"
+            "$type": "color"
           }
         },
         {
@@ -138,7 +365,7 @@ npx style-dictionary build
             "type": "StyleDictionaryColorName"
           },
           "filter": {
-            "type": "color"
+            "$type": "color"
           }
         },
         {
@@ -149,7 +376,7 @@ npx style-dictionary build
             "type": "float"
           },
           "filter": {
-            "type": "fontSize"
+            "$type": "dimension"
           }
         },
         {
@@ -160,7 +387,7 @@ npx style-dictionary build
             "type": "float"
           },
           "filter": {
-            "type": "fontSize"
+            "$type": "dimension"
           }
         }
       ]
@@ -206,7 +433,7 @@ npx style-dictionary build
             "className": "StyleDictionaryColor"
           },
           "filter": {
-            "type": "color"
+            "$type": "color"
           }
         },
         {
@@ -216,7 +443,7 @@ npx style-dictionary build
             "className": "StyleDictionarySize"
           },
           "filter": {
-            "type": "fontSize"
+            "$type": "dimension"
           }
         }
       ]
@@ -306,11 +533,11 @@ These files can be viewed in the live demo above by clicking the output dropdown
 
 Pretty nifty! This shows a few things happening:
 
-1. The build system does a deep merge of all the token JSON files defined in the `source` attribute of `config.json`. This allows you to split up the token JSON files however you want.
-2. The build system resolves references to other design tokens. `{dimensions.4}` gets resolved properly.
-3. The build system handles references to token values in other files as well as you can see in `tokens/object-values.json`, which references tokens from `tokens/colors.json` and `tokens/dimensions.json`.
+1. The `source` attribute of `config.json` points to `tokens.json`. You can also split tokens across multiple files; the build system merges them.
+2. The build system resolves references to other design tokens. In this example, `text.sizes.heading` uses `{dimensions.7}`.
+3. The [repository's basic starter](https://github.com/style-dictionary/style-dictionary/tree/main/examples/basic) shows the same DTCG format across multiple files: `tokens/object-values.json` references tokens in `tokens/colors.json` and `tokens/dimensions.json`.
 
-Now let's make a change and see how that affects things. Open up `tokens/colors.json` and change `"#000000"` to `"#111111"`. After you make that change, save the file and re-run the build command `style-dictionary build`. Open up the build files and take a look.
+Now let's make a change and see how that affects things. Open `tokens.json` and change the `colors.black` `$value` from `"#000000"` to `"#111111"`. Save the file, re-run `style-dictionary build`, and inspect the build files.
 
 **Huzzah!**
 
