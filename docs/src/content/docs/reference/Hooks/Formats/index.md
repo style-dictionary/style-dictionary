@@ -317,12 +317,13 @@ export default {
 
 ### Sorting with outputReferences
 
-When using `outputReferences: true`, reference-safe ordering is automatically applied first to ensure proper define-before-use ordering, and any user-provided sorters act as tie-breakers.
+When using `outputReferences: true`, your sorters are applied first. A final reference-safe pass then guarantees define-before-use ordering: a token that references other tokens is only output after the tokens it references. Everything else stays in your sorted order, so the pass moves as few tokens as possible.
 
-For example, if you have tokens where `a-token` references `d-token` and `b-token` references `c-token`, the reference-safe ordering ensures that base tokens (`c-token`, `d-token`) appear before referencing tokens (`a-token`, `b-token`). Then, your custom sorters (like `'name'`) are applied as tie-breakers:
+For example, sorting by `'name'` with tokens where `a-token` references `d-token` and `b-token` references `c-token`:
 
-- Base tokens that don't reference each other are sorted by name
-- Referencing tokens with the same "depth" in the reference chain, are also sorted by name
+- Name order alone would give `a-token, b-token, c-token, d-token`
+- `a-token` cannot be output before `d-token`, and `b-token` not before `c-token`
+- The output becomes `c-token, b-token, d-token, a-token`: each referencing token is output as soon as the tokens it depends on have been, and all other tokens keep their relative order
 
 The formats that support the `sort` option:
 

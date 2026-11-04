@@ -168,7 +168,7 @@ describe('formatHelpers', () => {
       expect(keys).to.eql(['b', 'c', 'a']);
     });
 
-    it('should keep reference-safe ordering first when outputReferences=true even if sort="name"', () => {
+    it('should apply reference-safe ordering as a final pass when outputReferences=true even if sort="name"', () => {
       // semantic is defined before base (insertion order), but semantic references base
       // name order is also "a-semantic" before "z-base"
       const tokensWithRef = {
@@ -200,12 +200,12 @@ describe('formatHelpers', () => {
         allTokens: convertTokenData(tokensWithRef, { output: 'array' }),
       };
 
-      // Test with outputReferences: true - reference-safe order takes precedence
+      // Test with outputReferences: true - the final reference-safe pass overrides name order where needed
       const resultWithRefs = formattedVariables({
         format: css,
         dictionary,
         outputReferences: true,
-        sort: 'name', // would normally put a-semantic first, but outputReferences requires reference-safe order
+        sort: 'name', // puts a-semantic first, but the final pass moves it after the token it references
       });
 
       // base definition must appear before the referencing token
