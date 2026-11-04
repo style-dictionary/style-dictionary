@@ -206,9 +206,10 @@ The differences in shuffling should not be "breaking" in practice, and generally
 
 A couple of our built-in formats (CSS, SCSS, LESS, and Stylus variables) support a `sort` option to control the ordering of tokens in the output. This is useful for organizing your tokens in a specific order.
 
-The `sort` option accepts one or more sorters: `Sorter | Sorter[]` where `Sorter = 'name' | (a: DesignToken, b: DesignToken) => number`.
+The `sort` option accepts one or more sorters: `Sorter | Sorter[]` where `Sorter = string | (a: DesignToken, b: DesignToken) => number`.
 
-- `'name'` - Sort tokens alphabetically by name
+- `'name'` - Sort tokens alphabetically by name (built-in)
+- The name of a registered [sort](/reference/hooks/sorts) - Reuse sorting logic registered via `registerSort` or `hooks.sorts` across formats
 - A custom comparator function `(a, b) => number` - Use your own sorting logic
 - An array of sorters `[Sorter, ...]` - Apply multiple sorters in sequence as tie-breakers
 
