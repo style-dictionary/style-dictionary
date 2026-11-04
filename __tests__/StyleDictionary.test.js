@@ -127,6 +127,31 @@ describe('StyleDictionary class', () => {
     expect(sd.tokens.test.$extensions).to.be.undefined;
   });
 
+  it('should not merge object and array token values together but rather override on collision', async () => {
+    const configs = [
+      {
+        source: [
+          '__tests__/__json_files/token-collision-composite-1.json',
+          '__tests__/__json_files/token-collision-composite-2.json',
+        ],
+      },
+      {
+        include: ['__tests__/__json_files/token-collision-composite-1.json'],
+        source: ['__tests__/__json_files/token-collision-composite-2.json'],
+      },
+    ];
+    for (const config of configs) {
+      const sd = new StyleDictionary(config);
+      await sd.hasInitialized;
+      expect(sd.tokens.shadow.value).to.eql([
+        { offsetX: '0px', offsetY: '2px', blur: '4px', spread: '0px', color: '#0000001a' },
+      ]);
+      expect(sd.tokens.typography.value).to.eql({ fontFamily: 'Helvetica', fontSize: '14px' });
+      // token groups are still merged
+      expect(sd.tokens.color.value).to.equal('#ffffff');
+    }
+  });
+
   describe('method signature', () => {
     it('should accept a string as a path to a JSON file', async () => {
       const StyleDictionaryExtended = new StyleDictionary(`${testConfigsFolder}/test.json`);

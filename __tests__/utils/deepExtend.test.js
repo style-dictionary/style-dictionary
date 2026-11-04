@@ -83,6 +83,31 @@ describe('utils', () => {
       expect(testDTCG).to.not.have.nested.property('foo.metadata');
     });
 
+    it("shouldn't merge object or array values when keys collide that should override rather than merge", () => {
+      const test = deepExtend(
+        [
+          {
+            group: {
+              foo: { $value: { fontSize: '16px', fontWeight: 700 } },
+              bar: { $value: [{ blur: '2px' }, { blur: '8px' }] },
+              qux: { $value: 'qux' },
+            },
+          },
+          {
+            group: {
+              foo: { $value: { fontSize: '14px' } },
+              bar: { $value: [{ blur: '4px' }] },
+            },
+          },
+        ],
+        { collision: function () {}, overrideKeys: ['$value'] },
+      );
+      expect(test.group.foo.$value).to.eql({ fontSize: '14px' });
+      expect(test.group.bar.$value).to.eql([{ blur: '4px' }]);
+      // groups are still merged
+      expect(test.group.qux.$value).to.equal('qux');
+    });
+
     describe('collision detection', () => {
       it('should call the collision function if a collision happens', () => {
         expect(() =>
@@ -114,6 +139,17 @@ describe('utils', () => {
           },
         });
         expect(test).to.have.nested.property('foo.bar', 'baz');
+      });
+
+      it('should call the collision function for the value when an object value overrides another', () => {
+        const keys = [];
+        deepExtend([{ foo: { $value: { a: 1, b: 2 } } }, { foo: { $value: { a: 3 } } }], {
+          collision: function (opts) {
+            keys.push(opts.key);
+          },
+          overrideKeys: ['$value'],
+        });
+        expect(keys).to.eql(['$value']);
       });
     });
   });
