@@ -1448,3 +1448,93 @@ class {
 }`;
 /* end snapshot formats all should match flutter/class.dart snapshot with fileHeaderTimestamp set */
 
+snapshots["formats all should match panda/preset snapshot"] = 
+`/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+import { definePreset } from "@pandacss/dev";
+
+export default definePreset({
+  theme: {
+    extend: {
+      tokens: {
+        color: {
+          red: {
+            value: "#FF0000",
+            description: "comment",
+            type: "color",
+          },
+        },
+      },
+    },
+  },
+});
+`;
+/* end snapshot formats all should match panda/preset snapshot */
+
+snapshots["formats all should match panda/preset snapshot with fileHeaderTimestamp set"] = 
+`/**
+ * Do not edit directly, this file was auto-generated.
+ * Generated on Sat, 01 Jan 2000 00:00:00 GMT
+ */
+
+import { definePreset } from "@pandacss/dev";
+
+export default definePreset({
+  theme: {
+    extend: {
+      tokens: {
+        color: {
+          red: {
+            value: "#FF0000",
+            description: "comment",
+            type: "color",
+          },
+        },
+      },
+    },
+  },
+});
+`;
+/* end snapshot formats all should match panda/preset snapshot with fileHeaderTimestamp set */
+
+snapshots["formats all should match panda/tokens snapshot"] = 
+`/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+import { defineTokens } from "@pandacss/dev";
+
+export const tokens = defineTokens({
+  color: {
+    red: {
+      value: "#FF0000",
+      description: "comment",
+      type: "color",
+    },
+  },
+});
+`;
+/* end snapshot formats all should match panda/tokens snapshot */
+
+snapshots["formats all should match panda/tokens snapshot with fileHeaderTimestamp set"] = 
+`/**
+ * Do not edit directly, this file was auto-generated.
+ * Generated on Sat, 01 Jan 2000 00:00:00 GMT
+ */
+
+import { defineTokens } from "@pandacss/dev";
+
+export const tokens = defineTokens({
+  color: {
+    red: {
+      value: "#FF0000",
+      description: "comment",
+      type: "color",
+    },
+  },
+});
+`;
+/* end snapshot formats all should match panda/tokens snapshot with fileHeaderTimestamp set */
+

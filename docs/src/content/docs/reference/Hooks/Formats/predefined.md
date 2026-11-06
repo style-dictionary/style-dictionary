@@ -1034,3 +1034,72 @@ class StyleDictionary {
 ```
 
 ---
+
+### panda/preset
+
+Creates a [Panda CSS](https://panda-css.com/) preset file wrapping tokens in `definePreset({ theme: { extend: { tokens } } })`.
+
+| Param                      | Type      | Description                                                                                                                                     |
+| -------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options.presetName`       | `string`  | Optional preset name (sets `name: "..."` in the preset object).                                                                                 |
+| `options.definePreset`     | `boolean` | Whether to import and wrap with `definePreset` from `@pandacss/dev`. Defaults to `true`. If `false`, exports a plain object.                    |
+| `options.extend`           | `boolean` | Whether to nest under `theme.extend`. Defaults to `true`. If `false`, outputs directly under `theme`.                                           |
+| `options.tokensType`       | `string`  | Key under which tokens are placed (`"tokens"` or `"semanticTokens"`). Defaults to `"tokens"`.                                                   |
+| `options.outputReferences` | `boolean` | Whether to preserve token references. References are normalized to Panda CSS curly brace syntax (e.g. `{colors.primary}`). Defaults to `false`. |
+
+Example:
+
+```javascript title="preset.js"
+import { definePreset } from '@pandacss/dev';
+
+export default definePreset({
+  theme: {
+    extend: {
+      tokens: {
+        colors: {
+          brand: {
+            primary: {
+              value: '#0055ff',
+              description: 'Primary brand color',
+              type: 'color',
+            },
+          },
+        },
+      },
+    },
+  },
+});
+```
+
+---
+
+### panda/tokens
+
+Creates a Panda CSS token definitions file wrapping tokens in `defineTokens`.
+
+| Param                      | Type      | Description                                                                                                                         |
+| -------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `options.defineTokens`     | `boolean` | Whether to import and wrap with `defineTokens` from `@pandacss/dev`. Defaults to `true`. If `false`, exports a plain tokens object. |
+| `options.namedExport`      | `string`  | Name of the exported variable. Defaults to `"tokens"`.                                                                              |
+| `options.defaultExport`    | `boolean` | Whether to export as `export default` instead of a named export. Defaults to `false`.                                               |
+| `options.outputReferences` | `boolean` | Whether to preserve token references. Normalized to Panda CSS curly brace syntax (e.g. `{colors.primary}`). Defaults to `false`.    |
+
+Example:
+
+```javascript title="tokens.js"
+import { defineTokens } from '@pandacss/dev';
+
+export const tokens = defineTokens({
+  colors: {
+    brand: {
+      primary: {
+        value: '#0055ff',
+        description: 'Primary brand color',
+        type: 'color',
+      },
+    },
+  },
+});
+```
+
+---

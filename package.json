@@ -151,6 +151,7 @@
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "@esm-bundle/chai-as-promised": "^7.1.1",
+    "@pandacss/dev": "^2.4.0",
     "@rollup/browser": "^4.13.1",
     "@rollup/plugin-virtual": "^3.0.2",
     "@shoelace-style/shoelace": "^2.15.0",
