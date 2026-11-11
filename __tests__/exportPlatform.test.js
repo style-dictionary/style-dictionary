@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { stubMethod, restore } from 'hanbi';
 import StyleDictionary from 'style-dictionary';
-import { usesReferences } from 'style-dictionary/utils';
+import { usesReferences, StopTransformError } from 'style-dictionary/utils';
 import { fileToJSON, cleanConsoleOutput } from './__helpers.js';
 import {
   logWarningLevels,
@@ -23,6 +23,7 @@ const {
   shadowCssShorthand,
   cubicBezierCss,
   transitionCssShorthand,
+  timeSeconds,
 } = transforms;
 const { value: transformTypeValue } = transformTypes;
 
@@ -43,6 +44,16 @@ describe('exportPlatform', () => {
   it('should throw if not given a proper platform', async () => {
     await expect(styleDictionary.exportPlatform('foo')).to.eventually.be.rejectedWith(
       'Please supply a valid platform',
+    );
+  });
+
+  it('should throw with the token path if a token has an empty name', async () => {
+    const sd = new StyleDictionary({
+      tokens: { color: { brand: { '': { value: '#ff0000', type: 'color' } } } },
+      platforms: { css: { transformGroup: css } },
+    });
+    await expect(sd.exportPlatform('css')).to.eventually.be.rejectedWith(
+      'Token name must be a string, received "" for token "color.brand."',
     );
   });
 
@@ -179,6 +190,50 @@ describe('exportPlatform', () => {
       const dictionary = await StyleDictionaryExtended.exportPlatform('test');
       expect(dictionary.b.value).to.equal('#000');
     });
+  });
+
+  it('should skip the remaining transforms for a token when a transform throws a StopTransformError', async () => {
+    const logStub = stubMethod(console, 'log');
+    const sd = new StyleDictionary({
+      hooks: {
+        transforms: {
+          'dimension/validate': {
+            type: transformTypeValue,
+            filter: (token) => token.type === 'dimension',
+            transform: (token) => {
+              if (typeof token.value === 'number') {
+                throw new StopTransformError('Dimension tokens need a unit');
+              }
+              return token.value;
+            },
+          },
+          'dimension/rem': {
+            type: transformTypeValue,
+            filter: (token) => token.type === 'dimension',
+            transform: (token) => `${parseFloat(token.value) / 16}rem`,
+          },
+        },
+      },
+      tokens: {
+        spacing: {
+          valid: { value: '16px', type: 'dimension' },
+          invalid: { value: 16, type: 'dimension' },
+        },
+      },
+      platforms: {
+        test: {
+          transforms: ['dimension/validate', 'dimension/rem'],
+        },
+      },
+    });
+    const dictionary = await sd.exportPlatform('test');
+    expect(dictionary.spacing.valid.value).to.equal('1rem');
+    expect(dictionary.spacing.invalid.value).to.equal(16);
+    expect(cleanConsoleOutput(logStub.firstCall.args[0])).to.equal(`
+Some token transformations (1) could not be applied correctly.
+Use log.verbosity "verbose" or use CLI option --verbose for more details.
+Refer to: https://styledictionary.com/reference/logging/
+`);
   });
 
   it('should not have mutated the original tokens', async () => {
@@ -644,6 +699,61 @@ Use log.verbosity "verbose" or use CLI option --verbose for more details.
 
         const transformed = await sd.exportPlatform('css');
         expect(transformed.foo.value).to.equal('200ms cubic-bezier(0.5, 0, 1, 1) 0ms');
+      });
+
+      it('should properly transform transition tokens that reference duration tokens', async () => {
+        const sd = new StyleDictionary({
+          tokens: {
+            fast: {
+              $value: { value: 200, unit: 'ms' },
+              $type: 'duration',
+            },
+            none: {
+              $value: { value: 0, unit: 'ms' },
+              $type: 'duration',
+            },
+            foo: {
+              $value: {
+                duration: '{fast}',
+                delay: '{none}',
+                timingFunction: 'ease-in-out',
+              },
+              $type: 'transition',
+            },
+          },
+          platforms: {
+            css: {
+              transforms: [timeSeconds, cubicBezierCss, transitionCssShorthand],
+            },
+          },
+        });
+
+        const transformed = await sd.exportPlatform('css');
+        expect(transformed.fast.$value).to.equal('0.2s');
+        expect(transformed.foo.$value).to.equal('0.2s ease-in-out 0s');
+      });
+
+      it('should properly transform duration tokens that reference other duration tokens', async () => {
+        const sd = new StyleDictionary({
+          tokens: {
+            base: {
+              $value: { value: 200, unit: 'ms' },
+              $type: 'duration',
+            },
+            alias: {
+              $value: '{base}',
+              $type: 'duration',
+            },
+          },
+          platforms: {
+            css: {
+              transforms: [timeSeconds],
+            },
+          },
+        });
+
+        const transformed = await sd.exportPlatform('css');
+        expect(transformed.alias.$value).to.equal('0.2s');
       });
     });
 

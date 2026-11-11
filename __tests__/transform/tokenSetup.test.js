@@ -13,6 +13,24 @@ describe('transform', () => {
       expect(tokenSetup.bind(null, {}, null, [])).to.throw('Token name must be a string');
     });
 
+    it('should include the token path in the name error', () => {
+      expect(tokenSetup.bind(null, { value: '#f00' }, '', ['color', 'brand', ''])).to.throw(
+        'Token name must be a string, received "" for token "color.brand."',
+      );
+    });
+
+    it('should include the token filePath in the name error if it has one', () => {
+      expect(
+        tokenSetup.bind(null, { value: '#f00', filePath: 'tokens/color.json' }, '', [
+          'color',
+          'brand',
+          '',
+        ]),
+      ).to.throw(
+        'Token name must be a string, received "" for token "color.brand." (tokens/color.json)',
+      );
+    });
+
     it('should error path is not an array', () => {
       expect(tokenSetup.bind(null, {}, 'name', null)).to.throw('Token path must be an array');
     });

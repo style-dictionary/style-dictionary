@@ -117,6 +117,16 @@ describe('StyleDictionary class', () => {
     expect(sd.tokens.test.$extensions).to.be.undefined;
   });
 
+  it('should not merge tokens together but rather override when a source token overrides an include token', async () => {
+    const sd = new StyleDictionary({
+      include: ['__tests__/__json_files/token-collision-1.json'],
+      source: ['__tests__/__json_files/token-collision-2.json'],
+    });
+    await sd.hasInitialized;
+    expect(sd.tokens.test.value).to.equal('#ff0000');
+    expect(sd.tokens.test.$extensions).to.be.undefined;
+  });
+
   describe('method signature', () => {
     it('should accept a string as a path to a JSON file', async () => {
       const StyleDictionaryExtended = new StyleDictionary(`${testConfigsFolder}/test.json`);

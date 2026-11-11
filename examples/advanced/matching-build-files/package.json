@@ -17,6 +17,6 @@
   "author": "Kelly Harrop <kn.harrop@gmail.com>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "style-dictionary": "^4.0.0"
+    "style-dictionary": "^5.8.0"
   }
 }

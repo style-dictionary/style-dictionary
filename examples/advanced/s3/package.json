@@ -16,6 +16,6 @@
   "devDependencies": {
     "aws-sdk": "^2.7.21",
     "fs-extra": "^1.0.0",
-    "style-dictionary": "^4.0.0"
+    "style-dictionary": "^5.8.0"
   }
 }

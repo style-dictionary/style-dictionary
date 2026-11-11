@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "eslint-config-react-app": "^7.0.1",
-    "style-dictionary": "^4.0.0"
+    "style-dictionary": "^5.8.0"
   },
   "resolutions": {
     "immer": "8.0.1",

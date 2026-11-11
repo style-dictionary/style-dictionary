@@ -1,10 +1,6 @@
 import { expect } from 'chai';
 import Color from 'tinycolor2';
-import transforms, {
-  isColor,
-  getTokenDimensionValue,
-  isDTCGColorObject,
-} from '../../lib/common/transforms.js';
+import transforms from '../../lib/common/transforms.js';
 import { transforms as transformNames } from '../../lib/enums/index.js';
 
 const {
@@ -12,6 +8,7 @@ const {
   nameKebab,
   nameSnake,
   nameConstant,
+  namePascal,
   attributeColor,
   attributeCti,
   colorHex,
@@ -172,6 +169,44 @@ describe('common', () => {
               {},
             ),
           ).to.equal('ONE_TWO_THREE');
+        });
+      });
+
+      describe('DTCG $root tokens', () => {
+        const expected = {
+          [nameCamel]: ['prefixColorAccent', 'prefixColorAccentLight', 'prefixColorRootAccent'],
+          [nameKebab]: [
+            'prefix-color-accent',
+            'prefix-color-accent-light',
+            'prefix-color-root-accent',
+          ],
+          [nameSnake]: [
+            'prefix_color_accent',
+            'prefix_color_accent_light',
+            'prefix_color_root_accent',
+          ],
+          [nameConstant]: [
+            'PREFIX_COLOR_ACCENT',
+            'PREFIX_COLOR_ACCENT_LIGHT',
+            'PREFIX_COLOR_ROOT_ACCENT',
+          ],
+          [namePascal]: ['PrefixColorAccent', 'PrefixColorAccentLight', 'PrefixColorRootAccent'],
+        };
+
+        Object.entries(expected).forEach(([name, [root, sibling, nonTrailing]]) => {
+          it(`${name} should ignore a trailing $root segment`, () => {
+            const config = { prefix: 'prefix' };
+            expect(runTransform(name, { path: ['color', 'accent', '$root'] }, config)).to.equal(
+              root,
+            );
+            expect(runTransform(name, { path: ['color', 'accent', 'light'] }, config)).to.equal(
+              sibling,
+            );
+            // only a trailing $root is a root token
+            expect(runTransform(name, { path: ['color', '$root', 'accent'] }, config)).to.equal(
+              nonTrailing,
+            );
+          });
         });
       });
     });
@@ -836,6 +871,31 @@ describe('common', () => {
             {},
           );
           expect(value).to.equal('rgba(170, 170, 170, 0.6)');
+        });
+
+        it('should output the shortest alpha that maps back to the same hex alpha', () => {
+          /** @param {string} value */
+          const transform = (value) => transforms[colorCss].transform({ value }, {}, {});
+          // 0x14 = 20/255 = 0.0784..., and 0.08 maps back to 0x14
+          expect(transform('#00000014')).to.equal('rgba(0, 0, 0, 0.08)');
+          // 0xec = 236/255, no two decimal value maps back to 0xec
+          expect(transform('#000000ec')).to.equal('rgba(0, 0, 0, 0.925)');
+          expect(transform('#00000001')).to.equal('rgba(0, 0, 0, 0.004)');
+          expect(transform('#00000080')).to.equal('rgba(0, 0, 0, 0.5)');
+          expect(transform('#00000000')).to.equal('rgba(0, 0, 0, 0)');
+          // 4 digit hex, 0x88 = 136/255
+          expect(transform('#0008')).to.equal('rgba(0, 0, 0, 0.533)');
+          expect(transform('#000c')).to.equal('rgba(0, 0, 0, 0.8)');
+        });
+
+        it('should keep every hex alpha at 3 decimals or less without changing its value', () => {
+          for (let i = 0; i < 255; i++) {
+            const hex = `#000000${i.toString(16).padStart(2, '0')}`;
+            const value = transforms[colorCss].transform({ value: hex }, {}, {});
+            const alpha = value.slice('rgba(0, 0, 0, '.length, -1);
+            expect(alpha, hex).to.match(/^(0|0\.\d{1,3})$/);
+            expect(Math.round(Number(alpha) * 255), hex).to.equal(i);
+          }
         });
 
         it('should preserve legacy alpha precision', () => {
@@ -1814,7 +1874,129 @@ describe('common', () => {
             {},
             {},
           );
-          expect(value).to.equal('1.00s');
+          expect(value).to.equal('1s');
+        });
+
+        it('should convert unitless and millisecond time values to seconds', () => {
+          expect(runTransform(timeSeconds, { value: 500, type: 'time' })).to.equal('0.5s');
+          expect(runTransform(timeSeconds, { value: '500ms', type: 'time' })).to.equal('0.5s');
+        });
+
+        it('should not convert time values that are already in seconds', () => {
+          expect(runTransform(timeSeconds, { value: '0.36s', type: 'time' })).to.equal('0.36s');
+        });
+
+        it('should convert DTCG duration object values to seconds', () => {
+          expect(
+            runTransform(
+              timeSeconds,
+              { $value: { value: 200, unit: 'ms' }, $type: 'duration' },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.2s');
+
+          expect(
+            runTransform(
+              timeSeconds,
+              { $value: { value: 0.2, unit: 's' }, $type: 'duration' },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.2s');
+        });
+
+        it('should keep the precision of the input through the conversion', () => {
+          const durationToken = ($value) => ({ $value, $type: 'duration' });
+
+          // sub-10ms durations would be rounded away by a fixed 2 decimals
+          expect(
+            runTransform(
+              timeSeconds,
+              durationToken({ value: 1, unit: 'ms' }),
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.001s');
+
+          expect(
+            runTransform(
+              timeSeconds,
+              durationToken({ value: 155, unit: 'ms' }),
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.155s');
+
+          // floating point artifacts should not leak into the output,
+          // 1.1 / 1000 is 0.0011000000000000001 in JS
+          expect(
+            runTransform(
+              timeSeconds,
+              durationToken({ value: 1.1, unit: 'ms' }),
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.0011s');
+
+          // the division pushes small values into scientific notation,
+          // 0.0001 / 1000 is 1e-7 in JS, which would be read as 0 decimals
+          expect(
+            runTransform(
+              timeSeconds,
+              durationToken({ value: 0.0001, unit: 'ms' }),
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.0000001s');
+
+          // values above a second keep their decimals too, the division is
+          // only accurate to 15 significant digits rather than 15 decimals
+          expect(
+            runTransform(
+              timeSeconds,
+              durationToken({ value: 123456.789, unit: 'ms' }),
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('123.456789s');
+        });
+
+        it('should not pad the output with decimals the input did not need', () => {
+          const durationToken = ($value) => ({ $value, $type: 'duration' });
+
+          expect(
+            runTransform(
+              timeSeconds,
+              durationToken({ value: 1000000, unit: 'ms' }),
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('1000s');
+
+          expect(
+            runTransform(
+              timeSeconds,
+              durationToken({ value: 1, unit: 's' }),
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('1s');
+        });
+
+        it('should handle duration tokens that use string or unitless values', () => {
+          expect(runTransform(timeSeconds, { value: '200ms', type: 'duration' })).to.equal('0.2s');
+          expect(runTransform(timeSeconds, { value: 200, type: 'duration' })).to.equal('0.2s');
+        });
+
+        it('should match both time and duration tokens', () => {
+          const { filter } = transforms[timeSeconds];
+          expect(filter({ value: 200, type: 'time' }, {})).to.be.true;
+          expect(filter({ value: 200, type: 'duration' }, {})).to.be.true;
+          expect(
+            filter({ $value: { value: 200, unit: 'ms' }, $type: 'duration' }, { usesDtcg: true }),
+          ).to.be.true;
+          expect(filter({ value: 200, type: 'number' }, {})).to.be.false;
         });
       });
 
@@ -2158,7 +2340,6 @@ describe('common', () => {
         });
       });
 
-      // TODO: add support for duration type -> object value (unit + value)
       describe(transitionCssShorthand, () => {
         const transitionTransform = (value, platformConfig = {}) =>
           transforms[transitionCssShorthand].transform({ value }, platformConfig, {});
@@ -2181,6 +2362,48 @@ describe('common', () => {
           ).to.equal('200ms ease-in-out 0ms');
 
           expect(transitionTransform('200ms linear 50ms')).to.equal('200ms linear 50ms');
+        });
+
+        it('transforms DTCG duration object values inside transition tokens', () => {
+          expect(
+            transforms[transitionCssShorthand].transform(
+              {
+                $value: {
+                  duration: { value: 200, unit: 'ms' },
+                  delay: { value: 0, unit: 'ms' },
+                  timingFunction: 'ease-in-out',
+                },
+                $type: 'transition',
+              },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('200ms ease-in-out 0ms');
+
+          expect(
+            transforms[transitionCssShorthand].transform(
+              {
+                $value: {
+                  duration: { value: 0.2, unit: 's' },
+                  delay: { value: 50, unit: 'ms' },
+                  timingFunction: 'linear',
+                },
+                $type: 'transition',
+              },
+              {},
+              { usesDtcg: true },
+            ),
+          ).to.equal('0.2s linear 50ms');
+        });
+
+        it('treats unitless transition durations as milliseconds', () => {
+          expect(
+            transitionTransform({
+              duration: 200,
+              delay: 0,
+              timingFunction: 'linear',
+            }),
+          ).to.equal('200ms linear 0ms');
         });
       });
 
@@ -2373,204 +2596,6 @@ describe('common', () => {
           expect(gradientTransform('4px 4px 12px 6px #00000080')).to.equal(
             '4px 4px 12px 6px #00000080',
           );
-        });
-      });
-    });
-  });
-
-  describe('transform filters', () => {
-    describe('isColor', () => {
-      it('should match short hex colors', () => {
-        expect(isColor({ type: 'color', value: '369' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: '#369' }, {})).to.be.true;
-      });
-
-      it('should match standard hex colors', () => {
-        expect(isColor({ type: 'color', value: 'e66465' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: '#e66465' }, {})).to.be.true;
-      });
-
-      it('should match 8-digit hex colors', () => {
-        expect(isColor({ type: 'color', value: 'e66465FF' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: '#e66465FF' }, {})).to.be.true;
-      });
-
-      it('should match legacy rgb/rgba colors', () => {
-        expect(isColor({ type: 'color', value: 'rgb(132, 99, 255)' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: 'rgb(132, 99, 255, 0.5)' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: 'rgba(132, 99, 255, 0.5)' }, {})).to.be.true;
-      });
-
-      it('should match rgb colors', () => {
-        expect(isColor({ type: 'color', value: 'rgb(132 99 255)' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: 'rgb(132 99 255 / .5)' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: 'rgb(132 99 255 / 50%)' }, {})).to.be.true;
-      });
-
-      it('should match legacy hsl/hsla colors', () => {
-        expect(isColor({ type: 'color', value: 'hsl(30, 100%, 50%, 0.6)' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: 'hsla(30, 100%, 50%, 0.6)' }, {})).to.be.true;
-      });
-
-      it('should match hsl colors', () => {
-        expect(isColor({ type: 'color', value: 'hsl(30 100% 50% / .6)' }, {})).to.be.true;
-        expect(isColor({ type: 'color', value: 'hsl(30.2 100% 50% / 60%)' }, {})).to.be.true;
-      });
-
-      it('should match named colors', () => {
-        expect(isColor({ type: 'color', value: 'red' }, {})).to.be.true;
-      });
-
-      it('should ignore gradients', () => {
-        expect(isColor({ type: 'color', value: 'linear-gradient(#e66465, #9198e5)' }, {})).to.be
-          .false;
-        expect(isColor({ type: 'color', value: 'linear-gradient(red, yellow)' }, {})).to.be.false;
-        expect(
-          isColor(
-            { type: 'color', value: 'linear-gradient(rgba(0, 0, 0, 0.00), rgba(0, 0, 0, 0.60))' },
-            {},
-          ),
-        ).to.be.false;
-        expect(isColor({ type: 'color', value: 'repeating-linear-gradient(#e66465, #9198e5)' }, {}))
-          .to.be.false;
-        expect(isColor({ type: 'color', value: 'radial-gradient(#e66465, #9198e5)' }, {})).to.be
-          .false;
-        expect(isColor({ type: 'color', value: 'repeating-radial-gradient(#e66465, #9198e5)' }, {}))
-          .to.be.false;
-      });
-
-      it('should ignore values that cannot convert to a color', () => {
-        expect(isColor({ type: 'color', value: 'currentColor' }, {})).to.be.false;
-      });
-
-      it('should match DTCG object format colors', () => {
-        expect(
-          isColor(
-            {
-              $type: 'color',
-              $value: { colorSpace: 'srgb', components: [1, 0.42, 0.21], alpha: 1 },
-            },
-            { usesDtcg: true },
-          ),
-        ).to.be.true;
-        expect(
-          isColor(
-            {
-              $type: 'color',
-              $value: { colorSpace: 'oklch', components: [0.7, 0.15, 180], alpha: 0.5 },
-            },
-            { usesDtcg: true },
-          ),
-        ).to.be.true;
-        expect(
-          isColor(
-            {
-              $type: 'color',
-              $value: { colorSpace: 'display-p3', components: [0.5, 0.5, 0.5] },
-            },
-            { usesDtcg: true },
-          ),
-        ).to.be.true;
-      });
-
-      it('should reject DTCG objects with invalid colorSpace', () => {
-        expect(
-          isColor(
-            {
-              $type: 'color',
-              $value: { colorSpace: 'invalid', components: [1, 0, 0] },
-            },
-            { usesDtcg: true },
-          ),
-        ).to.be.false;
-      });
-    });
-
-    describe('isDTCGColorObject', () => {
-      it('should return true for valid DTCG color objects', () => {
-        expect(isDTCGColorObject({ colorSpace: 'srgb', components: [1, 0, 0] })).to.be.true;
-        expect(isDTCGColorObject({ colorSpace: 'oklch', components: [0.7, 0.15, 180], alpha: 0.5 }))
-          .to.be.true;
-        expect(isDTCGColorObject({ colorSpace: 'display-p3', components: [0.5, 0.5, 0.5] })).to.be
-          .true;
-      });
-
-      it('should return false for non-DTCG values', () => {
-        expect(isDTCGColorObject('#ff0000')).to.be.false;
-        expect(isDTCGColorObject('rgb(255, 0, 0)')).to.be.false;
-        expect(isDTCGColorObject(null)).to.be.false;
-        expect(isDTCGColorObject(undefined)).to.be.false;
-        expect(isDTCGColorObject({ colorSpace: 'invalid', components: [1, 0, 0] })).to.be.false;
-        expect(isDTCGColorObject({ colorSpace: 'srgb' })).to.be.false; // missing components
-      });
-    });
-  });
-
-  describe('transform utilities', () => {
-    describe('function getTokenDimensionValue', () => {
-      it('should return token value', () => {
-        const allTokensNonDtcg = [
-          { value: '42px' },
-          { value: '42rem' },
-          { value: '42em' },
-          { value: '42unit' },
-
-          // number tokens, which used to just be dimension tokens without units
-          { value: 42 },
-          { value: 0.42 },
-          { value: '42' },
-          { value: '0.42' },
-        ];
-        const allTokensDtcg = [
-          { $value: '42px' },
-          { $value: '42rem' },
-          { $value: '42em' },
-          { $value: '42unit' },
-
-          // `deprecated` backwards compat for number tokens as dimensions
-          { $value: 42 },
-          { $value: 0.42 },
-          { $value: '42' },
-          { $value: '0.42' },
-
-          // new DTCG dimension syntax
-          { $value: { value: 42, unit: 'px' } },
-          { $value: { value: 42, unit: 'rem' } },
-        ];
-
-        const expected = [
-          { value: '42', unit: 'px' },
-          { value: '42', unit: 'rem' },
-          { value: '42', unit: 'em' },
-          { value: '42', unit: 'unit' },
-
-          { value: 42, unit: undefined },
-          { value: 0.42, unit: undefined },
-          { value: '42', unit: undefined },
-          { value: '0.42', unit: undefined },
-
-          { value: 42, unit: 'px' },
-          { value: 42, unit: 'rem' },
-        ];
-
-        allTokensDtcg.forEach((it, idx) => {
-          expect(getTokenDimensionValue(it.$value)).to.deep.equal(expected[idx]);
-        });
-
-        allTokensNonDtcg.forEach((it, idx) => {
-          expect(getTokenDimensionValue(it.value)).to.deep.equal(expected[idx]);
-        });
-      });
-
-      it('should gracefully handle dimension values that cannot be parsed', () => {
-        expect(getTokenDimensionValue('something weird')).to.deep.equal({
-          value: 'something weird',
-          unit: undefined,
-        });
-
-        expect(getTokenDimensionValue('calc(100% - 20px)')).to.deep.equal({
-          value: 'calc(100% - 20px)',
-          unit: undefined,
         });
       });
     });

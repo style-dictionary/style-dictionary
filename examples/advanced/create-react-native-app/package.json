@@ -29,7 +29,7 @@
     "eslint-config-react-app": "^7.0.1",
     "jest": "~25.2.6",
     "react-test-renderer": "~16.13.1",
-    "style-dictionary": "^4.0.0"
+    "style-dictionary": "^5.8.0"
   },
   "jest": {
     "preset": "react-native"
