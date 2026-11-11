@@ -31,6 +31,33 @@ describe('utils', () => {
             `tries to reference d, which is not defined.`,
           );
         });
+
+        it('should resolve references inside object and array values', () => {
+          const data = {
+            color: { value: '#000' },
+            size: { value: '2px' },
+            shadow: {
+              value: [
+                { color: '{color}', offsetX: 0, blur: '{size}', spread: null },
+                { color: 'red', offsetX: 1, blur: 'calc({size} * 2)', spread: null },
+              ],
+            },
+          };
+          const expected = [
+            { color: '#000', offsetX: 0, blur: '2px', spread: null },
+            { color: 'red', offsetX: 1, blur: 'calc(2px * 2)', spread: null },
+          ];
+          expect(publicResolveReferences(data.shadow.value, data)).to.eql(expected);
+          expect(publicResolveReferences(data.shadow.value[0], data)).to.eql(expected[0]);
+
+          const asMap = convertTokenData(data, { output: 'map' });
+          expect(publicResolveReferences(data.shadow.value, asMap)).to.eql(expected);
+
+          const dtcg = { color: { $value: '#000' } };
+          expect(publicResolveReferences({ color: '{color}' }, dtcg, { usesDtcg: true })).to.eql({
+            color: '#000',
+          });
+        });
       });
 
       it('should do simple references', () => {

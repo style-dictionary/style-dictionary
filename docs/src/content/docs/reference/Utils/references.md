@@ -19,7 +19,7 @@ usesReferences('5px'); // false
 
 ## resolveReferences
 
-Takes a token value string value and resolves any reference inside it
+Takes a token value and resolves any reference inside it. Object and array values (e.g. shadow or typography tokens) are resolved property by property.
 
 ```javascript title="build-tokens.js"
 import StyleDictionary from 'style-dictionary';
@@ -47,6 +47,7 @@ const sd = new StyleDictionary({
 resolveReferences(sd.tokens.border.value, sd.tokens); // "solid 2px #000"
 resolveReferences('solid {spacing.2} {colors.black}', sd.tokens); // alternative way, yet identical to line above -> "solid 2px #000"
 resolveReferences('solid {spacing.2} {colors.black}', sd.tokens, { usesDtcg: true }); // Assumes DTCG spec format, with $ prefix ($value, $type)
+resolveReferences({ color: '{colors.black}', offsetX: '{spacing.2}' }, sd.tokens); // { color: '#000', offsetX: '2px' }
 ```
 
 You can pass a third `options` argument where you can pass some configuration options for how references are resolved:
