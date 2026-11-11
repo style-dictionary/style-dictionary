@@ -15,7 +15,7 @@
     "chai": "^6.2.2",
     "mocha": "^11.0.0",
     "storybook": "^10.6.1",
-    "style-dictionary": "^5.8.0",
+    "style-dictionary": "^5.0.0",
     "vite": "^7.0.0"
   }
 }
