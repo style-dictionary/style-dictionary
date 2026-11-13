@@ -1448,3 +1448,22 @@ snapshots["formats all should match sketch/palette snapshot with fileHeaderTimes
 `;
 /* end snapshot formats all should match sketch/palette snapshot with fileHeaderTimestamp set */
 
+snapshots["formats all should match typst/variables snapshot"] = 
+`
+// Do not edit directly, this file was auto-generated.
+
+// comment
+#let color_red = rgb("#ff0000")
+`;
+/* end snapshot formats all should match typst/variables snapshot */
+
+snapshots["formats all should match typst/variables snapshot with fileHeaderTimestamp set"] = 
+`
+// Do not edit directly, this file was auto-generated.
+// Generated on Sat, 01 Jan 2000 00:00:00 GMT
+
+// comment
+#let color_red = rgb("#ff0000")
+`;
+/* end snapshot formats all should match typst/variables snapshot with fileHeaderTimestamp set */
+
