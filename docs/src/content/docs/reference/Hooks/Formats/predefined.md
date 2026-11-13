@@ -1034,3 +1034,26 @@ class StyleDictionary {
 ```
 
 ---
+
+### libreoffice/palette
+
+Creates a LibreOffice color palette (`.soc`) of the color tokens.
+Copy the file into the `config` folder of your LibreOffice user profile (for example `%APPDATA%\LibreOffice\4\user\config` on Windows or `~/.config/libreoffice/4/user/config` on Linux) and restart LibreOffice.
+The palette then appears, named after the file, in the palette list of every color picker in Writer, Calc, Impress and Draw.
+Any color value Style Dictionary can read works, including DTCG color objects, so no color transform is needed.
+LibreOffice palettes have no alpha channel: a translucent color is written without its alpha.
+
+Example:
+
+```xml title="brand.soc"
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Do not edit directly, this file was auto-generated.
+-->
+<ooo:color-table xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ooo="http://openoffice.org/2004/office">
+  <draw:color draw:name="color-red" draw:color="#ff0000"/>
+  <draw:color draw:name="color-blue" draw:color="#0080ff"/>
+</ooo:color-table>
+```
+
+---

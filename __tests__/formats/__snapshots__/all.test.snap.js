@@ -1448,3 +1448,26 @@ snapshots["formats all should match sketch/palette snapshot with fileHeaderTimes
 `;
 /* end snapshot formats all should match sketch/palette snapshot with fileHeaderTimestamp set */
 
+snapshots["formats all should match libreoffice/palette snapshot"] = 
+`<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Do not edit directly, this file was auto-generated.
+-->
+<ooo:color-table xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ooo="http://openoffice.org/2004/office">
+  <draw:color draw:name="color_red" draw:color="#ff0000"/>
+</ooo:color-table>
+`;
+/* end snapshot formats all should match libreoffice/palette snapshot */
+
+snapshots["formats all should match libreoffice/palette snapshot with fileHeaderTimestamp set"] = 
+`<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Do not edit directly, this file was auto-generated.
+  Generated on Sat, 01 Jan 2000 00:00:00 GMT
+-->
+<ooo:color-table xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg" xmlns:ooo="http://openoffice.org/2004/office">
+  <draw:color draw:name="color_red" draw:color="#ff0000"/>
+</ooo:color-table>
+`;
+/* end snapshot formats all should match libreoffice/palette snapshot with fileHeaderTimestamp set */
+
