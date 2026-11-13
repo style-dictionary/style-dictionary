@@ -1012,7 +1012,7 @@ Example:
 
 ### gimp/palette
 
-Creates a GIMP palette (`.gpl`) of the color tokens. GIMP, Inkscape, Krita and other apps that read GIMP palettes can load it, so designers get the same colors in their color pickers.
+Creates a GIMP palette (`.gpl`) of the color tokens. GIMP, Inkscape, Krita, LibreOffice and other apps that read GIMP palettes can load it, so designers get the same colors in their color pickers.
 Any color value Style Dictionary can read works, including DTCG color objects, so no color transform is needed.
 GIMP palettes have no alpha channel: a translucent color is written without its alpha.
 
