@@ -1448,3 +1448,24 @@ snapshots["formats all should match sketch/palette snapshot with fileHeaderTimes
 `;
 /* end snapshot formats all should match sketch/palette snapshot with fileHeaderTimestamp set */
 
+snapshots["formats all should match gimp/palette snapshot"] = 
+`GIMP Palette
+Name: output
+#
+# Do not edit directly, this file was auto-generated.
+#
+255   0   0	color_red
+`;
+/* end snapshot formats all should match gimp/palette snapshot */
+
+snapshots["formats all should match gimp/palette snapshot with fileHeaderTimestamp set"] = 
+`GIMP Palette
+Name: output
+#
+# Do not edit directly, this file was auto-generated.
+# Generated on Sat, 01 Jan 2000 00:00:00 GMT
+#
+255   0   0	color_red
+`;
+/* end snapshot formats all should match gimp/palette snapshot with fileHeaderTimestamp set */
+
