@@ -684,6 +684,8 @@ Compatible primitive coercions are preserved when you override resource types: `
 
 When `outputReferences` is enabled, token aliases are emitted as XAML resource aliases when the original token value is a single reference. Alias generation respects `resourceReferenceType` and `referenceKeyAttribute`, which lets the same formatter support MAUI defaults and WPF-style `ResourceKey` aliases.
 
+WPF only supports `StaticResource` aliases in a `ResourceDictionary` collection. The formatter rejects built-in WPF `DynamicResource` alias emission: dynamic resources must target dependency properties, such as a brush's `Color`. For dynamic brush references, set `outputReferences: false` (the default) to emit resolved token values. A `resourceFactory` may instead provide its own valid alias strategy.
+
 For MAUI-friendly output, it is recommended to use PascalCase names and transform sizes into unitless numeric values. For example:
 
 ```js title="config.js"
@@ -736,7 +738,7 @@ export default {
             preset: 'wpf',
             outputColorBrushes: true,
             outputReferences: true,
-            resourceReferenceType: 'DynamicResource',
+            resourceReferenceType: 'StaticResource',
           },
         },
       ],
@@ -791,12 +793,14 @@ WPF example with aliases:
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Color x:Key="ColorBase">#FF0B8599</Color>
-  <DynamicResource x:Key="ColorAlias" ResourceKey="ColorBase" />
-  <SolidColorBrush x:Key="ColorBaseBrush" Color="{DynamicResource ColorBase}" />
+  <StaticResource x:Key="ColorAlias" ResourceKey="ColorBase" />
+  <SolidColorBrush x:Key="ColorBaseBrush" Color="{StaticResource ColorBase}" />
 </ResourceDictionary>
 ```
 
 Complex object-value tokens such as typography, border, shadow, and transition tokens are not emitted by default. Use `tokenValueSerializer` when the token can be converted to a primitive resource, or `resourceFactory` when a token should emit custom XAML resources such as WPF `Thickness` values or project-specific compatibility layers.
+
+When `resourceFactory` returns a string or array (including an empty string or array), it owns all resources for that token, including any brushes. No automatic brush is appended, even with `outputColorBrushes: true`. Returning `undefined` preserves built-in resource and automatic brush generation. Factories are responsible for unique keys in their custom output.
 
 ---
 

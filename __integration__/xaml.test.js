@@ -52,7 +52,7 @@ describe('integration', async () => {
                 preset: 'wpf',
                 outputColorBrushes: true,
                 outputReferences: true,
-                resourceReferenceType: 'DynamicResource',
+                resourceReferenceType: 'StaticResource',
               },
             },
           ],

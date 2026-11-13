@@ -303,7 +303,7 @@ describe('formats', () => {
       await expect(f).to.matchSnapshot();
     });
 
-    it('with WPF aliases and DynamicResource should match snapshot', async () => {
+    it('with WPF aliases and StaticResource should match snapshot', async () => {
       const allTokens = convertTokenData(referenceTokens, { output: 'array' });
       const f = await format(
         createFormatArgs({
@@ -317,7 +317,7 @@ describe('formats', () => {
             options: {
               preset: 'wpf',
               outputReferences: true,
-              resourceReferenceType: 'DynamicResource',
+              resourceReferenceType: 'StaticResource',
               outputColorBrushes: true,
             },
           },
@@ -325,6 +325,134 @@ describe('formats', () => {
         }),
       );
       await expect(f).to.matchSnapshot();
+    });
+
+    it('should reject WPF dynamic aliases only when an alias is emitted', async () => {
+      const dictionary = {
+        tokens: referenceTokens,
+        allTokens: convertTokenData(referenceTokens, { output: 'array' }),
+      };
+      for (const outputReferences of [true, () => true]) {
+        await expect(
+          format(
+            createFormatArgs({
+              dictionary,
+              file: {
+                ...file,
+                options: {
+                  preset: 'wpf',
+                  resourceReferenceType: 'DynamicResource',
+                  outputReferences,
+                },
+              },
+              platform: {},
+            }),
+          ),
+        ).to.be.rejectedWith('cannot emit DynamicResource alias "ColorAlias"');
+      }
+
+      for (const outputReferences of [false, () => false]) {
+        const output = await format(
+          createFormatArgs({
+            dictionary,
+            file: {
+              ...file,
+              options: {
+                preset: 'wpf',
+                resourceReferenceType: 'DynamicResource',
+                outputReferences,
+                outputColorBrushes: true,
+              },
+            },
+            platform: {},
+          }),
+        );
+        expect(output).to.include('<Color x:Key="ColorAlias">#FF0B8599</Color>');
+        expect(output).to.include('Color="{DynamicResource ColorAlias}"');
+        expect(output).not.to.include('<DynamicResource');
+      }
+    });
+
+    it('should let a factory replace WPF dynamic aliases', async () => {
+      const output = await format(
+        createFormatArgs({
+          dictionary: {
+            tokens: referenceTokens,
+            allTokens: convertTokenData(referenceTokens, { output: 'array' }),
+          },
+          file: {
+            ...file,
+            options: {
+              preset: 'wpf',
+              resourceReferenceType: 'DynamicResource',
+              outputReferences: true,
+              resourceFactory: ({ token, referencedToken, createAliasResource }) =>
+                referencedToken
+                  ? createAliasResource(token, referencedToken, 'StaticResource', 'ResourceKey')
+                  : undefined,
+            },
+          },
+          platform: {},
+        }),
+      );
+      expect(output).to.include('<StaticResource x:Key="ColorAlias" ResourceKey="ColorBase" />');
+      expect(output).not.to.include('<DynamicResource');
+    });
+
+    it('should give factories brush ownership and preserve automatic brushes on fallback', async () => {
+      for (const asArray of [false, true]) {
+        const output = await format(
+          createFormatArgs({
+            dictionary: {
+              tokens: referenceTokens,
+              allTokens: convertTokenData(referenceTokens, { output: 'array' }),
+            },
+            file: {
+              ...file,
+              options: {
+                preset: 'wpf',
+                outputColorBrushes: true,
+                resourceFactory: ({ token, createResource, createColorBrushResource }) => {
+                  if (token.name !== 'ColorBase') return undefined;
+                  const brush = createColorBrushResource(token, 'Brush', 'StaticResource');
+                  return asArray
+                    ? [createResource(token, 'Color', '#FF0B8599'), brush]
+                    : `${createResource(token, 'Color', '#FF0B8599')}\n${brush}`;
+                },
+              },
+            },
+            platform: {},
+          }),
+        );
+        expect(output.split('x:Key="ColorBaseBrush"')).to.have.length(2);
+        expect(output.split('x:Key="ColorAliasBrush"')).to.have.length(2);
+      }
+    });
+
+    it('should not append automatic brushes when a factory omits a token', async () => {
+      for (const omittedOutput of ['', []]) {
+        const output = await format(
+          createFormatArgs({
+            dictionary: {
+              tokens: referenceTokens,
+              allTokens: convertTokenData(referenceTokens, { output: 'array' }),
+            },
+            file: {
+              ...file,
+              options: {
+                preset: 'wpf',
+                outputColorBrushes: true,
+                resourceFactory: ({ token }) =>
+                  token.name === 'ColorBase' ? omittedOutput : undefined,
+              },
+            },
+            platform: {},
+          }),
+        );
+        expect(output).not.to.include('x:Key="ColorBase"');
+        expect(output).not.to.include('x:Key="ColorBaseBrush"');
+        expect(output).to.include('x:Key="ColorAliasBrush"');
+      }
     });
 
     it('with namespace overrides and root attributes should match snapshot', async () => {
