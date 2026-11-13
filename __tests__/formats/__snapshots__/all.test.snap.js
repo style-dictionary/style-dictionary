@@ -1426,6 +1426,34 @@ class {
 }`;
 /* end snapshot formats all should match flutter/class.dart snapshot with fileHeaderTimestamp set */
 
+snapshots["formats all should match xaml/resourceDictionary snapshot"] = 
+`<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Do not edit directly, this file was auto-generated.
+-->
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+  <!-- comment -->
+  <Color x:Key="color_red">#FFFF0000</Color>
+</ResourceDictionary>
+`;
+/* end snapshot formats all should match xaml/resourceDictionary snapshot */
+
+snapshots["formats all should match xaml/resourceDictionary snapshot with fileHeaderTimestamp set"] = 
+`<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Do not edit directly, this file was auto-generated.
+  Generated on Sat, 01 Jan 2000 00:00:00 GMT
+-->
+<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+  <!-- comment -->
+  <Color x:Key="color_red">#FFFF0000</Color>
+</ResourceDictionary>
+`;
+/* end snapshot formats all should match xaml/resourceDictionary snapshot with fileHeaderTimestamp set */
 snapshots["formats all should match sketch/palette snapshot"] = 
 `{
   "compatibleVersion": "1.0",
@@ -1447,4 +1475,3 @@ snapshots["formats all should match sketch/palette snapshot with fileHeaderTimes
 }
 `;
 /* end snapshot formats all should match sketch/palette snapshot with fileHeaderTimestamp set */
-
