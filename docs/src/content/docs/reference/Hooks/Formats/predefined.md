@@ -1010,6 +1010,32 @@ Example:
 
 ---
 
+### gimp/palette
+
+Creates a GIMP palette (`.gpl`) of the color tokens. GIMP, Inkscape, Krita and other apps that read GIMP palettes can load it, so designers get the same colors in their color pickers.
+Any color value Style Dictionary can read works, including DTCG color objects, so no color transform is needed.
+GIMP palettes have no alpha channel: a translucent color is written without its alpha.
+
+| Param                 | Type     | Description                                                                                         |
+| --------------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| `options`             | `Object` |                                                                                                     |
+| `options.paletteName` | `string` | The palette name shown in the app. Defaults to the destination file name without its extension.     |
+| `options.columns`     | `number` | How many columns the app uses to show the palette, from 0 to 256. Left out by default, as is usual. |
+
+Example:
+
+```text title="brand.gpl"
+GIMP Palette
+Name: brand
+#
+# Do not edit directly, this file was auto-generated.
+#
+255   0   0	color-red
+  0 128 255	color-blue
+```
+
+---
+
 ### flutter/class.dart
 
 Creates a Dart implementation file of a class with values
