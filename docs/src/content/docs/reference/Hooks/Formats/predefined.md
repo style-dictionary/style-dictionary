@@ -179,6 +179,43 @@ $color-background-alt= #eeeeee;
 
 ---
 
+### typst/variables
+
+Creates a [Typst](https://typst.app) file that defines every token as a variable, so a Typst document can `#import "tokens.typ": *` and use the tokens.
+
+- Colors become `rgb("#rrggbb")`, or `rgb("#rrggbbaa")` when translucent. Any color value Style Dictionary can read works, including DTCG color objects.
+- Numbers and lengths in units Typst knows (`pt`, `mm`, `cm`, `in`, `em`, `deg`, `rad`, `fr`, `%`) are written as they are. Typst has no `px` or `rem`, so convert those with a transform first, or they are written as strings.
+- Other strings become Typst strings, arrays become arrays, and objects (composite tokens such as typography) become dictionaries.
+- Token names must be valid Typst identifiers (letters, digits, `_` and `-`), which the `name/kebab` transform gives. Other names throw an error.
+- Token comments are written above the variable, unless `formatting.commentStyle` is `none`.
+
+| Param                | Type                  | Description                                                                                                                                             |
+| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options`            | `Object`              |                                                                                                                                                         |
+| `options.formatting` | `FormattingOverrides` | Set `commentStyle` to `none` to leave out token comments. The `fileHeaderTimestamp`, `header`, and `footer` options are used for the fileHeader helper. |
+
+Example:
+
+```typst title="tokens.typ"
+// Do not edit directly, this file was auto-generated.
+
+// The main brand color
+#let color-brand-primary = rgb("#3b82f6")
+#let size-spacing-small = 4pt
+#let font-family-base = ("Inter", "sans-serif")
+#let typography-heading = (fontFamily: "Inter", fontSize: 24pt, fontWeight: 700)
+```
+
+Used in a Typst document:
+
+```typst title="report.typ"
+#import "tokens.typ": *
+
+#set text(font: font-family-base, fill: color-brand-primary)
+```
+
+---
+
 ### javascript/module
 
 Creates a CommonJS module with the whole style dictionary
