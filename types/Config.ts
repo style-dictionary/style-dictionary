@@ -105,14 +105,24 @@ export interface PlatformConfig {
 }
 
 export interface Config {
+  /** Configure logging verbosity, warnings, and broken-reference behavior. */
   log?: LogConfig;
+  /** File globs containing the design tokens to load. */
   source?: string[];
+  /** File globs containing default token values that source entries can override. */
   include?: string[];
+  /** Inline design tokens to use instead of source and include files. */
   tokens?: DesignTokens;
+  /** Custom parsers, preprocessors, transforms, formats, filters, and actions. */
   hooks?: Hooks;
+  /** Configure expansion of composite object-value tokens. */
   expand?: ExpandConfig;
+  /** Platform-specific build configurations keyed by platform name. */
   platforms?: Record<string, PlatformConfig>;
+  /** Names of custom file parsers to run on input files. */
   parsers?: string[];
+  /** Names of preprocessors to run before token transforms. */
   preprocessors?: string[];
+  /** Whether the token input uses the Design Token Community Group format. */
   usesDtcg?: boolean;
 }
