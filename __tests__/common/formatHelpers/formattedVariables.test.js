@@ -232,6 +232,38 @@ describe('formatHelpers', () => {
       expect(resultWithoutRefs).to.not.include('var(--z-base)');
     });
 
+    it('should define every variable before it is used when references are several levels deep', () => {
+      // from #658: t6 used to be output before t4, which it references
+      const token = (name, value) => ({ name, value, original: { value }, path: [name] });
+      const deepTokens = {
+        t0: token('t0', '1px'),
+        t1: token('t1', '{t0}'),
+        t2: token('t2', '{t1}'),
+        t3: token('t3', '{t0} {t1}'),
+        t4: token('t4', '{t3} {t0}'),
+        t8: token('t8', '9px'),
+        t5: token('t5', '6px'),
+        t6: token('t6', '{t0} {t4}'),
+      };
+      const dictionary = {
+        tokens: deepTokens,
+        unfilteredTokens: deepTokens,
+        allTokens: convertTokenData(deepTokens, { output: 'array' }),
+      };
+
+      const result = formattedVariables({ format: css, dictionary, outputReferences: true });
+
+      const defined = new Set();
+      result.split('\n').forEach((line) => {
+        const [, name, value] = line.match(/--([\w-]+): (.*);/);
+        [...value.matchAll(/var\(--([\w-]+)\)/g)].forEach(([, used]) => {
+          expect(defined.has(used), `--${name} uses --${used} before it is defined`).to.be.true;
+        });
+        defined.add(name);
+      });
+      expect(defined.size).to.equal(8);
+    });
+
     it('should output references when outputReferences=true and match snapshot', async () => {
       const tokensWithRef = {
         color: {
