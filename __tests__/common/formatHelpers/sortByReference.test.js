@@ -160,6 +160,51 @@ describe('common', () => {
         });
       });
 
+      describe('references several levels deep', () => {
+        const token = (name, value) => ({ name, path: [name], value, original: { value } });
+        const names = (list) => list.map((t) => t.name);
+
+        it('should put every token after the tokens it references (#658)', () => {
+          const tokens = {
+            t0: token('t0', '1px'),
+            t1: token('t1', '{t0}'),
+            t2: token('t2', '{t1}'),
+            t3: token('t3', '{t0} {t1}'),
+            t4: token('t4', '{t3} {t0}'),
+            t8: token('t8', '9px'),
+            t5: token('t5', '6px'),
+            t6: token('t6', '{t0} {t4}'),
+          };
+          const allTokens = Object.values(tokens);
+
+          const sorted = [...allTokens].sort(sortByReference(tokens));
+
+          // before the fix, t6 came out ahead of t4 even though t6 references t4
+          const order = names(sorted);
+          sorted.forEach((t, i) => {
+            const refs = [...t.original.value.matchAll(/{(\w+)}/g)].map((m) => m[1]);
+            refs.forEach((ref) =>
+              expect(order.indexOf(ref), `${t.name} uses ${ref}`).to.be.below(i),
+            );
+          });
+          expect(order).to.eql(['t0', 't8', 't5', 't1', 't2', 't3', 't4', 't6']);
+        });
+
+        it('should keep the existing order of tokens at the same depth', () => {
+          const tokens = {
+            c: token('c', '{a}'),
+            b: token('b', '2px'),
+            d: token('d', '{b}'),
+            a: token('a', '1px'),
+          };
+          const allTokens = Object.values(tokens);
+
+          const sorted = [...allTokens].sort(sortByReference(tokens));
+
+          expect(names(sorted)).to.eql(['b', 'a', 'c', 'd']);
+        });
+      });
+
       describe('tokens with "value" in their name', () => {
         const tokensWithValueInName = {
           object_type: {
