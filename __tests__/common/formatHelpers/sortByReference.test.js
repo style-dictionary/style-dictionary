@@ -203,6 +203,20 @@ describe('common', () => {
 
           expect(names(sorted)).to.eql(['b', 'a', 'c', 'd']);
         });
+
+        it('should sort tokens without a path without revisiting shared references', () => {
+          // each level references the one below twice: without caching, the work doubles per level
+          const pathless = (name, value) => ({ name, value, original: { value } });
+          const tokens = { l0: pathless('l0', '1px') };
+          for (let i = 1; i <= 20; i++) {
+            tokens[`l${i}`] = pathless(`l${i}`, `{l${i - 1}} {l${i - 1}}`);
+          }
+          const allTokens = Object.values(tokens).reverse();
+
+          const sorted = [...allTokens].sort(sortByReference(tokens));
+
+          expect(names(sorted)).to.eql(Object.keys(tokens));
+        });
       });
 
       describe('tokens with "value" in their name', () => {
