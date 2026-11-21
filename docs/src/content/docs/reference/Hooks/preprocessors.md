@@ -138,5 +138,5 @@ StyleDictionary.registerPreprocessor({
 
 There are two default preprocessors that are always applied and run after other custom preprocessors do:
 
-- [`typeDtcgDelegate`](/reference/utils/dtcg#typedtcgdelegate), for DTCG tokens, make sure the `$type` is either already present or gets inherited from the closest ancestor that has it defined, so that the `$type` is always available on the token level, for ease of use
+- [`typeDtcgDelegate`](/reference/utils/dtcg#typedtcgdelegate) runs after global preprocessors. It preserves explicit DTCG token types, resolves types for aliases, and uses the nearest group's type when no explicit or referenced type is available.
 - [`expandObjectTokens`](/reference/config#expand), a private preprocessor that will expand object-value (composite) tokens when user config has this enabled.
