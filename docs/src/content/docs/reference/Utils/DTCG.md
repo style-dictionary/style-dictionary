@@ -24,11 +24,8 @@ const outputDictionary = convertToDTCG(dictionary, { applyTypesToGroup: false })
 
 `dictionary` is the result of doing for example JSON.parse() on your tokens JSON string so it becomes a JavaScript object type.
 
-:::danger
-Do not use this hook with `applyTypesToGroup` set to `true` (default) inside of a Preprocessor hook!\
-Style Dictionary relies on `typeDtcgDelegate` utility being ran right before user-defined preprocessors delegating all of the token group types to the token level,
-because this makes it easier and more performant to grab the token type from the token itself, without needing to know about and traverse its ancestor tree to find it.\
-`typeDtcgDelegate` is doing the opposite action of `convertToDTCG`, delegating the `$type` down rather than moving and condensing the `$type` up.
+:::note
+Style Dictionary applies [`typeDtcgDelegate`](#typedtcgdelegate) after global preprocessors. If you call `convertToDTCG` in a platform preprocessor, set `applyTypesToGroup` to `false` to keep types on individual tokens for platform expansion and transforms.
 :::
 
 ### convertJSONToDTCG
@@ -61,11 +58,11 @@ const outputBlob = convertZIPToDTCG(ZIPBlobOrFilepath, { applyTypesToGroup: fals
 
 ## typeDtcgDelegate
 
-This function processes your ["Design Tokens Community Group Draft spec"-compliant](https://tr.designtokens.org/format/) dictionary of tokens, and ensures that `$type` inheritance is applied.
+This function applies `$type` inheritance to a [DTCG](https://tr.designtokens.org/format/) dictionary. An explicit token `$type` takes precedence. A token whose entire `$value` is an alias uses the referenced token's resolved type before its nearest group's type. Ordinary values and aliases whose target type cannot be resolved inherit the nearest group's type when available.
 
 We built this utility because it's cheaper to apply the inheritance once, rather than on every access of a token's "$type" property, checking the ancestor tree to find it.
 
-This utility runs by default in Style-Dictionary after the parser hook and before the preprocessor hook.
+Style Dictionary runs this utility after global preprocessors and before global expansion and platform processing.
 
 :::caution
 Important to note is that the `$type` prop on the group level will be removed during this step, and will only exist on the token level.
